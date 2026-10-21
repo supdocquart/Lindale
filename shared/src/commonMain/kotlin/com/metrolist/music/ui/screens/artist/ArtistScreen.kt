@@ -78,7 +78,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.metrolist.innertube.YouTube
@@ -138,7 +138,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ArtistScreen(
     navController: NavController,
-    viewModel: ArtistViewModel = hiltViewModel(),
+    viewModel: ArtistViewModel = metrolistViewModel(),
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current

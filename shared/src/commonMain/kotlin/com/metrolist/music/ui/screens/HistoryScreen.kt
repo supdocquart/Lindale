@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -56,7 +56,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.util.fastForEachReversed
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import com.metrolist.innertube.utils.parseCookieString
 import com.metrolist.music.LocalDatabase
@@ -89,7 +89,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryScreen(
     navController: NavController,
-    viewModel: HistoryViewModel = hiltViewModel(),
+    viewModel: HistoryViewModel = metrolistViewModel(),
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current
@@ -527,7 +527,7 @@ fun HistoryScreen(
                                     },
                                 onDismiss = menuState::dismiss,
                                 clearAction = onExitSelectionMode,
-                                currentItems = emptyList<androidx.media3.common.Timeline.Window>(),
+                                currentItems = emptyList<com.metrolist.music.playback.Timeline.Window>(),
                             )
                         }
                     },

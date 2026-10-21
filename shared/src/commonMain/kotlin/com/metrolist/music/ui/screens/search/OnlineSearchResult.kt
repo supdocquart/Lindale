@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import com.metrolist.music.compat.*
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -66,7 +66,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.lifecycle.SavedStateHandle
 import com.metrolist.music.LocalNavController
 import com.metrolist.innertube.YouTube.SearchFilter.Companion.FILTER_ALBUM
@@ -120,7 +120,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OnlineSearchResult(
-    viewModel: OnlineSearchViewModel = hiltViewModel(),
+    viewModel: OnlineSearchViewModel = metrolistViewModel(),
     pureBlack: Boolean = false,
     savedStateHandle: SavedStateHandle? = null
 ) {

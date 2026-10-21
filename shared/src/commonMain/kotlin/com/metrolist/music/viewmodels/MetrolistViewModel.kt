@@ -1,16 +1,16 @@
-package androidx.hilt.lifecycle.viewmodel.compose
+package com.metrolist.music.viewmodels
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.metrolist.music.utils.LocalDatabase
-import com.metrolist.music.utils.LocalSyncUtils
 import com.metrolist.music.utils.LocalDownloadUtil
-import com.metrolist.music.viewmodels.MetrolistViewModelFactory
+import com.metrolist.music.utils.LocalSyncUtils
 
+/** Creates a screen ViewModel wired to the app's database, sync and download services. */
 @Composable
-inline fun <reified VM : ViewModel> hiltViewModel(): VM {
+inline fun <reified VM : ViewModel> metrolistViewModel(): VM {
     val db = LocalDatabase.current
     val sync = LocalSyncUtils.current
     val dl = LocalDownloadUtil.current

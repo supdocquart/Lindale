@@ -1,3 +1,9 @@
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
+import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -33,7 +39,20 @@ private fun runApp() = application {
         },
         title = "Metrolist",
         state = windowState,
+        onKeyEvent = { event ->
+            event.type == KeyEventType.KeyDown && event.key == Key.Escape && BackDispatcher.dispatch()
+        },
     ) {
+        DisposableEffect(Unit) {
+            // Mouse "back" side button (XButton1) arrives as AWT button 4.
+            val listener = java.awt.event.AWTEventListener { ev ->
+                if (ev is java.awt.event.MouseEvent && ev.id == java.awt.event.MouseEvent.MOUSE_PRESSED && ev.button == 4) {
+                    BackDispatcher.dispatch()
+                }
+            }
+            java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(listener, java.awt.AWTEvent.MOUSE_EVENT_MASK)
+            onDispose { java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(listener) }
+        }
         MetrolistApp(
             database = database,
             playerConnection = playerConnection,

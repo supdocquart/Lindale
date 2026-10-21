@@ -9,6 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-inline fun <reified VM : ViewModel> hiltViewModel(): VM {
+inline fun <reified VM : ViewModel> metrolistViewModel(): VM {
     return viewModel<VM>()
 }

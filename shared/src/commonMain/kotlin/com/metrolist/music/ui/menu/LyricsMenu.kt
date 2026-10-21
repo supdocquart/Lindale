@@ -62,7 +62,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.SongEntity
@@ -99,7 +99,7 @@ fun LyricsMenu(
     mediaMetadataProvider: () -> MediaMetadata,
     onDismiss: () -> Unit,
     onShowOffsetDialog: () -> Unit = {},
-    viewModel: LyricsMenuViewModel = hiltViewModel(),
+    viewModel: LyricsMenuViewModel = metrolistViewModel(),
 ) {
     val context = LocalContext.current
     val database = LocalDatabase.current

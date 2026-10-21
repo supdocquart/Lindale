@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -75,7 +75,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachReversed
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -114,7 +114,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnlinePlaylistScreen(
     navController: NavController,
-    viewModel: OnlinePlaylistViewModel = hiltViewModel(),
+    viewModel: OnlinePlaylistViewModel = metrolistViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current

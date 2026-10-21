@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.ui.component.DownloadCenter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -54,8 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.DownloadService
+import com.metrolist.music.playback.Download
 import com.metrolist.innertube.YouTube
 import com.metrolist.music.LocalNavController
 import com.metrolist.innertube.models.AlbumItem
@@ -69,7 +69,6 @@ import com.metrolist.music.constants.ListThumbnailSize
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.db.entities.SpeedDialItem
 import com.metrolist.music.extensions.toMediaItem
-import com.metrolist.music.playback.ExoDownloadService
 import com.metrolist.music.playback.queues.YouTubeAlbumRadio
 import com.metrolist.music.ui.component.ListDialog
 import com.metrolist.music.ui.component.Material3MenuGroup
@@ -445,12 +444,7 @@ fun YouTubeAlbumMenu(
                                     },
                                     onClick = {
                                         album?.songs?.forEach { song ->
-                                            DownloadService.sendRemoveDownload(
-                                                context,
-                                                ExoDownloadService::class.java,
-                                                song.id,
-                                                false,
-                                            )
+                                            DownloadCenter.remove(song.id)
                                         }
                                     },
                                 )
@@ -467,12 +461,7 @@ fun YouTubeAlbumMenu(
                                     },
                                     onClick = {
                                         album?.songs?.forEach { song ->
-                                            DownloadService.sendRemoveDownload(
-                                                context,
-                                                ExoDownloadService::class.java,
-                                                song.id,
-                                                false,
-                                            )
+                                            DownloadCenter.remove(song.id)
                                         }
                                     },
                                 )

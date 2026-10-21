@@ -48,7 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -88,7 +88,7 @@ import kotlinx.coroutines.withContext
 fun LibraryAlbumsScreen(
     navController: NavController,
     onDeselect: () -> Unit,
-    viewModel: LibraryAlbumsViewModel = hiltViewModel(),
+    viewModel: LibraryAlbumsViewModel = metrolistViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current

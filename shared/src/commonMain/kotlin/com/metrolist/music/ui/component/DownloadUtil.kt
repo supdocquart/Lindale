@@ -1,6 +1,6 @@
 package com.metrolist.music.ui.component
 
-import androidx.media3.exoplayer.offline.Download
+import com.metrolist.music.playback.Download
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.MediaMetadata

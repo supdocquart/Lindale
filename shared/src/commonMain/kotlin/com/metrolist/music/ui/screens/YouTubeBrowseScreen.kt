@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
@@ -60,7 +60,7 @@ import com.metrolist.music.viewmodels.YouTubeBrowseViewModel
 @Composable
 fun YouTubeBrowseScreen(
     navController: NavController,
-    viewModel: YouTubeBrowseViewModel = hiltViewModel(),
+    viewModel: YouTubeBrowseViewModel = metrolistViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current

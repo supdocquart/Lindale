@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -63,7 +63,7 @@ import com.metrolist.music.viewmodels.ArtistSongsViewModel
 @Composable
 fun ArtistSongsScreen(
     navController: NavController,
-    viewModel: ArtistSongsViewModel = hiltViewModel(),
+    viewModel: ArtistSongsViewModel = metrolistViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val queueAllSongsStr = stringResource(Res.string.queue_all_songs)

@@ -4,6 +4,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import androidx.media3.common.MediaItem
+import com.metrolist.music.playback.MediaItem
 
 fun Any?.toMediaItem(): MediaItem = MediaItem()

@@ -15,7 +15,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -89,7 +89,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.metrolist.music.LocalNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -648,7 +648,7 @@ fun DailyDiscoverCard(
 @Composable
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = metrolistViewModel(),
 ) {
     val navController = LocalNavController.current
     val menuState = LocalMenuState.current

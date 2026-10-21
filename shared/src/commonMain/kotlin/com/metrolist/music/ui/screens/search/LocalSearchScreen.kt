@@ -46,7 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import com.metrolist.music.LocalNavController
 import com.metrolist.music.LocalPlayerConnection
 import com.metrolist.music.constants.CONTENT_TYPE_LIST
@@ -76,7 +76,7 @@ fun LocalSearchScreen(
     onDismiss: () -> Unit,
     isFromCache: Boolean = false,
     pureBlack: Boolean,
-    viewModel: LocalSearchViewModel = hiltViewModel(),
+    viewModel: LocalSearchViewModel = metrolistViewModel(),
 ) {
     val navController = LocalNavController.current
     val queueSearchedSongsStr = stringResource(Res.string.queue_searched_songs)

@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,8 +69,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachReversed
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.media3.exoplayer.offline.Download
+import com.metrolist.music.viewmodels.metrolistViewModel
+import com.metrolist.music.playback.Download
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.metrolist.music.LocalDatabase
@@ -103,7 +103,7 @@ import com.metrolist.music.viewmodels.AlbumViewModel
 fun AlbumScreen(
     navController: NavController,
     albumId: String? = null,
-    viewModel: AlbumViewModel = hiltViewModel(),
+    viewModel: AlbumViewModel = metrolistViewModel(),
 ) {
     LaunchedEffect(albumId) {
         if (!albumId.isNullOrBlank()) {

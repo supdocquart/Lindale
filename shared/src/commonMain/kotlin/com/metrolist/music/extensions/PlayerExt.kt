@@ -1,6 +1,6 @@
 package com.metrolist.music.extensions
 
-import androidx.media3.common.Player
+import com.metrolist.music.playback.Player
 
 fun Player.toggleRepeatMode() {
     val next = when (repeatMode) {

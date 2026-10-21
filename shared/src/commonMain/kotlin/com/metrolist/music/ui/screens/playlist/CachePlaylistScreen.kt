@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,8 +69,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachReversed
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.media3.exoplayer.offline.Download
+import com.metrolist.music.viewmodels.metrolistViewModel
+import com.metrolist.music.playback.Download
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.metrolist.music.LocalDownloadUtil
@@ -102,7 +102,7 @@ import java.time.LocalDateTime
 @Composable
 fun CachePlaylistScreen(
     navController: NavController,
-    viewModel: CachePlaylistViewModel = hiltViewModel(),
+    viewModel: CachePlaylistViewModel = metrolistViewModel(),
 ) {
     val context = LocalContext.current
     val menuState = LocalMenuState.current

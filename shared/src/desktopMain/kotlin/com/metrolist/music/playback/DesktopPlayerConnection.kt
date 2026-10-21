@@ -1,6 +1,6 @@
 package com.metrolist.music.playback
 
-import androidx.media3.common.Timeline
+import com.metrolist.music.playback.Timeline
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YouTubeClient

@@ -84,11 +84,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.zIndex
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.offline.Download
-import androidx.media3.exoplayer.offline.Download.Companion.STATE_COMPLETED
-import androidx.media3.exoplayer.offline.Download.Companion.STATE_DOWNLOADING
-import androidx.media3.exoplayer.offline.Download.Companion.STATE_QUEUED
+import com.metrolist.music.playback.MediaItem
+import com.metrolist.music.playback.Download
+import com.metrolist.music.playback.Download.Companion.STATE_COMPLETED
+import com.metrolist.music.playback.Download.Companion.STATE_DOWNLOADING
+import com.metrolist.music.playback.Download.Companion.STATE_QUEUED
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.metrolist.innertube.YouTube

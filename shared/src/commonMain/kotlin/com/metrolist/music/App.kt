@@ -1,5 +1,8 @@
 package com.metrolist.music
 
+import com.metrolist.music.ui.utils.BackDispatcher
+import androidx.compose.runtime.DisposableEffect
+
 import androidx.compose.animation.*
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -38,6 +41,10 @@ fun MetrolistApp(
     syncUtils: SyncUtils = remember(database) { SyncUtils(android.content.Context(), database) },
 ) {
     val navController = rememberNavController()
+    DisposableEffect(navController) {
+        BackDispatcher.fallback = { navController.previousBackStackEntry != null && navController.popBackStack() }
+        onDispose { BackDispatcher.fallback = null }
+    }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     LaunchedEffect(navBackStackEntry) {

@@ -59,7 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.innertube.YouTube
@@ -103,7 +103,7 @@ import kotlinx.coroutines.withContext
 fun LibrarySongsScreen(
     navController: NavController,
     onDeselect: () -> Unit,
-    viewModel: LibrarySongsViewModel = hiltViewModel(),
+    viewModel: LibrarySongsViewModel = metrolistViewModel(),
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current

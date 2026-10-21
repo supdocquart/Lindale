@@ -57,7 +57,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -120,7 +120,7 @@ fun LibraryMixScreen(
     filterContent: @Composable () -> Unit,
     viewType: LibraryViewType,
     onViewTypeChange: (LibraryViewType) -> Unit,
-    viewModel: LibraryMixViewModel = hiltViewModel(),
+    viewModel: LibraryMixViewModel = metrolistViewModel(),
 ) {
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current

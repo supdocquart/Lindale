@@ -206,7 +206,43 @@ open class Player {
 
 const val AUDIO_SESSION_ID_UNSET = 0
 
-typealias Timeline = androidx.media3.common.Timeline
+open class Timeline(
+    private val windows: List<Window> = emptyList()
+) {
+    class Window(
+        var uid: Any = Any(),
+        var mediaItem: MediaItem = MediaItem(),
+        var firstPeriodIndex: Int = 0,
+        var lastPeriodIndex: Int = 0,
+    )
+
+    open val windowCount: Int get() = windows.size
+    open fun getWindow(windowIndex: Int, window: Window): Window {
+        val src = windows.getOrNull(windowIndex) ?: return window
+        window.uid = src.uid
+        window.mediaItem = src.mediaItem
+        window.firstPeriodIndex = src.firstPeriodIndex
+        window.lastPeriodIndex = src.lastPeriodIndex
+        return window
+    }
+    open val isEmpty: Boolean get() = windowCount == 0
+    open fun getPreviousWindowIndex(windowIndex: Int, repeatMode: Int, shuffleModeEnabled: Boolean): Int {
+        if (isEmpty) return -1
+        return if (windowIndex > 0) windowIndex - 1 else if (repeatMode == Player.REPEAT_MODE_ALL) windowCount - 1 else -1
+    }
+    open fun getNextWindowIndex(windowIndex: Int, repeatMode: Int, shuffleModeEnabled: Boolean): Int {
+        if (isEmpty) return -1
+        return if (windowIndex + 1 < windowCount) windowIndex + 1 else if (repeatMode == Player.REPEAT_MODE_ALL) 0 else -1
+    }
+}
+
+fun Timeline.getWindowCount(): Int = windowCount
+
+interface ShuffleOrder {
+    class DefaultShuffleOrder(val length: Int = 0, val seed: Long = 0L) : ShuffleOrder {
+        constructor(shuffledIndices: IntArray, randomSeed: Long = 0L) : this(shuffledIndices.size, randomSeed)
+    }
+}
 class TrackSelectionParameters
 
 object C {

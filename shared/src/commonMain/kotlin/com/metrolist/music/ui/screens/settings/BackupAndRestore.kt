@@ -50,7 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -77,7 +77,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun BackupAndRestore(
     navController: NavController,
-    viewModel: BackupRestoreViewModel = hiltViewModel(),
+    viewModel: BackupRestoreViewModel = metrolistViewModel(),
 ) {
     var importedTitle by remember { mutableStateOf("") }
     val importedSongs = remember { mutableStateListOf<Song>() }

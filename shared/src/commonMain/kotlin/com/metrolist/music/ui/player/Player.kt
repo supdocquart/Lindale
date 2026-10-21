@@ -13,7 +13,7 @@ import com.metrolist.music.platform.DesktopShare
 
 import com.metrolist.music.platform.KeepScreenAwake
 
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.ui.utils.BackHandler
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -118,8 +118,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.media3.common.C
-import androidx.media3.common.Player
+import com.metrolist.music.playback.C
+import com.metrolist.music.playback.Player
 import com.metrolist.music.playback.Player.Companion.STATE_ENDED
 import androidx.navigation.NavController
 import com.metrolist.music.ui.theme.Palette
@@ -192,9 +192,6 @@ import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.roundToInt
 import com.metrolist.music.ui.component.Icon as MIcon
-import com.metrolist.music.constants.SleepTimerDefaultKey
-import com.metrolist.music.constants.SleepTimerFadeOutKey
-import com.metrolist.music.constants.SleepTimerStopAfterCurrentSongKey
 
 
 @OptIn(ExperimentalMaterial3Api::class)

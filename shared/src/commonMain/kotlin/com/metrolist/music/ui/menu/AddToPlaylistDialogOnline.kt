@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.metrolist.music.viewmodels.metrolistViewModel
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.music.LocalDatabase
@@ -101,7 +101,7 @@ fun AddToPlaylistDialogOnline(
     onProgressStart: (Boolean) -> Unit,
     onPercentageChange: (Int) -> Unit,
     onSongChange: (String) -> Unit = {},
-    viewModel: PlaylistsViewModel = hiltViewModel()
+    viewModel: PlaylistsViewModel = metrolistViewModel()
 ) {
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
