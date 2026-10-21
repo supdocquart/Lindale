@@ -1,6 +1,5 @@
 plugins {
     id("org.jetbrains.compose") version "1.6.11" apply false
-    alias(libs.plugins.hilt) apply (false)
     alias(libs.plugins.kotlin.ksp) apply (false)
     alias(libs.plugins.kotlin.serialization) apply false
 }
@@ -13,7 +12,6 @@ buildscript {
         maven { setUrl("https://maven.aliyun.com/repository/public") }
     }
     dependencies {
-        classpath(libs.gradle)
         classpath(kotlin("gradle-plugin", libs.versions.kotlin.get()))
     }
 }

@@ -22,7 +22,6 @@ dependencyResolutionManagement {
             filter {
                 if (useMavenLocalInnerTubeX) {
                     includeModule("com.github.MetrolistGroup", "innertubex")
-                    includeModule("com.github.MetrolistGroup", "innertubex-android")
                     includeModule("com.github.MetrolistGroup", "innertubex-desktop")
                 } else {
                     includeGroup("com.github.MetrolistGroup.innertubex")
@@ -36,10 +35,7 @@ dependencyResolutionManagement {
     }
 }
 
-// F-Droid doesn't support foojay-resolver plugin
 rootProject.name = "Metrolist"
-// The Android app is not part of the desktop build; opt in with -Pmetrolist.android=true
-if (providers.gradleProperty("metrolist.android").orNull == "true") include(":app")
 include(":innertube")
 include(":desktop")
 
