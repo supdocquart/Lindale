@@ -1,11 +1,14 @@
 package com.metrolist.music.ui.screens.settings.integrations
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -52,14 +55,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -72,7 +73,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
+import com.metrolist.music.platform.toUri
 import com.metrolist.music.playback.Player.Companion.STATE_READY
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -905,13 +906,13 @@ private fun TemplateFieldDialog(
         title = { Text(text = title) },
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.cancel))
+                Text(stringResource(Res.string.cancel))
             }
             TextButton(onClick = {
                 onDone(text)
                 onDismiss()
             }) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
     ) {
@@ -1104,12 +1105,7 @@ fun RichPresence(
                 OutlinedButton(
                     enabled = song != null,
                     onClick = {
-                        val intent =
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    renderedBtn1Url.toUri(),
-                                )
-                        context.startActivity(intent)
+                        DesktopShare.openUrl(renderedBtn1Url)
                     },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -1120,12 +1116,7 @@ fun RichPresence(
             if (btn2Enabled) {
                 OutlinedButton(
                     onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                renderedBtn2Url.toUri(),
-                            )
-                        context.startActivity(intent)
+                        DesktopShare.openUrl(renderedBtn2Url)
                     },
                     modifier = Modifier.fillMaxWidth(),
                 ) {

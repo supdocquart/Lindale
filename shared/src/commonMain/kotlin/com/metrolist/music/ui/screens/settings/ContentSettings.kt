@@ -4,14 +4,13 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.Intent
-import android.os.Build
-import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,18 +40,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import com.metrolist.music.platform.toUri
 import androidx.navigation.NavController
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
@@ -911,31 +908,16 @@ fun ContentSettings(
         Material3SettingsGroup(
             title = stringResource(Res.string.app_language),
             items = listOf(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    Material3SettingsItem(
-                        icon = painterResource(Res.drawable.language),
-                        title = { Text(stringResource(Res.string.app_language)) },
-                        onClick = {
-                            context.startActivity(
-                                Intent(
-                                    Settings.ACTION_APP_LOCALE_SETTINGS,
-                                    "package:${context.packageName}".toUri()
-                                )
-                            )
-                        }
-                    )
-                } else {
-                    Material3SettingsItem(
-                        icon = painterResource(Res.drawable.language),
-                        title = { Text(stringResource(Res.string.app_language)) },
-                        description = {
-                            Text(
-                                LanguageCodeToName.getOrElse(appLanguage) { stringResource(Res.string.system_default) }
-                            )
-                        },
-                        onClick = { showAppLanguageDialog = true }
-                    )
-                }
+                Material3SettingsItem(
+                    icon = painterResource(Res.drawable.language),
+                    title = { Text(stringResource(Res.string.app_language)) },
+                    description = {
+                        Text(
+                            LanguageCodeToName.getOrElse(appLanguage) { stringResource(Res.string.system_default) }
+                        )
+                    },
+                    onClick = { showAppLanguageDialog = true }
+                )
             )
         )
 

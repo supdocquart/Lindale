@@ -4,12 +4,14 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.runtime.getValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -146,12 +147,7 @@ fun YouTubeArtistMenu(
                             },
                             text = stringResource(Res.string.share),
                             onClick = {
-                                val intent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    type = "text/plain"
-                                    putExtra(Intent.EXTRA_TEXT, artist.shareLink)
-                                }
-                                context.startActivity(Intent.createChooser(intent, null))
+                                DesktopShare.shareText(artist.shareLink)
                                 onDismiss()
                             }
                         )

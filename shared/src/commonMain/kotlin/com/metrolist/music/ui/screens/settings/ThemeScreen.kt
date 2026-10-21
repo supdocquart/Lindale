@@ -1,11 +1,11 @@
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import android.content.res.Configuration
-import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -52,11 +52,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -435,10 +432,7 @@ fun ModeCircle(
         DarkMode.OFF -> false
     }
     
-    // Use actual system colors for AUTO mode on Android 12+
-    val modeColorScheme = if (targetMode == DarkMode.AUTO && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        if (effectiveDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-    } else {
+    val modeColorScheme = run {
         rememberDynamicColorScheme(
             seedColor = DefaultThemeColor,
             isDark = effectiveDark,

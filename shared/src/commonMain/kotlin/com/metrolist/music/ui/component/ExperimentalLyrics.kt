@@ -4,16 +4,20 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import androidx.compose.ui.text.style.TextAlign
+
+import com.metrolist.music.platform.DesktopShare
+
+import com.metrolist.music.platform.KeepScreenAwake
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
-import android.view.WindowManager
 import com.metrolist.music.utils.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
@@ -46,7 +50,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,7 +62,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.withFrameNanos
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,7 +81,6 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import android.text.Layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
@@ -146,7 +147,6 @@ private const val LYRICS_PREVIEW_TIME = 8000L
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
-@SuppressLint("UnusedBoxWithConstraintsScope", "StringFormatInvalid")
 @Composable
 fun ExperimentalLyrics(
     sliderPositionProvider: () -> Long?,
@@ -488,11 +488,7 @@ fun ExperimentalLyrics(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(showLyrics) {
-        val activity = context as? Activity
-        if (showLyrics) activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        onDispose { activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
-    }
+    KeepScreenAwake(showLyrics)
 
     BoxWithConstraints(
         contentAlignment = Alignment.TopCenter,
@@ -872,17 +868,13 @@ fun ExperimentalLyrics(
                             },
                             textColor.toArgb(), secTextColor.toArgb(),
                             when (lyricsTextPosition) {
-                                LyricsPosition.LEFT -> Layout.Alignment.ALIGN_NORMAL
-                                LyricsPosition.CENTER -> Layout.Alignment.ALIGN_CENTER
-                                else -> Layout.Alignment.ALIGN_OPPOSITE
+                                LyricsPosition.LEFT -> TextAlign.Start
+                                LyricsPosition.CENTER -> TextAlign.Center
+                                else -> TextAlign.End
                             }
                         )
                         val uri = ComposeToImage.saveBitmapAsFile(context, image, "lyrics_${System.currentTimeMillis()}")
-                        context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                            type = "image/png"
-                            putExtra(Intent.EXTRA_STREAM, uri)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        }, context.getString(Res.string.share_lyrics)))
+                        DesktopShare.shareFile(uri)
                     } catch (e: Exception) {
                         Toast.makeText(context, context.getString(Res.string.failed_to_create_image, e.message), Toast.LENGTH_SHORT).show()
                     } finally {

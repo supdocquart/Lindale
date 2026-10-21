@@ -4,13 +4,17 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.nativeCanvas
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.graphics.BlurMaskFilter
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -26,24 +30,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
@@ -51,11 +51,9 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
@@ -232,7 +230,6 @@ internal fun LyricsLine(
                     letterSpacing = (-0.5).sp,
                     textAlign = agentTextAlign,
                     fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
-                    platformStyle = PlatformTextStyle(includeFontPadding = false),
                     lineHeightStyle = LineHeightStyle(
                         alignment = LineHeightStyle.Alignment.Center,
                         trim = LineHeightStyle.Trim.Both
@@ -339,11 +336,6 @@ private fun WordLevelLyrics(
 ) {
     val density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer()
-    val glowPaint = remember {
-        android.graphics.Paint().apply {
-            isAntiAlias = true
-        }
-    }
     
     var smoothPosition by remember { mutableLongStateOf(currentPositionState + lyricsOffset) }
     
@@ -765,11 +757,16 @@ private fun WordLevelLyrics(
                                 val glowAlpha = (0.35f * impactFactor).coerceIn(0f, 0.4f)
                                 val baseGlowRadius = 12.dp.toPx() * impactFactor                                                                                    
                                 drawIntoCanvas { canvas ->
-                                    glowPaint.maskFilter = BlurMaskFilter(baseGlowRadius, BlurMaskFilter.Blur.NORMAL)
-                                    glowPaint.color = expressiveAccent.copy(alpha = glowAlpha).toArgb()
-                                    glowPaint.textSize = lyricStyle.fontSize.toPx()
-                                    glowPaint.typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
-                                    canvas.drawGlowText(letterLayouts[i].layoutInput.text.text, 0f, letterLayouts[i].firstBaseline, glowPaint)
+                                    canvas.drawGlowText(
+                                        letterLayouts[i].layoutInput.text.text,
+                                        0f,
+                                        letterLayouts[i].firstBaseline,
+                                        GlowTextStyle(
+                                            color = expressiveAccent.copy(alpha = glowAlpha).toArgb(),
+                                            textSize = lyricStyle.fontSize.toPx(),
+                                            blurRadius = baseGlowRadius,
+                                        ),
+                                    )
                                 }
                             }
                         }

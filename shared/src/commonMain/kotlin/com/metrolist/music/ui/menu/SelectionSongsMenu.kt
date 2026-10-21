@@ -4,12 +4,13 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,13 +32,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -68,7 +67,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SelectionSongMenu(
     songSelection: List<Song>,
@@ -172,7 +170,7 @@ fun SelectionSongMenu(
                         showRemoveDownloadDialog = false
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
 
                 TextButton(
@@ -188,7 +186,7 @@ fun SelectionSongMenu(
                         }
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.ok))
+                    Text(text = stringResource(Res.string.ok))
                 }
             },
         )
@@ -221,7 +219,7 @@ fun SelectionSongMenu(
                     TextButton(
                         onClick = { showDeleteUploadedDialog = false },
                     ) {
-                        Text(text = stringResource(android.Res.string.cancel))
+                        Text(text = stringResource(Res.string.cancel))
                     }
 
                     TextButton(
@@ -656,7 +654,6 @@ fun SelectionSongMenu(
     }
 }
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun SelectionMediaMetadataMenu(
     songSelection: List<MediaMetadata>,
@@ -740,7 +737,7 @@ fun SelectionMediaMetadataMenu(
                         showRemoveDownloadDialog = false
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
 
                 TextButton(
@@ -756,7 +753,7 @@ fun SelectionMediaMetadataMenu(
                         }
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.ok))
+                    Text(text = stringResource(Res.string.ok))
                 }
             },
         )

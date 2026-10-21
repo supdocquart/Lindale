@@ -4,13 +4,16 @@
  */
 
 package com.metrolist.music.ui.screens.library
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,11 +47,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -683,13 +684,7 @@ private fun PodcastEpisodePlaylistMenu(
                         )
                     },
                     onClick = {
-                        val intent =
-                            Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, shareUrl)
-                            }
-                        context.startActivity(Intent.createChooser(intent, null))
+                        DesktopShare.shareText(shareUrl)
                         onDismiss()
                     },
                 ),

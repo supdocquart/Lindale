@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.library
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -14,8 +16,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.metrolist.music.LocalNavController
 import com.metrolist.music.constants.AlbumViewTypeKey

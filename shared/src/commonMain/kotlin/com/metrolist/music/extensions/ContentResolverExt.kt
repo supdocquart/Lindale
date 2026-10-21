@@ -1,7 +1,7 @@
 package com.metrolist.music.extensions
 
 import android.content.ContentResolver
-import android.net.Uri
+import com.metrolist.music.platform.Uri
 
 fun ContentResolver.fileNameAndSize(uri: Uri): Pair<String, Long> {
     val file = com.metrolist.music.platform.DesktopFiles.toFile(uri)

@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.settings.integrations
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -37,14 +39,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -416,7 +416,7 @@ fun LastFMSettings(
                             showMinTrackDurationDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.cancel))
+                        Text(stringResource(Res.string.cancel))
                     }
                     TextButton(
                         onClick = {
@@ -424,7 +424,7 @@ fun LastFMSettings(
                             showMinTrackDurationDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
                 }
             ) {
@@ -481,7 +481,7 @@ fun LastFMSettings(
                             showScrobbleDelayPercentDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.cancel))
+                        Text(stringResource(Res.string.cancel))
                     }
                     TextButton(
                         onClick = {
@@ -489,7 +489,7 @@ fun LastFMSettings(
                             showScrobbleDelayPercentDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
                 }
             ) {
@@ -546,7 +546,7 @@ fun LastFMSettings(
                             showScrobbleDelaySecondsDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.cancel))
+                        Text(stringResource(Res.string.cancel))
                     }
                     TextButton(
                         onClick = {
@@ -554,7 +554,7 @@ fun LastFMSettings(
                             showScrobbleDelaySecondsDialog = false
                         }
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
                 }
             ) {

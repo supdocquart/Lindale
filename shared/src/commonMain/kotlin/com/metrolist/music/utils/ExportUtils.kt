@@ -1,6 +1,6 @@
 package com.metrolist.music.utils
 
-import android.net.Uri
+import com.metrolist.music.platform.Uri
 import com.metrolist.innertube.models.SongItem
 import java.io.File
 

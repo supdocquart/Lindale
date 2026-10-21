@@ -4,13 +4,15 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.Image
@@ -41,12 +43,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -98,7 +98,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun YouTubePlaylistMenu(
     playlist: PlaylistItem,
@@ -292,7 +291,7 @@ fun YouTubePlaylistMenu(
                 TextButton(
                     onClick = { showRemoveDownloadDialog = false },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
                 TextButton(
                     onClick = {
@@ -307,7 +306,7 @@ fun YouTubePlaylistMenu(
                         }
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.ok))
+                    Text(text = stringResource(Res.string.ok))
                 }
             },
         )
@@ -671,13 +670,7 @@ fun YouTubePlaylistMenu(
                                     )
                                 },
                                 onClick = {
-                                    val intent =
-                                        Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            type = "text/plain"
-                                            putExtra(Intent.EXTRA_TEXT, playlist.shareLink)
-                                        }
-                                    context.startActivity(Intent.createChooser(intent, null))
+                                    DesktopShare.shareText(playlist.shareLink)
                                     onDismiss()
                                 },
                             ),
@@ -779,14 +772,8 @@ fun YouTubePlaylistMenu(
 
 private fun shareFile(
     context: android.content.Context,
-    uri: android.net.Uri,
+    uri: com.metrolist.music.platform.Uri,
     mimeType: String,
 ) {
-    val shareIntent =
-        Intent(Intent.ACTION_SEND).apply {
-            type = mimeType
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    context.startActivity(Intent.createChooser(shareIntent, context.getString(Res.string.export_playlist)))
+    DesktopShare.shareFile(uri)
 }

@@ -4,13 +4,15 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.core.animateFloatAsState
@@ -40,14 +42,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -94,7 +94,6 @@ import com.metrolist.music.utils.saveToPublicDocuments
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AlbumMenu(
     originalAlbum: Album,
@@ -363,13 +362,7 @@ fun AlbumMenu(
                             text = stringResource(Res.string.share),
                             onClick = {
                                 onDismiss()
-                                val intent =
-                                    Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        type = "text/plain"
-                                        putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/playlist?list=${album.album.playlistId}")
-                                    }
-                                context.startActivity(Intent.createChooser(intent, null))
+                                DesktopShare.shareText("https://music.youtube.com/playlist?list=${album.album.playlistId}")
                             },
                         ),
                     ),
@@ -592,13 +585,7 @@ fun AlbumMenu(
                             .onSuccess { file ->
                                 val uri = getExportFileUri(context, file)
                                 val mimeType = if (format == "csv") "text/csv" else "audio/x-mpegurl"
-                                val shareIntent =
-                                    Intent(Intent.ACTION_SEND).apply {
-                                        type = mimeType
-                                        putExtra(Intent.EXTRA_STREAM, uri)
-                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    }
-                                context.startActivity(Intent.createChooser(shareIntent, exportPlaylistStr))
+                                DesktopShare.shareFile(uri)
                             }.onFailure {
                                 Toast.makeText(context, Res.string.export_failed, Toast.LENGTH_SHORT).show()
                             }

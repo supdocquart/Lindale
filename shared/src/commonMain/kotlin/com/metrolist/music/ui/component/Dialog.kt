@@ -4,16 +4,16 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -226,14 +226,14 @@ fun ActionPromptDialog(
                 TextButton(
                     onClick = { onCancel() },
                 ) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
             }
 
             TextButton(
                 onClick = { onConfirm() },
             ) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
     ) {
@@ -328,7 +328,7 @@ fun TextFieldDialog(
         title = title,
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(text = stringResource(android.Res.string.cancel))
+                Text(text = stringResource(Res.string.cancel))
             }
 
             val isValid =
@@ -346,7 +346,7 @@ fun TextFieldDialog(
                     }
                 },
             ) {
-                Text(text = stringResource(android.Res.string.ok))
+                Text(text = stringResource(Res.string.ok))
             }
         },
     ) {

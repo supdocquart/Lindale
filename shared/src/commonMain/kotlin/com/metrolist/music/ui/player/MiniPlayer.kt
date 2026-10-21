@@ -6,6 +6,8 @@
  */
 
 package com.metrolist.music.ui.player
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -54,13 +56,11 @@ import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -118,7 +118,6 @@ import androidx.compose.ui.platform.LocalContext
 import com.metrolist.music.ui.theme.Palette
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -256,7 +255,6 @@ private fun NewMiniPlayer(
                     val request = ImageRequest.Builder(coil3.PlatformContext.INSTANCE)
                         .data(url)
                         .size(100, 100)
-                        .allowHardware(false)
                         .build()
                     val result = runCatching { coil3.ImageLoader(coil3.PlatformContext.INSTANCE).execute(request) }.getOrNull()
                     val bitmap = result?.image?.toBitmap()
@@ -391,22 +389,20 @@ private fun NewMiniPlayer(
         ) {
             when (miniPlayerBackground) {
                 MiniPlayerBackgroundStyle.BLUR -> {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                        mediaMetadata?.thumbnailUrl?.let { url ->
-                            AsyncImage(
-                                model = url,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .blur(60.dp),
-                            )
-                            Box(
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(Color.Black.copy(alpha = 0.45f)),
-                            )
-                        }
+                    mediaMetadata?.thumbnailUrl?.let { url ->
+                        AsyncImage(
+                            model = url,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .blur(60.dp),
+                        )
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.45f)),
+                        )
                     }
                 }
                 MiniPlayerBackgroundStyle.GRADIENT -> {

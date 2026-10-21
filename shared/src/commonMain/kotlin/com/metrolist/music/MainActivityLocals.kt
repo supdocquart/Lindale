@@ -1,4 +1,5 @@
 package com.metrolist.music
+import androidx.navigation.NavController
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.MutableState
-import androidx.navigation.NavController
 import com.metrolist.music.db.MusicDatabase
 
 val LocalDatabase = staticCompositionLocalOf<MusicDatabase> { error("No database provided") }

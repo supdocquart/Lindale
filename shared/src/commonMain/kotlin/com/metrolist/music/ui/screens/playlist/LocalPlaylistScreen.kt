@@ -4,21 +4,23 @@
  */
 
 package com.metrolist.music.ui.screens.playlist
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.toArgb
+
+import com.metrolist.music.platform.rememberPickImageLauncher
+import com.metrolist.music.platform.DesktopFiles
+import com.metrolist.music.platform.ImageCrop
+import com.metrolist.music.platform.toUri
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
+import com.metrolist.music.platform.Uri
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -63,7 +65,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -71,7 +72,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,7 +79,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -95,7 +94,6 @@ import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastForEachReversed
 import androidx.compose.ui.util.fastSumBy
-import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.offline.Download
@@ -145,7 +143,6 @@ import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.viewmodels.LocalPlaylistViewModel
-import com.yalantis.ucrop.UCrop
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -156,7 +153,6 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlinx.datetime.LocalDateTime
 import com.metrolist.music.extensions.now
 
-@SuppressLint("RememberReturnType")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LocalPlaylistScreen(
@@ -346,7 +342,7 @@ fun LocalPlaylistScreen(
                 TextButton(
                     onClick = { showRemoveDownloadDialog = false },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
 
                 TextButton(
@@ -369,7 +365,7 @@ fun LocalPlaylistScreen(
                         }
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.ok))
+                    Text(text = stringResource(Res.string.ok))
                 }
             },
         )
@@ -398,7 +394,7 @@ fun LocalPlaylistScreen(
                         showDeletePlaylistDialog = false
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
                 TextButton(
                     onClick = {
@@ -414,7 +410,7 @@ fun LocalPlaylistScreen(
                         navController.popBackStack()
                     },
                 ) {
-                    Text(text = stringResource(android.Res.string.ok))
+                    Text(text = stringResource(Res.string.ok))
                 }
             },
         )
@@ -908,16 +904,7 @@ fun LocalPlaylistHeader(
         } ?: false
 
     val result = remember { mutableStateOf<Uri?>(null) }
-    var pendingCropDestUri by remember { mutableStateOf<Uri?>(null) }
     var showEditNoteDialog by remember { mutableStateOf(false) }
-
-    val cropLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
-            if (res.resultCode == android.app.Activity.RESULT_OK) {
-                val output = res.data?.let { UCrop.getOutput(it) } ?: pendingCropDestUri
-                if (output != null) result.value = output
-            }
-        }
 
     val (darkMode, _) =
         rememberEnumPreference(
@@ -929,39 +916,10 @@ fun LocalPlaylistHeader(
     val darkTheme = darkMode == DarkMode.ON || (darkMode == DarkMode.AUTO && isSystemInDarkTheme())
 
     val pickLauncher =
-        rememberLauncherForActivityResult(
-            ActivityResultContracts.PickVisualMedia(),
-        ) { uri ->
-            uri?.let { sourceUri ->
-                val destFile = java.io.File(context.cacheDir, "playlist_cover_crop_${System.currentTimeMillis()}.jpg")
-                val destUri = FileProvider.getUriForFile(context, "${context.packageName}.FileProvider", destFile)
-                pendingCropDestUri = destUri
-
-                val options =
-                    UCrop.Options().apply {
-                        setCompressionFormat(Bitmap.CompressFormat.JPEG)
-                        setCompressionQuality(90)
-                        setHideBottomControls(true)
-                        setToolbarTitle(editPlaylistCoverStr)
-
-                        setStatusBarLight(!darkTheme)
-
-                        setToolbarColor(cropColor.surface.toArgb())
-                        setToolbarWidgetColor(cropColor.inverseSurface.toArgb())
-                        setRootViewBackgroundColor(cropColor.surface.toArgb())
-                        setLogoColor(cropColor.surface.toArgb())
-                    }
-
-                val intent =
-                    UCrop
-                        .of(sourceUri, destUri)
-                        .withAspectRatio(1f, 1f)
-                        .withOptions(options)
-                        .getIntent(context)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                cropLauncher.launch(intent)
-            }
+        rememberPickImageLauncher { uri ->
+            val source = DesktopFiles.toFile(uri) ?: return@rememberPickImageLauncher
+            val destFile = java.io.File(DesktopFiles.cacheDir, "playlist_cover_crop_${System.currentTimeMillis()}.jpg")
+            ImageCrop.centerSquare(source, destFile)?.let { result.value = it.toUri() }
         }
 
     LaunchedEffect(result.value) {
@@ -1035,9 +993,7 @@ fun LocalPlaylistHeader(
                 onDismiss = { showEditNoteDialog = false },
                 onConfirm = {
                     showEditNoteDialog = false
-                    pickLauncher.launch(
-                        PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly),
-                    )
+                    pickLauncher.launch()
                 },
                 onCancel = { showEditNoteDialog = false },
             ) {
@@ -1115,11 +1071,7 @@ fun LocalPlaylistHeader(
                                         {
                                             CustomThumbnailMenu(
                                                 onEdit = {
-                                                    pickLauncher.launch(
-                                                        PickVisualMediaRequest(
-                                                            mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly,
-                                                        ),
-                                                    )
+                                                    pickLauncher.launch()
                                                 },
                                                 onRemove = {
                                                     when {
@@ -1198,11 +1150,7 @@ fun LocalPlaylistHeader(
                                         {
                                             CustomThumbnailMenu(
                                                 onEdit = {
-                                                    pickLauncher.launch(
-                                                        PickVisualMediaRequest(
-                                                            mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly,
-                                                        ),
-                                                    )
+                                                    pickLauncher.launch()
                                                 },
                                                 onRemove = {
                                                     when {

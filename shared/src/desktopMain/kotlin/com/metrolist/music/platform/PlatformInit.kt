@@ -54,6 +54,7 @@ fun initDesktopPlatform() {
 
     com.metrolist.music.discord.DiscordDesktopOAuth.install()
     com.metrolist.music.ui.theme.DesktopPaletteReader.install()
+    WindowsScreenWake.install()
 
     try {
         startKoin {

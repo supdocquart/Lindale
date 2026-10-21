@@ -4,21 +4,15 @@
  */
 
 package com.metrolist.music.ui.screens
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
-import android.webkit.CookieManager
-import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.compose.BackHandler
+import com.metrolist.music.platform.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,11 +42,9 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +52,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.metrolist.innertube.YouTube
@@ -102,7 +93,6 @@ private data class AuthData(
     val authUser: String,
 )
 
-@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -111,74 +101,10 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val jsInterface = remember { LoginJsInterface() }
     var loginStage by remember { mutableStateOf(LoginStage.Authenticating) }
-    var webViewRef by remember { mutableStateOf<WebView?>(null) }
     var accounts by remember { mutableStateOf<List<YouTubeAccount>>(emptyList()) }
     var selectedAccount by remember { mutableStateOf<YouTubeAccount?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    suspend fun extractAuthData(webView: WebView?): AuthData? {
-        val view = webView ?: return null
-        var hasAuthCookie = false
-        var hasVisitorData = false
-        repeat(20) {
-            val cookie = CookieManager.getInstance().getCookie("https://music.youtube.com").orEmpty()
-            val cookieMap = runCatching { parseCookieString(cookie) }.getOrDefault(emptyMap())
-            val visitorDataDeferred = CompletableDeferred<String?>()
-            val dataSyncIdDeferred = CompletableDeferred<String?>()
-            val authUserDeferred = CompletableDeferred<String?>()
-            jsInterface.onVisitorDataReceived = { visitorData ->
-                if (!visitorDataDeferred.isCompleted) visitorDataDeferred.complete(visitorData)
-            }
-            jsInterface.onDataSyncIdReceived = { dataSyncId ->
-                if (!dataSyncIdDeferred.isCompleted) dataSyncIdDeferred.complete(dataSyncId)
-            }
-            jsInterface.onAuthUserReceived = { authUser ->
-                if (!authUserDeferred.isCompleted) authUserDeferred.complete(authUser)
-            }
-
-            view.loadUrl(
-                "javascript:Android.onRetrieveVisitorData(" +
-                    "window.yt&&window.yt.config_?window.yt.config_.VISITOR_DATA:null)",
-            )
-            view.loadUrl(
-                "javascript:Android.onRetrieveDataSyncId(" +
-                    "window.yt&&window.yt.config_?window.yt.config_.DATASYNC_ID:null)",
-            )
-            view.loadUrl(
-                "javascript:Android.onRetrieveAuthUser(" +
-                    "window.yt&&window.yt.config_?String(window.yt.config_.SESSION_INDEX||0):'0')",
-            )
-
-            val pageAuthData =
-                withTimeoutOrNull(1_000) {
-                    WebAuthData(
-                        visitorData = visitorDataDeferred.await(),
-                        dataSyncId = dataSyncIdDeferred.await(),
-                        authUser = authUserDeferred.await().orEmpty(),
-                    )
-                }
-            hasAuthCookie = "SAPISID" in cookieMap
-            val visitorData = pageAuthData?.visitorData
-            hasVisitorData = !visitorData.isNullOrBlank()
-            if (hasAuthCookie && pageAuthData != null && !visitorData.isNullOrBlank()) {
-                return AuthData(
-                    cookie = cookie,
-                    visitorData = visitorData,
-                    dataSyncId = pageAuthData.dataSyncId.orEmpty().substringBefore("||"),
-                    authUser = pageAuthData.authUser.filter(Char::isDigit).ifBlank { "0" },
-                )
-            }
-            delay(500)
-        }
-
-        Timber.w(
-            "Login: Timed out waiting for the YouTube Music session " +
-                "(authCookie=$hasAuthCookie, visitorData=$hasVisitorData)",
-        )
-        return null
-    }
 
     var cookieInput by remember { mutableStateOf(YouTube.cookie.orEmpty()) }
     var visitorDataInput by remember { mutableStateOf(YouTube.visitorData.orEmpty()) }
@@ -503,19 +429,12 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         errorMessage = null
-                        webViewRef?.reload()
                     },
                 ) {
                     Text(stringResource(Res.string.retry))
                 }
             },
         )
-    }
-
-    BackHandler(
-        enabled = webViewRef?.canGoBack() == true && loginStage == LoginStage.Authenticating && errorMessage == null,
-    ) {
-        webViewRef?.goBack()
     }
 }
 
@@ -595,44 +514,3 @@ private fun YouTubeAccountPickerItem(
     }
 }
 
-private class LoginJsInterface {
-    var onVisitorDataReceived: ((String?) -> Unit)? = null
-    var onDataSyncIdReceived: ((String?) -> Unit)? = null
-    var onAuthUserReceived: ((String?) -> Unit)? = null
-
-    @JavascriptInterface
-    fun onRetrieveVisitorData(visitorData: String?) {
-        onVisitorDataReceived?.invoke(visitorData)
-    }
-
-    @JavascriptInterface
-    fun onRetrieveDataSyncId(dataSyncId: String?) {
-        onDataSyncIdReceived?.invoke(dataSyncId)
-    }
-
-    @JavascriptInterface
-    fun onRetrieveAuthUser(authUser: String?) {
-        onAuthUserReceived?.invoke(authUser)
-    }
-}
-
-private data class WebAuthData(
-    val visitorData: String?,
-    val dataSyncId: String?,
-    val authUser: String,
-)
-
-private fun restoreYouTubeCookies(cookie: String?) {
-    val cookieManager = CookieManager.getInstance()
-    cookieManager.setAcceptCookie(true)
-    cookie
-        ?.let(::parseCookieString)
-        .orEmpty()
-        .forEach { (name, value) ->
-            cookieManager.setCookie(
-                "https://music.youtube.com",
-                "$name=$value; Domain=.youtube.com; Path=/; Secure",
-            )
-        }
-    cookieManager.flush()
-}

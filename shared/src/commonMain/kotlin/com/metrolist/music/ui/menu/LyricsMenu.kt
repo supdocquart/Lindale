@@ -4,16 +4,18 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.app.SearchManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.animateContentSize
@@ -48,12 +50,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -191,7 +191,7 @@ fun LyricsMenu(
                 TextButton(
                     onClick = { showSearchDialog = false },
                 ) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
 
                 Spacer(Modifier.width(8.dp))
@@ -200,17 +200,7 @@ fun LyricsMenu(
                     onClick = {
                         showSearchDialog = false
                         onDismiss()
-                        try {
-                            context.startActivity(
-                                Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                    putExtra(
-                                        SearchManager.QUERY,
-                                        "${artistField.text} ${titleField.text} lyrics"
-                                    )
-                                },
-                            )
-                        } catch (_: Exception) {
-                        }
+                        DesktopShare.webSearch("${artistField.text} ${titleField.text} lyrics")
                     },
                 ) {
                     Text(stringResource(Res.string.search_online))
@@ -237,7 +227,7 @@ fun LyricsMenu(
                         }
                     },
                 ) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
         ) {

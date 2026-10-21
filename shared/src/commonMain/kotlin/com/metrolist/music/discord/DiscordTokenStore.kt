@@ -6,7 +6,7 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Base64
+import java.util.Base64
 import androidx.core.content.edit
 import kotlinx.coroutines.CompletableDeferred
 import timber.log.Timber
@@ -206,11 +206,11 @@ object DiscordTokenStore {
             val combined = ByteArray(GCM_IV_SIZE + ciphertext.size)
             iv.copyInto(combined, destinationOffset = 0, startIndex = 0, endIndex = GCM_IV_SIZE)
             ciphertext.copyInto(combined, destinationOffset = GCM_IV_SIZE)
-            return Base64.encodeToString(combined, Base64.NO_WRAP)
+            return Base64.getEncoder().encodeToString(combined)
         }
 
         fun decrypt(encrypted: String): String {
-            val combined = Base64.decode(encrypted, Base64.NO_WRAP)
+            val combined = Base64.getDecoder().decode(encrypted)
             if (combined.size < GCM_IV_SIZE) {
                 throw IllegalArgumentException("Encrypted data too short")
             }

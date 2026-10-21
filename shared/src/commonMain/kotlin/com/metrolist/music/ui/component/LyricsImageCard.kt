@@ -4,13 +4,14 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,10 +30,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,7 +62,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.toArgb
 import com.metrolist.music.ui.theme.Palette
 import coil3.ImageLoader
-import coil3.request.allowHardware
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -150,7 +148,6 @@ fun rememberAdjustedFontSize(
     return calculatedFontSize
 }
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun LyricsImageCard(
     lyricText: String,
@@ -190,7 +187,7 @@ fun LyricsImageCard(
             withContext(Dispatchers.IO) {
                 try {
                     val loader = ImageLoader(coil3.PlatformContext.INSTANCE)
-                    val req = ImageRequest.Builder(coil3.PlatformContext.INSTANCE).data(mediaMetadata.thumbnailUrl).allowHardware(false).build()
+                    val req = ImageRequest.Builder(coil3.PlatformContext.INSTANCE).data(mediaMetadata.thumbnailUrl).build()
                     val result = loader.execute(req)
                     val bmp = result.image?.toBitmap()
                     if (bmp != null) {

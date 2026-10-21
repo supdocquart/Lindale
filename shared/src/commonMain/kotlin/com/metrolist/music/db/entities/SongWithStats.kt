@@ -4,13 +4,13 @@
  */
 
 package com.metrolist.music.db.entities
+import androidx.room.Embedded
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import androidx.compose.runtime.Immutable
-import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 

@@ -4,14 +4,20 @@
  */
 
 package com.metrolist.music.ui.player
+import androidx.compose.material3.SliderState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.datastore.preferences.core.edit
+
+import com.metrolist.music.platform.DesktopShare
+
+import com.metrolist.music.platform.KeepScreenAwake
 
 import androidx.activity.compose.BackHandler
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
-import android.view.WindowManager
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -67,7 +73,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -76,7 +81,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -84,7 +88,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -113,10 +116,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.C
@@ -128,7 +127,6 @@ import com.metrolist.music.LocalNavController
 import coil3.compose.AsyncImage
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalDownloadUtil
@@ -185,7 +183,6 @@ import com.metrolist.music.utils.makeTimeString
 import com.metrolist.music.utils.rememberEnumPreference
 import com.metrolist.music.utils.rememberPreference
 import com.metrolist.music.utils.safeDataStoreEdit
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -262,44 +259,7 @@ fun BottomSheetPlayer(
     val isKeepScreenOn by rememberPreference(KeepScreenOn, false)
     val keepScreenOn = isPlaying && isKeepScreenOn
 
-    DisposableEffect(playerBackground, state.isExpanded, useDarkTheme, keepScreenOn, isFullScreen, hideStatusBarOnFullscreen) {
-        val window = (context as? android.app.Activity)?.window
-        if (window != null && state.isExpanded) {
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-
-            when (playerBackground) {
-                PlayerBackgroundStyle.BLUR, PlayerBackgroundStyle.GRADIENT -> {
-                    insetsController.isAppearanceLightStatusBars = false
-                }
-
-                PlayerBackgroundStyle.DEFAULT -> {
-                    insetsController.isAppearanceLightStatusBars = !useDarkTheme
-                }
-            }
-
-            if (isFullScreen && hideStatusBarOnFullscreen) {
-                insetsController.hide(WindowInsetsCompat.Type.statusBars())
-                insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            } else {
-                insetsController.show(WindowInsetsCompat.Type.statusBars())
-            }
-
-            if (keepScreenOn && state.isExpanded) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
-
-        onDispose {
-            if (window != null) {
-                val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-                insetsController.isAppearanceLightStatusBars = !useDarkTheme
-                insetsController.show(WindowInsetsCompat.Type.statusBars())
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        }
-    }
+    KeepScreenAwake(keepScreenOn && state.isExpanded)
 
     BackHandler(enabled = state.isExpanded) {
         state.collapseSoft()
@@ -424,7 +384,6 @@ fun BottomSheetPlayer(
                             .Builder(coil3.PlatformContext.INSTANCE)
                             .data(currentMetadata.thumbnailUrl)
                             .size(100, 100)
-                            .allowHardware(false)
                             .memoryCacheKey("gradient_${currentMetadata.id}")
                             .build()
 
@@ -857,7 +816,6 @@ fun BottomSheetPlayer(
                                                 .Builder(coil3.PlatformContext.INSTANCE)
                                                 .data(thumbnailUrl)
                                                 .size(100, 100)
-                                                .allowHardware(false)
                                                 .build(),
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop,
@@ -1168,16 +1126,7 @@ fun BottomSheetPlayer(
                             } else {
                                 FilledIconButton(
                                     onClick = {
-                                        val intent =
-                                            Intent().apply {
-                                                action = Intent.ACTION_SEND
-                                                type = "text/plain"
-                                                putExtra(
-                                                    Intent.EXTRA_TEXT,
-                                                    "https://music.youtube.com/watch?v=${mediaMetadata.id}",
-                                                )
-                                            }
-                                        context.startActivity(Intent.createChooser(intent, null))
+                                        DesktopShare.shareText("https://music.youtube.com/watch?v=${mediaMetadata.id}")
                                     },
                                     shape = shareShape,
                                     colors =
@@ -1290,16 +1239,7 @@ fun BottomSheetPlayer(
                                         .clip(RoundedCornerShape(24.dp))
                                         .background(textButtonColor)
                                         .clickable {
-                                            val intent =
-                                                Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    type = "text/plain"
-                                                    putExtra(
-                                                        Intent.EXTRA_TEXT,
-                                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}",
-                                                    )
-                                                }
-                                            context.startActivity(Intent.createChooser(intent, null))
+                                            DesktopShare.shareText("https://music.youtube.com/watch?v=${mediaMetadata.id}")
                                         },
                             ) {
                                 Icon(
@@ -2044,12 +1984,7 @@ fun InlineLyricsView(
             delay(500)
             coroutineScope.launch(Dispatchers.IO) {
                 try {
-                    val entryPoint =
-                        EntryPointAccessors.fromApplication(
-                            context.applicationContext,
-                            com.metrolist.music.di.LyricsHelperEntryPoint::class.java,
-                        )
-                    val lyricsHelper = entryPoint.lyricsHelper()
+                    val lyricsHelper = com.metrolist.music.lyrics.LyricsHelper(context)
                     val fetchedLyricsWithProvider = lyricsHelper.getLyrics(mediaMetadata)
                     database.query {
                         upsert(LyricsEntity(mediaMetadata.id, fetchedLyricsWithProvider.lyrics, fetchedLyricsWithProvider.provider))
@@ -2084,12 +2019,7 @@ fun InlineLyricsView(
             try {
                 val existing = database.lyrics(nextId).first()
                 if (existing != null) return@withContext
-                val entryPoint =
-                    EntryPointAccessors.fromApplication(
-                        context.applicationContext,
-                        com.metrolist.music.di.LyricsHelperEntryPoint::class.java,
-                    )
-                val lyricsHelper = entryPoint.lyricsHelper()
+                val lyricsHelper = com.metrolist.music.lyrics.LyricsHelper(context)
                 val fetched = lyricsHelper.getLyrics(nextMetadata)
                 database.query {
                     upsert(LyricsEntity(nextId, fetched.lyrics, fetched.provider))

@@ -1,22 +1,18 @@
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.app.AlarmManager
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.os.Build
-import android.os.PowerManager
-import android.provider.Settings
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,18 +36,16 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import com.metrolist.music.platform.toUri
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.db.entities.Playlist
 import com.metrolist.music.playback.alarm.MusicAlarmEntry
@@ -87,50 +81,7 @@ fun AlarmSettingsSection(showTitle: Boolean = true) {
     var showEditor by remember { mutableStateOf(false) }
     var editorTarget by remember { mutableStateOf<MusicAlarmEntry?>(null) }
 
-    val alarmManager = context.getSystemService(AlarmManager::class.java)
-    val canScheduleExact =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            alarmManager?.canScheduleExactAlarms() == true
-        } else {
-            true
-        }
-    val powerManager = context.getSystemService(PowerManager::class.java)
-    val ignoringBatteryOptimization =
-        powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true
-    val systemItems = buildList {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !canScheduleExact) {
-            add(
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.warning),
-                    title = { Text(stringResource(Res.string.alarm_exact_permission_title)) },
-                    description = { Text(stringResource(Res.string.alarm_exact_permission_desc)) },
-                    onClick = {
-                        try {
-                            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                                .setData("package:${context.packageName}".toUri())
-                            context.startActivity(intent)
-                        } catch (_: ActivityNotFoundException) {
-                        }
-                    }
-                )
-            )
-        }
-        if (!ignoringBatteryOptimization) {
-            add(
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.warning),
-                    title = { Text(stringResource(Res.string.alarm_battery_optimization_title)) },
-                    description = { Text(stringResource(Res.string.alarm_battery_optimization_desc)) },
-                    onClick = {
-                        try {
-                            context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                        } catch (_: ActivityNotFoundException) {
-                        }
-                    }
-                )
-            )
-        }
-    }
+    val systemItems = emptyList<Material3SettingsItem>()
 
     suspend fun loadAlarms(): List<MusicAlarmEntry> {
         return withContext(Dispatchers.IO) {
@@ -292,10 +243,10 @@ private fun AlarmTimePickerDialog(
         onDismiss = onDismiss,
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.cancel))
+                Text(stringResource(Res.string.cancel))
             }
             TextButton(onClick = { onConfirm(timePickerState.hour, timePickerState.minute) }) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         }
     ) {
@@ -371,7 +322,7 @@ private fun AlarmEditorDialog(
             title = { Text(stringResource(Res.string.alarm_playlist)) },
             buttons = {
                 TextButton(onClick = { showPlaylistDialog = false }) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             }
         ) {
@@ -450,7 +401,7 @@ private fun AlarmEditorDialog(
         },
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.cancel))
+                Text(stringResource(Res.string.cancel))
             }
             TextButton(
                 enabled = !hasSameTimeAlarm && hasValidPlaylist,

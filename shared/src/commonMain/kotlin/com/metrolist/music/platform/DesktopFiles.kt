@@ -8,6 +8,16 @@ import java.io.FilenameFilter
 
 /** Native open/save dialogs plus helpers that map URIs used by the UI layer to files. */
 object DesktopFiles {
+    private val home: String get() = System.getProperty("user.home")
+
+    /** Roaming app data (settings, database, tokens). */
+    val dataDir: File
+        get() = File(System.getenv("APPDATA") ?: home, "Metrolist").apply { mkdirs() }
+
+    /** Local, disposable cache (images, shared files, downloads cache). */
+    val cacheDir: File
+        get() = File(System.getenv("LOCALAPPDATA") ?: home, "Metrolist/cache").apply { mkdirs() }
+
     private fun ownerFrame(): Frame? {
         val focused = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
         return (focused as? Frame) ?: Frame.getFrames().firstOrNull { it.isVisible }

@@ -4,13 +4,16 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.rememberOpenFileLauncher
+import com.metrolist.music.platform.rememberSaveFileLauncher
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,14 +38,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -112,13 +113,13 @@ fun BackupAndRestore(
     val coroutineScope = rememberCoroutineScope()
 
     val backupLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+        rememberSaveFileLauncher { uri ->
             if (uri != null) {
                 viewModel.backup(context, uri)
             }
         }
     val restoreLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        rememberOpenFileLauncher { uri ->
             if (uri != null) {
                 pendingRestoreUri = uri
                 val preview = viewModel.previewBackup(context, uri)
@@ -142,16 +143,16 @@ fun BackupAndRestore(
             }
         }
     val importPlaylistFromCsv =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
+        rememberOpenFileLauncher { uri ->
+            if (uri == null) return@rememberOpenFileLauncher
             pendingCsvUri = uri
             val previewState = viewModel.previewCsvFile(context, uri)
             csvImportState = previewState
             showCsvColumnMapping = true
         }
     val importM3uLauncherOnline =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
+        rememberOpenFileLauncher { uri ->
+            if (uri == null) return@rememberOpenFileLauncher
             val result = viewModel.loadM3UOnline(context, uri)
             importedSongs.clear()
             importedSongs.addAll(result)

@@ -3,6 +3,10 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 package com.metrolist.music.ui.component
+import androidx.compose.material3.RadioButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.ButtonDefaults
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -22,16 +26,13 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.ui.draw.scale
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.Spring
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 
 fun decodeDayTimes(raw: String): MutableMap<Int, Pair<String, String>> {
@@ -553,7 +553,7 @@ fun SleepTimerDialog(
                 TextButton(
                     onClick = onDismiss,
                 ) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
                 androidx.compose.material3.Button(
                     onClick = {
@@ -586,7 +586,7 @@ fun SleepTimerDialog(
                             onDismiss()
                         },
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
             }
         }
@@ -645,12 +645,12 @@ fun SleepTimerTimePickerDialog(
         title = { Text(title) },
         onDismiss = onDismiss,
         buttons = {
-            TextButton(onClick = onDismiss) { Text(stringResource(android.Res.string.cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(Res.string.cancel)) }
             Button(onClick = {
                 val hour = timePickerState.hour.toString().padStart(2, '0')
                 val minute = timePickerState.minute.toString().padStart(2, '0')
                 onConfirm("$hour:$minute")
-            }) { Text(stringResource(android.Res.string.ok)) }
+            }) { Text(stringResource(Res.string.ok)) }
         },
     ) { TimePicker(state = timePickerState) }
 }

@@ -4,12 +4,14 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.os.Build
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -38,13 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -171,10 +170,7 @@ fun AppearanceSettings(
             defaultValue = MiniPlayerBackgroundStyle.DEFAULT,
         )
 
-    val availableMiniPlayerBackgroundStyles =
-        MiniPlayerBackgroundStyle.entries.filter {
-            it != MiniPlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        }
+    val availableMiniPlayerBackgroundStyles = MiniPlayerBackgroundStyle.entries
 
     var showMiniPlayerBackgroundDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -326,10 +322,7 @@ fun AppearanceSettings(
             defaultValue = true,
         )
 
-    val availableBackgroundStyles =
-        PlayerBackgroundStyle.entries.filter {
-            it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        }
+    val availableBackgroundStyles = PlayerBackgroundStyle.entries
 
     val (defaultChip, onDefaultChipChange) =
         rememberEnumPreference(
@@ -421,7 +414,7 @@ fun AppearanceSettings(
                         showLyricsTextSizeDialog = false
                     },
                 ) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
                 TextButton(
                     onClick = {
@@ -429,7 +422,7 @@ fun AppearanceSettings(
                         showLyricsTextSizeDialog = false
                     },
                 ) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
         ) {
@@ -484,7 +477,7 @@ fun AppearanceSettings(
                         showLyricsLineSpacingDialog = false
                     },
                 ) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
                 TextButton(
                     onClick = {
@@ -492,7 +485,7 @@ fun AppearanceSettings(
                         showLyricsLineSpacingDialog = false
                     },
                 ) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
         ) {
@@ -665,7 +658,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { showDensityScaleDialog = false },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
             },
         ) {
@@ -703,7 +696,7 @@ fun AppearanceSettings(
                 TextButton(
                     onClick = { showSliderOptionDialog = false },
                 ) {
-                    Text(text = stringResource(android.Res.string.cancel))
+                    Text(text = stringResource(Res.string.cancel))
                 }
             },
             onDismiss = {
@@ -1285,7 +1278,7 @@ fun AppearanceSettings(
                             showSensitivityDialog = false
                         },
                     ) {
-                        Text(stringResource(android.Res.string.cancel))
+                        Text(stringResource(Res.string.cancel))
                     }
                     TextButton(
                         onClick = {
@@ -1293,7 +1286,7 @@ fun AppearanceSettings(
                             showSensitivityDialog = false
                         },
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
                 },
             ) {

@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.player
+import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -12,7 +13,6 @@ import org.jetbrains.compose.resources.pluralStringResource
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +31,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -235,8 +234,8 @@ private fun buildPlaybackErrorReport(
         appendLine("Time: $reportedAt")
         appendLine("App version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
         appendLine("Architecture: ${BuildConfig.ARCHITECTURE}")
-        appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
+        appendLine("OS: ${System.getProperty("os.name")} ${System.getProperty("os.version")} (${System.getProperty("os.arch")})")
+        appendLine("Java: ${System.getProperty("java.runtime.version")}")
         appendLine()
         appendLine("Media")
         appendLine("-----")

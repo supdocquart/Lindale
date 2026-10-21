@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -33,12 +35,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
@@ -59,7 +59,7 @@ import com.metrolist.music.ui.component.ActionPromptDialog
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
-import android.text.format.Formatter
+import com.metrolist.music.utils.formatFileSize
 import com.metrolist.music.ui.utils.backToMain
 import com.metrolist.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
@@ -262,7 +262,7 @@ fun StorageSettings(
                 Text(
                     stringResource(
                         Res.string.cache_size_warning_message,
-                        Formatter.formatShortFileSize(context, cacheUsage),
+                        formatFileSize(cacheUsage),
                         cacheType,
                     ),
                 )
@@ -282,7 +282,7 @@ fun StorageSettings(
             },
             dismissButton = {
                 TextButton(onClick = { showCacheWarningDialog = false }) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
             },
         )
@@ -312,7 +312,7 @@ fun StorageSettings(
                         icon = painterResource(Res.drawable.storage),
                         title = { Text(stringResource(Res.string.downloaded_songs)) },
                         description = {
-                            Text(text = Formatter.formatShortFileSize(context, downloadCacheSize))
+                            Text(text = formatFileSize(downloadCacheSize))
                         },
                     ),
                     Material3SettingsItem(
@@ -360,7 +360,7 @@ fun StorageSettings(
                                 text = when (maxSongCacheSize) {
                                     0 -> stringResource(Res.string.disable)
                                     -1 -> stringResource(Res.string.unlimited)
-                                    else -> Formatter.formatShortFileSize(context, maxSongCacheSize * 1024 * 1024L)
+                                    else -> formatFileSize(maxSongCacheSize * 1024 * 1024L)
                                 }
                             )
                             Slider(
@@ -395,11 +395,10 @@ fun StorageSettings(
                                 Text(
                                     text =
                                         if (maxSongCacheSize == -1) {
-                                            Formatter.formatShortFileSize(context, playerCacheSize)
+                                            formatFileSize(playerCacheSize)
                                         } else {
-                                            "${Formatter.formatShortFileSize(context, playerCacheSize)} / ${
-                                                Formatter.formatShortFileSize(context, 
-                                                    maxSongCacheSize * 1024 * 1024L,
+                                            "${formatFileSize(playerCacheSize)} / ${
+                                                formatFileSize(maxSongCacheSize * 1024 * 1024L,
                                                 )
                                             }"
                                         },
@@ -433,7 +432,7 @@ fun StorageSettings(
                                     text =
                                         when (maxImageCacheSize) {
                                             0 -> stringResource(Res.string.disable)
-                                            else -> Formatter.formatShortFileSize(context, maxImageCacheSize * 1024 * 1024L)
+                                            else -> formatFileSize(maxImageCacheSize * 1024 * 1024L)
                                         },
                                 )
                                 Slider(
@@ -461,9 +460,8 @@ fun StorageSettings(
                                 )
                                 Spacer(modifier = Modifier.padding(2.dp))
                                 Text(
-                                    text = "${Formatter.formatShortFileSize(context, imageCacheSize)} / ${
-                                        Formatter.formatShortFileSize(context, 
-                                            maxImageCacheSize * 1024 * 1024L,
+                                    text = "${formatFileSize(imageCacheSize)} / ${
+                                        formatFileSize(maxImageCacheSize * 1024 * 1024L,
                                         )
                                     }",
                                     style = MaterialTheme.typography.bodyMedium,

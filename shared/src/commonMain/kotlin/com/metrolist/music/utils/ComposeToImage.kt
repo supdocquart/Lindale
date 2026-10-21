@@ -1,9 +1,9 @@
 package com.metrolist.music.utils
-
-import android.graphics.Bitmap
-import android.net.Uri
-import android.text.Layout
 import com.metrolist.music.PlatformContext
+
+import androidx.compose.ui.text.style.TextAlign
+import com.metrolist.music.platform.DesktopFiles
+import com.metrolist.music.platform.DesktopShare
 import com.metrolist.music.ui.component.LyricsBackgroundStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,7 +35,7 @@ object ComposeToImage {
         secondaryTextColor: Int = 0,
         lyricsAlignment: Any? = null,
         vararg args: Any?,
-    ): Bitmap = withContext(Dispatchers.IO) {
+    ): BufferedImage = withContext(Dispatchers.IO) {
         val w = width.takeIf { it in 200..4000 } ?: 1080
         val h = height.takeIf { it in 200..4000 } ?: 1920
         val cover = coverArtUrl?.let { url -> runCatching { ImageIO.read(java.net.URI(url).toURL()) }.getOrNull() }
@@ -102,8 +102,8 @@ object ComposeToImage {
         for (line in lines.take(maxLines)) {
             val lw = g.fontMetrics.stringWidth(line)
             val x = when (lyricsAlignment) {
-                Layout.Alignment.ALIGN_CENTER -> (w - lw) / 2
-                Layout.Alignment.ALIGN_OPPOSITE -> w - pad - lw
+                TextAlign.Center -> (w - lw) / 2
+                TextAlign.End, TextAlign.Right -> w - pad - lw
                 else -> pad
             }
             y += lineHeight
@@ -114,7 +114,7 @@ object ComposeToImage {
         g.color = fg2
         g.drawString("Metrolist", pad, h - pad)
         g.dispose()
-        Bitmap(img)
+        img
     }
 
     private fun ellipsize(g: java.awt.Graphics2D, text: String, max: Int): String {
@@ -148,34 +148,27 @@ object ComposeToImage {
         return ConvolveOp(Kernel(5, 5, k), ConvolveOp.EDGE_NO_OP, null).filter(small, null)
     }
 
-    fun saveBitmapAsFile(context: Any?, bitmap: Any?, fileName: String): Uri? {
-        val image = (bitmap as? Bitmap)?.image ?: return null
-        val dir = File(android.content.Context().cacheDir, "share").apply { mkdirs() }
-        val file = File(dir, if (fileName.endsWith(".png")) fileName else "$fileName.png")
-        return if (ImageIO.write(image, "png", file)) Uri.fromFile(file) else null
+    private val shareDir: File
+        get() = File(DesktopFiles.cacheDir, "share").apply { mkdirs() }
+
+    fun saveBitmapAsFile(context: Any?, bitmap: Any?, fileName: String): File? {
+        val image = bitmap as? BufferedImage ?: return null
+        val file = File(shareDir, if (fileName.endsWith(".png")) fileName else "$fileName.png")
+        return if (ImageIO.write(image, "png", file)) file else null
     }
 
-    suspend fun saveBitmap(context: Any?, bitmap: Any?, fileName: String): Uri? = withContext(Dispatchers.IO) {
-        val uri = saveBitmapAsFile(context, bitmap, fileName) ?: return@withContext null
-        val file = com.metrolist.music.platform.DesktopFiles.toFile(uri) ?: return@withContext null
-        val pictures = File(System.getProperty("user.home"), "Pictures").takeIf { it.isDirectory } ?: File(System.getProperty("user.home"))
+    /** Saves into Pictures\Metrolist and reports the path. */
+    suspend fun saveBitmap(context: Any?, bitmap: Any?, fileName: String): File? = withContext(Dispatchers.IO) {
+        val file = saveBitmapAsFile(context, bitmap, fileName) ?: return@withContext null
+        val home = File(System.getProperty("user.home"))
+        val pictures = File(home, "Pictures").takeIf { it.isDirectory } ?: home
         val target = File(File(pictures, "Metrolist").apply { mkdirs() }, file.name)
         file.copyTo(target, overwrite = true)
         ToastHost.post(target.absolutePath, Toast.LENGTH_LONG)
-        Uri.fromFile(target)
+        target
     }
 
     fun shareBitmap(context: Any?, bitmap: Any?, fileName: String) {
-        val uri = saveBitmapAsFile(context, bitmap, fileName) ?: return
-        android.content.Context().startActivity(
-            android.content.Intent(android.content.Intent.ACTION_SEND)
-                .setType("image/png")
-                .putExtra(android.content.Intent.EXTRA_STREAM, uri),
-        )
+        DesktopShare.shareFile(saveBitmapAsFile(context, bitmap, fileName))
     }
 }
-
-
-fun shareBitmap(context: PlatformContext, bitmap: Any, fileName: String) = ComposeToImage.shareBitmap(context, bitmap, fileName)
-suspend fun saveBitmap(context: PlatformContext, bitmap: Any, fileName: String): Any? = ComposeToImage.saveBitmap(context, bitmap, fileName)
-fun saveBitmapAsFile(context: PlatformContext, bitmap: Any, fileName: String): Any? = ComposeToImage.saveBitmapAsFile(context, bitmap, fileName)

@@ -4,14 +4,16 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.compose.material3.MaterialTheme
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
+import com.metrolist.music.platform.Uri
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -202,14 +203,7 @@ fun LocalPlaylistMenu(
                             } else {
                                 songs.joinToString("\n") { it.song.song.title }
                             }
-                        val sendIntent: Intent =
-                            Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, shareText)
-                                type = "text/plain"
-                            }
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        context.startActivity(shareIntent)
+                            DesktopShare.shareText(shareText)
                         onDismiss()
                     },
                 ),
@@ -593,13 +587,7 @@ private fun shareExportFile(
     uri: Uri,
     mimeType: String,
 ) {
-    val shareIntent =
-        Intent(Intent.ACTION_SEND).apply {
-            type = mimeType
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    context.startActivity(Intent.createChooser(shareIntent, context.getString(Res.string.export_playlist)))
+    DesktopShare.shareFile(uri)
 }
 
 @Composable
@@ -616,7 +604,7 @@ fun ExportDialog(
         title = { Text(stringResource(Res.string.export_playlist)) },
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(text = stringResource(android.Res.string.cancel))
+                Text(text = stringResource(Res.string.cancel))
             }
             TextButton(onClick = { onSave(selected) }) {
                 Text(text = stringResource(Res.string.export_option_save))

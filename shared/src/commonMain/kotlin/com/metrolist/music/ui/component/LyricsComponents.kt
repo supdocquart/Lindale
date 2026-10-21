@@ -4,17 +4,18 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
+
+import com.metrolist.music.platform.DesktopShare
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.text.Layout
 import com.metrolist.music.utils.Toast
 import timber.log.Timber
 import androidx.compose.animation.AnimatedVisibility
@@ -52,12 +53,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,17 +65,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import com.metrolist.music.ui.theme.Palette
 import coil3.ImageLoader
 import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import coil3.toBitmap
 import com.metrolist.music.lyrics.LyricsTranslationHelper
 import com.metrolist.music.models.MediaMetadata
@@ -248,12 +243,7 @@ internal fun LyricsShareDialog(
                 
                 Row(
                     modifier = Modifier.fillMaxWidth().clickable {
-                        val intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, "\"$txt\"\n\n$title - $arts\nhttps://music.youtube.com/watch?v=$songId")
-                        }
-                        context.startActivity(Intent.createChooser(intent, context.getString(Res.string.share_lyrics)))
+                        DesktopShare.shareText("\"$txt\"\n\n$title - $arts\nhttps://music.youtube.com/watch?v=$songId")
                         onDismiss()
                     }.padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -323,14 +313,14 @@ internal fun LyricsColorPickerDialog(
         if (thumbnailUrl != null) {
             withContext(Dispatchers.IO) {
                 try {
-                    val res = ImageLoader(coil3.PlatformContext.INSTANCE).execute(ImageRequest.Builder(coil3.PlatformContext.INSTANCE).data(thumbnailUrl).allowHardware(false).build())
+                    val res = ImageLoader(coil3.PlatformContext.INSTANCE).execute(ImageRequest.Builder(coil3.PlatformContext.INSTANCE).data(thumbnailUrl).build())
                     val bmp = res.image?.toBitmap()
                     if (bmp != null) {
                         val swatches = Palette.from(bmp).generate().swatches.sortedByDescending { it.population }
                         pal.clear()
                         pal.addAll(swatches.map { Color(it.rgb) }.filter { 
                             val hsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(it.toArgb(), hsv)
+                            com.metrolist.music.utils.colorToHSV(it.toArgb(), hsv)
                             hsv[1] > 0.2f
                         }.take(5))
                     }

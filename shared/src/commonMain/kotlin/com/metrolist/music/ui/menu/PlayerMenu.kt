@@ -4,19 +4,17 @@
  */
 
 package com.metrolist.music.ui.menu
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import android.content.Context
-import android.content.Intent
-import android.media.audiofx.AudioEffect
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,14 +54,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -163,10 +159,6 @@ fun PlayerMenu(
     val isListenTogetherGuest = listenTogetherRoleState?.value == com.metrolist.music.listentogether.RoomRole.GUEST
     val pendingSuggestions by listenTogetherManager?.pendingSuggestions?.collectAsStateWithLifecycle(initialValue = emptyList())
         ?: remember { mutableStateOf(emptyList()) }
-
-    val systemEqLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { }
 
     AddToPlaylistDialog(
         isVisible = showChoosePlaylistDialog,
@@ -694,33 +686,6 @@ fun PlayerMenu(
                             )
                             add(
                                 Material3MenuItemData(
-                                    title = { Text(text = stringResource(Res.string.system_equalizer)) },
-                                    description = { Text(text = stringResource(Res.string.system_equalizer_desc)) },
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.graphic_eq),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp),
-                                        )
-                                    },
-                                    onClick = {
-                                        val audioSessionId = playerConnection.player.audioSessionId
-                                        if (audioSessionId != C.AUDIO_SESSION_ID_UNSET && audioSessionId > 0) {
-                                            val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                                                putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                                                putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-                                                putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                                            }
-                                            if (intent.resolveActivity(context.packageManager) != null) {
-                                                systemEqLauncher.launch(intent)
-                                            }
-                                        }
-                                        onDismiss()
-                                    },
-                                ),
-                            )
-                            add(
-                                Material3MenuItemData(
                                     title = { Text(text = stringResource(Res.string.advanced)) },
                                     description = { Text(text = stringResource(Res.string.advanced_desc)) },
                                     icon = {
@@ -780,7 +745,7 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
             TextButton(
                 onClick = onDismiss,
             ) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
         text = {
@@ -845,7 +810,7 @@ fun SpeedDialog(onDismiss: () -> Unit) {
             TextButton(
                 onClick = onDismiss,
             ) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
         text = {
@@ -969,7 +934,7 @@ fun ListenTogetherDialog(
                                 containerColor = MaterialTheme.colorScheme.primary,
                             ),
                     ) {
-                        Text(stringResource(android.Res.string.ok))
+                        Text(stringResource(Res.string.ok))
                     }
                 }
             }

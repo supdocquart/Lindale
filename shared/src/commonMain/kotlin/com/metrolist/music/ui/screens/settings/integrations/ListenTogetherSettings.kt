@@ -4,22 +4,30 @@
  */
 
 package com.metrolist.music.ui.screens.settings.integrations
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.painter.Painter
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 import com.metrolist.music.utils.Toast
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -35,20 +43,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -59,17 +62,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -202,7 +202,7 @@ fun ListenTogetherSettings(navController: NavController) {
                     username = tempUsername.trim()
                     showUsernameDialog = false
                 }) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
         ) {
@@ -235,7 +235,7 @@ fun ListenTogetherSettings(navController: NavController) {
             title = { Text(stringResource(Res.string.listen_together_create_room)) },
             buttons = {
                 TextButton(onClick = { showCreateRoomDialog = false }) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
@@ -286,7 +286,7 @@ fun ListenTogetherSettings(navController: NavController) {
             title = { Text(stringResource(Res.string.listen_together_join_room)) },
             buttons = {
                 TextButton(onClick = { showJoinRoomDialog = false }) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
@@ -576,7 +576,7 @@ fun LogsDialog(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
     ) {
@@ -627,7 +627,7 @@ private fun ServerChooserDialog(
         title = { Text(stringResource(Res.string.listen_together_choose_server)) },
         buttons = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.cancel))
+                Text(stringResource(Res.string.cancel))
             }
         },
     ) {
@@ -800,7 +800,7 @@ fun BlockedUsersDialog(
         title = { Text(stringResource(Res.string.listen_together_blocked_users)) },
         buttons = {
             Button(onClick = onDismiss) {
-                Text(stringResource(android.Res.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
     ) {

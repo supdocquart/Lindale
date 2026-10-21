@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -11,7 +12,6 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.metrolist.music.constants.ExperimentalLyricsKey

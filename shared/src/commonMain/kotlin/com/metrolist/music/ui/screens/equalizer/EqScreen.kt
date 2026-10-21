@@ -1,14 +1,15 @@
 package com.metrolist.music.ui.screens.equalizer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+import com.metrolist.music.platform.rememberOpenFileLauncher
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.annotation.SuppressLint
 import android.provider.OpenableColumns
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.Box
@@ -36,10 +37,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,7 +54,6 @@ import timber.log.Timber
 /**
  * EQ Screen - Manage and select EQ profiles
  */
-@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun EqScreen(
     viewModel: EQViewModel = hiltViewModel(),
@@ -68,9 +66,7 @@ fun EqScreen(
     var showAddMenu by remember { mutableStateOf(false) }
 
     // File picker for custom EQ import
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
+    val filePickerLauncher = rememberOpenFileLauncher { uri ->
         if (uri != null) {
             try {
                 val contentResolver = context.contentResolver
@@ -128,7 +124,7 @@ fun EqScreen(
         },
         onImportClicked = {
             showAddMenu = false
-            filePickerLauncher.launch("text/plain")
+            filePickerLauncher.launch(arrayOf("text/plain"))
         },
         onDeleteProfile = { viewModel.deleteProfile(it) }
     )
@@ -145,7 +141,7 @@ fun EqScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showError = null }) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             }
         )
@@ -163,7 +159,7 @@ fun EqScreen(
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.clearError() }) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             }
         )
@@ -397,12 +393,12 @@ private fun EQProfileItem(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text(stringResource(android.Res.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(android.Res.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
             }
         )
