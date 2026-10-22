@@ -63,6 +63,8 @@ fun AppNavigationRail(
     onHomeLongHold: (() -> Unit)? = null,
     onAccountClick: (() -> Unit)? = null,
     onSettingsClick: (() -> Unit)? = null,
+    onHistoryClick: (() -> Unit)? = null,
+    onStatsClick: (() -> Unit)? = null,
 ) {
     val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
     val haptics = LocalHapticFeedback.current
@@ -138,51 +140,41 @@ fun AppNavigationRail(
             )
         }
 
-        if (onSettingsClick != null) {
-            val isSettingsSelected = currentRoute == "settings" || currentRoute?.startsWith("settings/") == true
-            NavigationRailItem(
-                selected = isSettingsSelected,
-                onClick = onSettingsClick,
-                icon = {
-                    Icon(
-                        painter = painterResource(Res.drawable.settings),
-                        contentDescription = stringResource(Res.string.settings)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(Res.string.settings),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                },
-                alwaysShowLabel = true,
-            )
+        if (onHistoryClick != null) {
+            RailAction(currentRoute == "history", Res.drawable.history, Res.string.history, onHistoryClick)
+        }
+        if (onStatsClick != null) {
+            RailAction(currentRoute == "stats", Res.drawable.stats, Res.string.stats, onStatsClick)
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
+        if (onSettingsClick != null) {
+            val isSettingsSelected = currentRoute == "settings" || currentRoute?.startsWith("settings/") == true
+            RailAction(isSettingsSelected, Res.drawable.settings, Res.string.settings, onSettingsClick)
+        }
         if (onAccountClick != null) {
-            NavigationRailItem(
-                selected = false,
-                onClick = onAccountClick,
-                icon = {
-                    Icon(
-                        painter = painterResource(Res.drawable.account),
-                        contentDescription = stringResource(Res.string.account)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(Res.string.account),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                },
-                alwaysShowLabel = true,
-            )
+            RailAction(false, Res.drawable.account, Res.string.account, onAccountClick)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
     }
+}
+
+@Composable
+private fun RailAction(
+    selected: Boolean,
+    icon: org.jetbrains.compose.resources.DrawableResource,
+    label: org.jetbrains.compose.resources.StringResource,
+    onClick: () -> Unit,
+) {
+    NavigationRailItem(
+        selected = selected,
+        onClick = onClick,
+        icon = { Icon(painter = painterResource(icon), contentDescription = stringResource(label)) },
+        label = { Text(text = stringResource(label), style = MaterialTheme.typography.labelSmall) },
+        alwaysShowLabel = true,
+    )
 }
 
 @Composable

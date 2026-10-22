@@ -1,4 +1,10 @@
 package com.metrolist.music.ui.component
+
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.layout.padding
+import metrolist.shared.generated.resources.Res
+import metrolist.shared.generated.resources.shuffle
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -114,6 +120,14 @@ fun RandomizeGridItem(
                     .size(dotSize)
                     .clip(CircleShape)
                     .background(dotColor),
+        )
+
+        Text(
+            text = stringResource(Res.string.shuffle),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = dotColor,
+            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),
         )
 
         // Loading Indicator overlay

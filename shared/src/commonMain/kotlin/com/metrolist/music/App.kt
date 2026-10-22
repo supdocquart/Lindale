@@ -1,5 +1,7 @@
 package com.metrolist.music
 
+import androidx.compose.foundation.layout.fillMaxWidth
+
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.focus.FocusRequester
@@ -122,7 +124,7 @@ fun MetrolistApp(
     }
     val onSearchSubmit: (String) -> Unit = { query ->
         if (query.isNotBlank()) {
-            searchText = TextFieldValue(query, TextRange(query.length))
+            searchText = TextFieldValue()
             closeSearch()
             submitSearch(query)
         }
@@ -267,6 +269,14 @@ fun MetrolistApp(
                                         launchSingleTop = true
                                     }
                                 },
+                                onHistoryClick = {
+                                    if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+                                    navController.navigate("history") { launchSingleTop = true }
+                                },
+                                onStatsClick = {
+                                    if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+                                    navController.navigate("stats") { launchSingleTop = true }
+                                },
                             )
                         }
 
@@ -301,46 +311,22 @@ fun MetrolistApp(
                                             onValueChange = { searchText = it },
                                             onSubmit = onSearchSubmit,
                                             pureBlack = pureBlack,
-                                            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+                                            modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp, start = 16.dp, end = 16.dp),
                                         )
                                     }
                                 }
                                 TopAppBar(
                                     title = {
-                                        DesktopSearchField(
-                                            value = searchText,
-                                            onValueChange = {
-                                                searchText = it
-                                                searchOpen = true
-                                            },
-                                            onSubmit = onSearchSubmit,
-                                            onFocused = { searchOpen = true },
-                                            focusRequester = searchFocusRequester,
-                                        )
-                                    },
-                                    actions = {
-                                        IconButton(onClick = { navController.navigate("history") }) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.history),
-                                                contentDescription = stringResource(Res.string.history),
-                                            )
-                                        }
-                                        IconButton(onClick = { navController.navigate("stats") }) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.stats),
-                                                contentDescription = stringResource(Res.string.stats),
-                                            )
-                                        }
-                                        IconButton(onClick = { showAccountDialog = true }) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.account),
-                                                contentDescription = stringResource(Res.string.account),
-                                            )
-                                        }
-                                        IconButton(onClick = { navController.navigate("settings") }) {
-                                            Icon(
-                                                painter = painterResource(Res.drawable.settings),
-                                                contentDescription = stringResource(Res.string.settings),
+                                        Box(Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.Center) {
+                                            DesktopSearchField(
+                                                value = searchText,
+                                                onValueChange = {
+                                                    searchText = it
+                                                    searchOpen = true
+                                                },
+                                                onSubmit = onSearchSubmit,
+                                                onFocused = { searchOpen = true },
+                                                focusRequester = searchFocusRequester,
                                             )
                                         }
                                     },

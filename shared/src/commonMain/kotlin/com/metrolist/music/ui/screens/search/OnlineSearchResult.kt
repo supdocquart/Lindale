@@ -568,11 +568,7 @@ fun OnlineSearchResult(
                     pureBlack = pureBlack,
                 )
             }
-            HideOnScrollFAB(
-                lazyListState = lazyListState,
-                icon = Res.drawable.mic,
-                onClick = { navController.navigate("recognition") },
-            )
+            // Song recognition is not available on desktop.
         }
     }
 }

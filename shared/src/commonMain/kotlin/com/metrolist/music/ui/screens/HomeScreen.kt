@@ -4,6 +4,10 @@
  */
 
 package com.metrolist.music.ui.screens
+
+import androidx.compose.ui.unit.Dp
+
+import com.metrolist.music.ui.component.PagerArrows
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.Font
@@ -210,6 +214,7 @@ fun CommunityPlaylistCard(
     onClick: () -> Unit,
     onSongClick: (SongItem) -> Unit,
     modifier: Modifier = Modifier,
+    cardWidth: Dp = 320.dp,
 ) {
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current
@@ -232,7 +237,7 @@ fun CommunityPlaylistCard(
     Card(
         modifier =
             modifier
-                .width(320.dp)
+                .width(cardWidth)
                 .height(420.dp),
         colors =
             CardDefaults.cardColors(
@@ -394,7 +399,7 @@ fun CommunityPlaylistCard(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 IconButton(
                     onClick = {
@@ -406,14 +411,14 @@ fun CommunityPlaylistCard(
                     },
                     modifier =
                         Modifier
-                            .size(48.dp)
+                            .size(40.dp)
                             .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_widget_play),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(20.dp),
                     )
                 }
 
@@ -427,14 +432,14 @@ fun CommunityPlaylistCard(
                     },
                     modifier =
                         Modifier
-                            .size(48.dp)
+                            .size(40.dp)
                             .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f), CircleShape),
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.radio),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(20.dp),
                     )
                 }
 
@@ -487,14 +492,14 @@ fun CommunityPlaylistCard(
                     },
                     modifier =
                         Modifier
-                            .size(48.dp)
+                            .size(40.dp)
                             .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f), CircleShape),
                 ) {
                     Icon(
                         painter = painterResource(if (isBookmarked) Res.drawable.library_add_check else Res.drawable.library_add),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
@@ -1463,6 +1468,7 @@ fun HomeScreen(
                                             Modifier
                                                 .fillMaxWidth(),
                                     ) {
+                                        Box(Modifier.fillMaxWidth()) {
                                         HorizontalPager(
                                             state = pagerState,
                                             contentPadding = PaddingValues(horizontal = 16.dp),
@@ -1725,32 +1731,7 @@ fun HomeScreen(
                                             }
                                         }
 
-                                        if (pagerState.pageCount > 1) {
-                                            Row(
-                                                modifier =
-                                                    Modifier
-                                                        .height(24.dp)
-                                                        .fillMaxWidth(),
-                                                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-                                                verticalAlignment = Alignment.CenterVertically,
-                                            ) {
-                                                repeat(pagerState.pageCount) { iteration ->
-                                                    val color =
-                                                        if (pagerState.currentPage == iteration) {
-                                                            MaterialTheme.colorScheme.primary
-                                                        } else {
-                                                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                                                        }
-                                                    Box(
-                                                        modifier =
-                                                            Modifier
-                                                                .padding(4.dp)
-                                                                .clip(CircleShape)
-                                                                .background(color)
-                                                                .size(8.dp),
-                                                    )
-                                                }
-                                            }
+                                        PagerArrows(pagerState, Modifier.matchParentSize())
                                         }
                                     }
                                 }
@@ -1875,6 +1856,10 @@ fun HomeScreen(
                                 }
 
                                 item(key = "community_playlists_content") {
+                                    // Fill the row: as many ~300dp cards as fit, stretched to the full width.
+                                    val rowWidth = maxWidth - 32.dp
+                                    val cardsPerRow = ((rowWidth + 16.dp) / (300.dp + 16.dp)).toInt().coerceAtLeast(1)
+                                    val communityCardWidth = (rowWidth - 16.dp * (cardsPerRow - 1)) / cardsPerRow
                                     LazyRow(
                                         contentPadding = PaddingValues(horizontal = 16.dp),
                                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -1882,6 +1867,7 @@ fun HomeScreen(
                                         items(playlists) { item ->
                                             CommunityPlaylistCard(
                                                 item = item,
+                                                cardWidth = communityCardWidth,
                                                 onClick = {
                                                     navController.navigate("online_playlist/${item.playlist.id.removePrefix("VL")}")
                                                 },
@@ -2599,9 +2585,6 @@ fun HomeScreen(
                             }
                         }
                     }
-                },
-                onRecognitionClick = {
-                    navController.navigate("recognition")
                 },
             )
         }

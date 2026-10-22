@@ -53,7 +53,9 @@ fun SpeedDialGridItem(
             isActive = isActive,
             isPlaying = isPlaying,
             shape = if (item is ArtistItem) CircleShape else RoundedCornerShape(ThumbnailCornerRadius),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            // Video thumbnails are 16:9 with baked-in bars; fill the square tile instead.
+            forceCrop = true,
         )
 
         // Gradient Overlay for Text Readability and Icon Contrast
@@ -89,17 +91,7 @@ fun SpeedDialGridItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
-            
-            // Navigation Chevron for browsable items (Album, Playlist, Artist)
-            if (item !is SongItem) {
-                Icon(
-                    painter = painterResource(Res.drawable.navigate_next),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
         }
-    }
         // Pinned Icon
         if (isPinned) {
             Icon(

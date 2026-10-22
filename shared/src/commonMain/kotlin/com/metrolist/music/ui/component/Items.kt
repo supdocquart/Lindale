@@ -6,6 +6,10 @@
  */
 
 package com.metrolist.music.ui.component
+
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
@@ -634,9 +638,7 @@ fun SongGridItem(
             modifier = Modifier.size(gridHeight)
         )
         if (!isActive) {
-            OverlayPlayButton(
-                visible = true
-            )
+            HoverPlayOverlay()
         }
     },
     fillMaxWidth = fillMaxWidth,
@@ -1311,9 +1313,7 @@ fun YouTubeGridItem(
         )
 
         if (item is SongItem && !isActive) {
-            OverlayPlayButton(
-                visible = true
-            )
+            HoverPlayOverlay()
         }
 
         AlbumPlayButton(
@@ -1476,9 +1476,11 @@ fun ItemThumbnail(
     modifier: Modifier = Modifier,
     albumIndex: Int? = null,
     isSelected: Boolean = false,
-    thumbnailRatio: Float = 1f
+    thumbnailRatio: Float = 1f,
+    forceCrop: Boolean = false,
 ) {
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
+    val crop = cropAlbumArt || forceCrop
     
     Box(
         contentAlignment = Alignment.Center,
@@ -1496,9 +1498,8 @@ fun ItemThumbnail(
                     .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
                     .build(),
                 contentDescription = null,
-                contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth()
+                contentScale = if (crop) ContentScale.Crop else ContentScale.Fit,
+                modifier = (if (crop) Modifier.fillMaxSize() else Modifier.fillMaxWidth())
                     .clip(shape)
             )
         }
@@ -1723,6 +1724,16 @@ fun PlaylistThumbnail(
                 )
             }
         }
+    }
+}
+
+/** Play badge that appears while the mouse is over the thumbnail. */
+@Composable
+fun BoxScope.HoverPlayOverlay() {
+    val hoverSource = remember { MutableInteractionSource() }
+    val hovered by hoverSource.collectIsHoveredAsState()
+    Box(Modifier.matchParentSize().hoverable(hoverSource)) {
+        OverlayPlayButton(visible = hovered)
     }
 }
 
