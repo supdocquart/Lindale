@@ -1,6 +1,5 @@
 package com.metrolist.music.platform
 
-import android.content.Context
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.lastfm.LastFM
@@ -64,7 +63,7 @@ fun initDesktopPlatform() {
         // Ignored if already initialized
     }
 
-    val context = Context()
+    val context = AppContext()
     runCatching { ArtistNameAliases.initialize() }
     InnerTubeXPlayer.initialize(context)
 
@@ -86,7 +85,7 @@ fun initDesktopPlatform() {
     }
 }
 
-private suspend fun initializeDesktopSettings(context: Context) {
+private suspend fun initializeDesktopSettings(context: AppContext) {
     val settings = context.dataStore.data.first()
     val locale = Locale.getDefault()
     val languageTag = locale.language
@@ -128,7 +127,7 @@ private suspend fun initializeDesktopSettings(context: Context) {
     YouTube.useLoginForBrowse = settings[UseLoginForBrowse] ?: true
 }
 
-private fun observeDesktopSettingsChanges(context: Context) {
+private fun observeDesktopSettingsChanges(context: AppContext) {
     platformScope.launch(Dispatchers.IO) {
         context.dataStore.data
             .map { it[VisitorDataKey] }

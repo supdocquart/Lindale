@@ -1,9 +1,9 @@
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.constants.AccountChannelHandleKey
 import com.metrolist.music.constants.AccountEmailKey
 import com.metrolist.music.constants.AccountNameKey
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class AccountSettingsViewModel(val context: PlatformContext) : ViewModel() {
+class AccountSettingsViewModel(val context: AppContext) : ViewModel() {
     val isLoggedIn = MutableStateFlow(false)
     val loginProgress = MutableStateFlow(false)
 

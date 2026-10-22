@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.playlist
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
 import com.metrolist.music.ui.component.DownloadCenter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -19,7 +21,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.Context
 import com.metrolist.music.platform.Uri
 import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -82,7 +83,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -158,7 +158,7 @@ fun LocalPlaylistScreen(
     navController: NavController,
     viewModel: LocalPlaylistViewModel = metrolistViewModel(),
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current
@@ -870,7 +870,7 @@ fun LocalPlaylistHeader(
 ) {
     val navController = LocalNavController.current
     val playerConnection = LocalPlayerConnection.current ?: return
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val menuState = LocalMenuState.current
     val syncUtils = LocalSyncUtils.current
@@ -1399,11 +1399,11 @@ fun LocalPlaylistHeader(
 }
 
 fun uriToByteArray(
-    context: Context,
+    context: AppContext,
     uri: Uri,
 ): ByteArray? =
     try {
-        context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+        context.openInputStream(uri)?.use { it.readBytes() }
     } catch (_: SecurityException) {
         null
     }

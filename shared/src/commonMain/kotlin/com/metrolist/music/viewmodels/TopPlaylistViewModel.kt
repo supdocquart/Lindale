@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.stateIn
 
 class TopPlaylistViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {

@@ -1,11 +1,11 @@
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.createSavedStateHandle
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.lyrics.LyricsHelper
 import com.metrolist.music.ui.component.DownloadUtil
@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 
 class MetrolistViewModelFactory(
     private val database: MusicDatabase,
-    private val context: PlatformContext = PlatformContext(),
+    private val context: AppContext = AppContext(),
     private val syncUtils: SyncUtils = SyncUtils(context, database),
     private val downloadUtil: DownloadUtil = DownloadUtil(),
 ) : ViewModelProvider.Factory {

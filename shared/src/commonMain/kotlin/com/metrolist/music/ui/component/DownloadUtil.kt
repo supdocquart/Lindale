@@ -1,4 +1,5 @@
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.AppContext
 
 import com.metrolist.music.playback.Download
 import com.metrolist.innertube.models.SongItem
@@ -72,7 +73,7 @@ object DownloadCenter {
     private val perId = ConcurrentHashMap<String, MutableStateFlow<Download?>>()
 
     val directory: File by lazy {
-        File(android.content.Context().filesDir, "downloads").apply { mkdirs() }
+        File(AppContext().filesDir, "downloads").apply { mkdirs() }
     }
 
     private val _downloads = MutableStateFlow(scanExisting())

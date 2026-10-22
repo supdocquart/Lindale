@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -37,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -159,7 +159,7 @@ fun LyricsImageCard(
     secondaryTextColor: Color? = null,
     textAlign: TextAlign = TextAlign.Center
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val density = LocalDensity.current
 
     val cardCornerRadius = 20.dp

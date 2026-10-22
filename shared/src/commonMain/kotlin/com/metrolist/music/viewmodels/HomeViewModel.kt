@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
@@ -95,7 +95,7 @@ internal fun buildSpeedDialItems(
         .take(27)
 
 class HomeViewModel constructor(
-    val context: PlatformContext,
+    val context: AppContext,
     val database: MusicDatabase,
     val syncUtils: SyncUtils,
     val wrappedManager: WrappedManager,

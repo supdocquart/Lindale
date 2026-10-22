@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 /**
- * Desktop counterpart of the Android OAuth redirect activity.
+ * Loopback HTTP receiver for the Discord OAuth redirect.
  *
  * Discord redirects to metrolistdiscord://oauth2/callback. On Windows that scheme is registered
  * under HKCU to a small PowerShell script which forwards the URL to a loopback server started
@@ -21,7 +21,7 @@ object DiscordDesktopOAuth {
     private const val SCHEME = "metrolistdiscord"
 
     fun install() {
-        DiscordOAuthActivity.platformReceiver = { start() }
+        DiscordOAuthCallback.platformReceiver = { start() }
     }
 
     private fun start(): AutoCloseable {
@@ -39,9 +39,9 @@ object DiscordDesktopOAuth {
                     code != null, state != null, error,
                 )
                 if (code != null && state != null) {
-                    DiscordOAuthActivity.complete(code, state)
+                    DiscordOAuthCallback.complete(code, state)
                 } else {
-                    DiscordOAuthActivity.fail(error ?: "missing code")
+                    DiscordOAuthCallback.fail(error ?: "missing code")
                 }
                 "ok"
             }.getOrElse {

@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -12,7 +13,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import kotlinx.datetime.toLocalDateTime
 
-import com.metrolist.music.PlatformContext
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -60,7 +60,7 @@ import com.metrolist.music.extensions.filterVideoSongs as filterVideoSongsLocal
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtistViewModel constructor(
-    private val context: PlatformContext,
+    private val context: AppContext,
     private val database: MusicDatabase,
     private val syncUtils: SyncUtils,
     savedStateHandle: SavedStateHandle,

@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.playlist
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -60,7 +62,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -104,7 +105,7 @@ fun CachePlaylistScreen(
     navController: NavController,
     viewModel: CachePlaylistViewModel = metrolistViewModel(),
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val menuState = LocalMenuState.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val haptic = LocalHapticFeedback.current
@@ -470,7 +471,7 @@ fun CachePlaylistScreen(
 @Composable
 private fun CachePlaylistHeader(
     songs: List<Song>,
-    context: android.content.Context,
+    context: AppContext,
     menuState: com.metrolist.music.ui.component.MenuState,
     modifier: Modifier = Modifier
 ) {

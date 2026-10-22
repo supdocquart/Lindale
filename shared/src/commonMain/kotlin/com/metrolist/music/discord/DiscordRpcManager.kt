@@ -1,11 +1,10 @@
 package com.metrolist.music.discord
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.app.Activity
-import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -136,7 +135,7 @@ object DiscordRpcManager {
         }
     }
 
-    fun init(context: Context) {
+    fun init(context: AppContext) {
         DiscordTokenStore.init(context)
         if (initialized && scope.isActive) {
             Timber.tag(TAG).i("init: already initialized and active, skipping")
@@ -163,7 +162,7 @@ object DiscordRpcManager {
         }
     }
 
-    fun authorize(activity: Activity, onComplete: (Boolean) -> Unit) {
+    fun authorize(onComplete: (Boolean) -> Unit) {
         if (authorizeInProgress) {
             Timber.tag(TAG).w("authorize: already in progress, ignoring double-tap")
             scope.launch(Dispatchers.Main) { onComplete(false) }
@@ -194,7 +193,7 @@ object DiscordRpcManager {
 
         scope.launch {
             try {
-                val result = auth.authorize(activity)
+                val result = auth.authorize()
                 DiscordTokenStore.storeFull(
                     result.accessToken,
                     result.refreshToken,

@@ -1,4 +1,5 @@
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +25,7 @@ data class LyricsSearchResult(
 class LyricsMenuViewModel(
     private val lyricsHelper: LyricsHelper? = null,
     private val database: MusicDatabase? = null,
-    private val context: android.content.Context = android.content.Context(),
+    private val context: AppContext = AppContext(),
 ) : ViewModel() {
     val isNetworkAvailable: StateFlow<Boolean> = MutableStateFlow(true)
 

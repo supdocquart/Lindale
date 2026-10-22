@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -13,10 +15,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -56,8 +54,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,7 +97,7 @@ fun LyricsMenu(
     onShowOffsetDialog: () -> Unit = {},
     viewModel: LyricsMenuViewModel = metrolistViewModel(),
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     
     val openRouterApiKey by rememberPreference(OpenRouterApiKey, "")
@@ -371,8 +367,7 @@ fun LyricsMenu(
         lyricsOffset = songProvider()?.lyricsOffset ?: 0
     }
 
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val isPortrait = !DesktopLayout.landscape
 
     LazyColumn(
         contentPadding = PaddingValues(
@@ -449,9 +444,7 @@ fun LyricsMenu(
                                             lyrics
                                         }
 
-                                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip = ClipData.newPlainText("Lyrics", plainLyrics)
-                                    clipboard.setPrimaryClip(clip)
+                                    DesktopShare.copyToClipboard(plainLyrics, notify = false)
                                     Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                                 }
                             },

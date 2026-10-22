@@ -1,4 +1,5 @@
 package com.metrolist.music
+import com.metrolist.music.platform.AppContext
 
 import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.DisposableEffect
@@ -38,7 +39,7 @@ fun MetrolistApp(
     database: MusicDatabase,
     playerConnection: PlayerConnection = remember { object : PlayerConnection {} },
     downloadUtil: DownloadUtil = remember { DownloadUtil() },
-    syncUtils: SyncUtils = remember(database) { SyncUtils(android.content.Context(), database) },
+    syncUtils: SyncUtils = remember(database) { SyncUtils(AppContext(), database) },
 ) {
     val navController = rememberNavController()
     DisposableEffect(navController) {
@@ -228,7 +229,6 @@ fun MetrolistApp(
                                     navController = navController,
                                     scrollBehavior = topAppBarScrollBehavior,
                                     latestVersionName = "1.0.0-desktop",
-                                    activity = android.app.Activity(),
                                     snackbarHostState = snackbarHostState,
                                 )
                             }

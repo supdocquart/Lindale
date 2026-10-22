@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.lyrics
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.betterlyrics.BetterLyrics
 import com.metrolist.music.constants.EnableBetterLyricsKey
 import com.metrolist.music.utils.dataStore
@@ -18,10 +18,10 @@ import com.metrolist.music.utils.get
 object BetterLyricsProvider : LyricsProvider {
     override val name = "BetterLyrics"
 
-    override fun isEnabled(context: PlatformContext): Boolean = context.dataStore[EnableBetterLyricsKey] ?: true
+    override fun isEnabled(context: AppContext): Boolean = context.dataStore[EnableBetterLyricsKey] ?: true
 
     override suspend fun getLyrics(
-        context: PlatformContext,
+        context: AppContext,
         id: String,
         title: String,
         artist: String,

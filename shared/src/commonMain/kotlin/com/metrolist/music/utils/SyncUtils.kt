@@ -1,4 +1,5 @@
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
 
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
@@ -6,7 +7,6 @@ import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.PlaylistItem
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.YTItem
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.AlbumEntity
 import com.metrolist.music.db.entities.ArtistEntity
@@ -26,7 +26,7 @@ import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
 
 class SyncUtils(
-    val context: PlatformContext,
+    val context: AppContext,
     val database: MusicDatabase
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)

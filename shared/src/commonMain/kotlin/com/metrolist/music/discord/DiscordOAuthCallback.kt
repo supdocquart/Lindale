@@ -6,7 +6,7 @@ import kotlinx.coroutines.withTimeout
 
 data class AuthCodeResult(val code: String, val state: String)
 
-object DiscordOAuthActivity {
+object DiscordOAuthCallback {
     @Volatile
     private var deferred: CompletableDeferred<AuthCodeResult>? = null
 

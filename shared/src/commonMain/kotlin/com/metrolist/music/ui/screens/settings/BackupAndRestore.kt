@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -48,7 +49,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.viewmodels.metrolistViewModel
 import androidx.navigation.NavController
@@ -109,7 +109,7 @@ fun BackupAndRestore(
     var isLoadingAccountInfo by remember { mutableStateOf(false) }
     var accountCheckFailed by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val backupLauncher =

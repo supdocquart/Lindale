@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.LocalAppContext
 import com.metrolist.music.ui.component.DownloadCenter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -33,7 +34,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.playback.Download
 import com.metrolist.innertube.YouTube
@@ -57,7 +57,7 @@ fun YouTubeSelectionSongMenu(
     onDismiss: () -> Unit,
     clearAction: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val downloadUtil = LocalDownloadUtil.current
     val playerConnection = LocalPlayerConnection.current ?: return

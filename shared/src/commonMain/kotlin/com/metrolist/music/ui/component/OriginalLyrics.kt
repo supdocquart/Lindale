@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -93,7 +94,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.SpanStyle
@@ -198,7 +198,7 @@ fun OriginalLyrics(
     val database = LocalDatabase.current
     val menuState = LocalMenuState.current
     val density = LocalDensity.current
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val configuration = LocalWindowInfo.current
     val listenTogetherManager = LocalListenTogetherManager.current
     val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
@@ -2132,8 +2132,8 @@ fun OriginalLyrics(
                                                 songTitle = songTitle,
                                                 artistName = artists,
                                                 lyrics = lyricsText,
-                                                width = (screenWidth * density.density).toInt(),
-                                                height = (screenHeight * density.density).toInt(),
+                                                width = screenWidth,
+                                                height = screenHeight,
                                                 backgroundColor = previewBackgroundColor.toArgb(),
                                                 backgroundStyle = previewBackgroundStyle,
                                                 textColor = previewTextColor.toArgb(),

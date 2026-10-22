@@ -1,6 +1,6 @@
 package com.metrolist.music.playback
+import com.metrolist.music.platform.AppContext
 
-import android.content.Context
 import com.metrolist.lastfm.LastFM
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
 import com.metrolist.music.constants.LastFMUseNowPlaying
@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-/** Desktop replacement for the Last.fm wiring in the Android MusicService. */
+/** Scrobbles played songs and now-playing updates to Last.fm. */
 class DesktopScrobbler(
     private val connection: PlayerConnection,
-    private val context: Context = Context(),
+    private val context: AppContext = AppContext(),
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 

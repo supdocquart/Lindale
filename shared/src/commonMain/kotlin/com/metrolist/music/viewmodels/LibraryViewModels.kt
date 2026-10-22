@@ -6,12 +6,12 @@
 @file:OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -78,7 +78,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class LibrarySongsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     downloadUtil: DownloadUtil,
     private val syncUtils: SyncUtils,
@@ -131,7 +131,7 @@ constructor(
 
 class LibraryArtistsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
@@ -197,7 +197,7 @@ constructor(
 
 class LibraryAlbumsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
@@ -261,7 +261,7 @@ constructor(
 
 class LibraryPlaylistsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
@@ -300,7 +300,7 @@ constructor(
 
 class ArtistSongsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -328,7 +328,7 @@ constructor(
 
 class LibraryMixViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {
@@ -438,7 +438,7 @@ constructor(
 
 class LibraryPodcastsViewModel
 constructor(
-    context: PlatformContext,
+    context: AppContext,
     private val database: MusicDatabase,
     private val syncUtils: SyncUtils,
 ) : ViewModel() {

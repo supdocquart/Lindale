@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import com.metrolist.music.ui.component.DownloadCenter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -14,7 +16,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import com.metrolist.music.extensions.nowLocalDateTime
 import androidx.compose.animation.core.animateFloatAsState
@@ -57,8 +58,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -115,7 +114,7 @@ fun SongMenu(
     isFromCache: Boolean = false,
 ) {
     val navController = LocalNavController.current
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val songState = database.song(originalSong.id).collectAsStateWithLifecycle(initialValue = originalSong)
@@ -492,8 +491,7 @@ fun SongMenu(
     Spacer(modifier = Modifier.height(12.dp))
 
     val bottomSheetPageState = LocalBottomSheetPageState.current
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val isPortrait = !DesktopLayout.landscape
 
     val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
 

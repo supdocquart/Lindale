@@ -4,13 +4,13 @@
  */
 
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
-import com.metrolist.music.filesDir
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -38,7 +38,7 @@ import timber.log.Timber
 @Volatile private var dataStoreInstance: DataStore<Preferences>? = null
 private val dataStoreLock = Any()
 
-val PlatformContext.dataStore: DataStore<Preferences>
+val AppContext.dataStore: DataStore<Preferences>
     get() {
         dataStoreInstance?.let { return it }
         synchronized(dataStoreLock) {
@@ -50,7 +50,7 @@ val PlatformContext.dataStore: DataStore<Preferences>
         }
     }
 
-suspend fun PlatformContext.safeDataStoreEdit(
+suspend fun AppContext.safeDataStoreEdit(
     transform: suspend (MutablePreferences) -> Unit,
 ): Boolean {
     return try {
@@ -76,13 +76,13 @@ fun <T> DataStore<Preferences>.get(
     }
 
 fun <T> preference(
-    context: PlatformContext,
+    context: AppContext,
     key: Preferences.Key<T>,
     defaultValue: T,
 ) = ReadOnlyProperty<Any?, T> { _, _ -> context.dataStore[key] ?: defaultValue }
 
 inline fun <reified T : Enum<T>> enumPreference(
-    context: PlatformContext,
+    context: AppContext,
     key: Preferences.Key<String>,
     defaultValue: T,
 ) = ReadOnlyProperty<Any?, T> { _, _ -> context.dataStore[key].toEnum(defaultValue) }
@@ -92,7 +92,7 @@ fun <T> rememberPreference(
     key: Preferences.Key<T>,
     defaultValue: T,
 ): MutableState<T> {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = com.metrolist.music.platform.LocalAppContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val state =
@@ -126,7 +126,7 @@ inline fun <reified T : Enum<T>> rememberEnumPreference(
     key: Preferences.Key<String>,
     defaultValue: T,
 ): MutableState<T> {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = com.metrolist.music.platform.LocalAppContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val state =

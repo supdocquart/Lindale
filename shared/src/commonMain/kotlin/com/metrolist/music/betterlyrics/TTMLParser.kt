@@ -83,7 +83,7 @@ object TTMLParser {
             val factory = DocumentBuilderFactory.newInstance()
             factory.isNamespaceAware = true
             
-            // On Android, some features might not be supported and throw ParserConfigurationException
+            // Not every XML parser supports these hardening features; ignore the ones it rejects.
             try { factory.setFeature("http://xml.org/sax/features/external-general-entities", false) } catch (e: Exception) {}
             try { factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false) } catch (e: Exception) {}
             try { factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false) } catch (e: Exception) {}

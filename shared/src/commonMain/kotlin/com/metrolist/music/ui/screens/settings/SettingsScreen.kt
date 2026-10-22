@@ -4,7 +4,6 @@
  */
 
 package com.metrolist.music.ui.screens.settings
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*

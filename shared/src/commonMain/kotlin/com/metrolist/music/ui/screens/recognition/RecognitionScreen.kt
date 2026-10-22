@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.recognition
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ButtonDefaults
@@ -70,7 +71,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -94,7 +94,7 @@ fun RecognitionScreen(
     navController: NavController,
     autoStart: Boolean = false,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
 

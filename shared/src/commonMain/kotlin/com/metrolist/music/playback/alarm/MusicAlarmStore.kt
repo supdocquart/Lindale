@@ -1,6 +1,6 @@
 package com.metrolist.music.playback.alarm
+import com.metrolist.music.platform.AppContext
 
-import com.metrolist.music.PlatformContext
 import java.util.UUID
 
 data class MusicAlarmEntry(
@@ -14,10 +14,10 @@ data class MusicAlarmEntry(
 )
 
 object MusicAlarmStore {
-    suspend fun load(context: PlatformContext): List<MusicAlarmEntry> = emptyList()
-    fun loadBlocking(context: PlatformContext): List<MusicAlarmEntry> = emptyList()
-    suspend fun save(context: PlatformContext, entries: List<MusicAlarmEntry>) {}
-    fun saveBlocking(context: PlatformContext, entries: List<MusicAlarmEntry>) {}
+    suspend fun load(context: AppContext): List<MusicAlarmEntry> = emptyList()
+    fun loadBlocking(context: AppContext): List<MusicAlarmEntry> = emptyList()
+    suspend fun save(context: AppContext, entries: List<MusicAlarmEntry>) {}
+    fun saveBlocking(context: AppContext, entries: List<MusicAlarmEntry>) {}
     fun createEmpty(): MusicAlarmEntry = MusicAlarmEntry(
         id = UUID.randomUUID().toString(),
         enabled = true,
@@ -30,7 +30,7 @@ object MusicAlarmStore {
 }
 
 object MusicAlarmScheduler {
-    fun scheduleFromPreferences(context: PlatformContext) {}
-    fun scheduleAll(context: PlatformContext, alarms: List<MusicAlarmEntry>) {}
-    fun cancel(context: PlatformContext, alarmId: String) {}
+    fun scheduleFromPreferences(context: AppContext) {}
+    fun scheduleAll(context: AppContext, alarms: List<MusicAlarmEntry>) {}
+    fun cancel(context: AppContext, alarmId: String) {}
 }

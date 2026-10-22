@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.artist
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopShare
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -12,9 +14,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -69,7 +68,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -140,7 +138,7 @@ fun ArtistScreen(
     navController: NavController,
     viewModel: ArtistViewModel = metrolistViewModel(),
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val menuState = LocalMenuState.current
     val haptic = LocalHapticFeedback.current
@@ -1031,9 +1029,7 @@ fun ArtistScreen(
             IconButton(
                 onClick = {
                     viewModel.artistPage?.artist?.shareLink?.let { link ->
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText("Artist Link", link)
-                        clipboard.setPrimaryClip(clip)
+                        DesktopShare.copyToClipboard(link, notify = false)
                         Toast.makeText(context, Res.string.link_copied, Toast.LENGTH_SHORT).show()
                     }
                 },

@@ -1,11 +1,11 @@
 package com.metrolist.music.ui.screens.equalizer.wizard
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.music.eq.data.EQProfileRepository
@@ -25,7 +25,7 @@ import timber.log.Timber
  * Handles device search and EQ profile selection using the AutoEQ database
  */
 class WizardViewModel(
-    private val context: Context = Context(),
+    private val context: AppContext = AppContext(),
     private val eqProfileRepository: EQProfileRepository = EQProfileRepository()
 ) : ViewModel() {
 

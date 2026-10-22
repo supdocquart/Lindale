@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -62,7 +63,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -110,7 +110,7 @@ fun AlbumScreen(
             viewModel.loadAlbum(albumId)
         }
     }
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val menuState = LocalMenuState.current
     val database = LocalDatabase.current
     val haptic = LocalHapticFeedback.current

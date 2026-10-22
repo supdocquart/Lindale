@@ -4,15 +4,14 @@
  */
 
 package com.metrolist.music.ui.player
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopShare
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,7 +49,7 @@ fun PlaybackError(
     error: PlaybackException,
     retry: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val streamClient by playerConnection.currentStreamClient.collectAsState()
@@ -194,8 +192,7 @@ fun PlaybackError(
 
             OutlinedButton(
                 onClick = {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("Metrolist Playback Error", errorReport))
+                    DesktopShare.copyToClipboard(errorReport, notify = false)
                 },
                 shape = RoundedCornerShape(20.dp),
             ) {

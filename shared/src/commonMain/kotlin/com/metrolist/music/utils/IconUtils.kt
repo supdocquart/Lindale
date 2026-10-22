@@ -1,11 +1,11 @@
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 
 object IconUtils {
-    fun setIcon(context: PlatformContext, enabled: Boolean) {}
+    fun setIcon(context: AppContext, enabled: Boolean) {}
 }

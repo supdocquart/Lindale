@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,7 +37,7 @@ import com.metrolist.innertube.models.Artist
 import com.metrolist.innertube.models.Album
 
 class OnlinePlaylistViewModel constructor(
-    private val context: PlatformContext,
+    private val context: AppContext,
     savedStateHandle: SavedStateHandle,
     private val database: MusicDatabase
 ) : ViewModel() {

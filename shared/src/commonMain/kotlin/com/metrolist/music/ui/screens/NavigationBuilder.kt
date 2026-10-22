@@ -13,7 +13,6 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 
 import com.metrolist.music.compat.*
-import android.app.Activity
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -75,7 +74,6 @@ fun NavGraphBuilder.navigationBuilder(
     navController: NavHostController,
     scrollBehavior: TopAppBarScrollBehavior,
     latestVersionName: String,
-    activity: Activity,
     snackbarHostState: SnackbarHostState,
 ) {
     composable(Screens.Home.route) {

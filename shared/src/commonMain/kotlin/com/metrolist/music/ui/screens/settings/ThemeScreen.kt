@@ -1,11 +1,12 @@
 package com.metrolist.music.ui.screens.settings
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -63,8 +64,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -134,8 +133,7 @@ fun ThemeScreen(
     val (_, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
 
     val selectedThemeColor = Color(selectedThemeColorInt)
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isLandscape = DesktopLayout.landscape
 
     // Helper function to handle color selection with dynamic theme toggle
     val handleColorSelection: (Color) -> Unit = { color ->
@@ -422,7 +420,7 @@ fun ModeCircle(
     showIcon: Boolean,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val isSystemDark = isSystemInDarkTheme()
     val isSelected = darkMode == targetMode && pureBlack == targetPureBlack
     

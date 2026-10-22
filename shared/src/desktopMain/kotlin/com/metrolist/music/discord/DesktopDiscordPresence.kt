@@ -1,6 +1,6 @@
 package com.metrolist.music.discord
+import com.metrolist.music.platform.AppContext
 
-import android.content.Context
 import com.metrolist.music.constants.DiscordActivityNameKey
 import com.metrolist.music.constants.DiscordActivityTypeKey
 import com.metrolist.music.constants.DiscordAdvancedModeKey
@@ -32,11 +32,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
-/** Desktop replacement for the Discord presence logic that lives in the Android MusicService. */
+/** Publishes the current song as Discord Rich Presence. */
 class DesktopDiscordPresence(
     private val connection: PlayerConnection,
     private val database: MusicDatabase,
-    private val context: Context = Context(),
+    private val context: AppContext = AppContext(),
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val syncMutex = Mutex()

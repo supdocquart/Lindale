@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.player
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -54,7 +56,6 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -204,7 +205,7 @@ fun Thumbnail(
     isListenTogetherGuest: Boolean = false,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val layoutDirection = LocalLayoutDirection.current
 
     // Collect states
@@ -496,7 +497,7 @@ private fun ThumbnailItem(
     layoutDirection: LayoutDirection,
     onSeek: (String, Boolean) -> Unit,
     playerConnection: com.metrolist.music.playback.PlayerConnection,
-    context: android.content.Context,
+    context: AppContext,
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,
     currentMediaId: String? = null,

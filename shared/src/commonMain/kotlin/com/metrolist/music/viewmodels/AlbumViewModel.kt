@@ -1,11 +1,11 @@
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AlbumItem
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.AlbumWithSongs
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlbumViewModel(
-    val context: PlatformContext,
+    val context: AppContext,
     val database: MusicDatabase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {

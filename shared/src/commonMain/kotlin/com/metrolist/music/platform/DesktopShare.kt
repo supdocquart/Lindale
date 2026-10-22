@@ -19,9 +19,9 @@ import java.net.URLEncoder
  * links open in the default browser.
  */
 object DesktopShare {
-    fun copyToClipboard(text: String, notify: Boolean = true) {
+    fun copyToClipboard(text: CharSequence, notify: Boolean = true) {
         runCatching {
-            val selection = StringSelection(text)
+            val selection = StringSelection(text.toString())
             Toolkit.getDefaultToolkit().systemClipboard.setContents(selection, selection)
         }.onFailure { Timber.w(it, "clipboard write failed") }
         if (notify) ToastHost.post(ResourceText.get(Res.string.copied))

@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -44,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -80,7 +80,7 @@ fun AccountSettings(
     onClose: () -> Unit,
     latestVersionName: String
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val uriHandler = LocalUriHandler.current
 
     val (accountNamePref, onAccountNameChange) = rememberPreference(AccountNameKey, "")

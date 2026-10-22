@@ -1,6 +1,6 @@
 package com.metrolist.music.lyrics
+import com.metrolist.music.platform.AppContext
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.constants.LyricsProviderOrderKey
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
@@ -12,7 +12,7 @@ data class LyricsWithProvider(
     val provider: String,
 )
 
-class LyricsHelper(private val context: PlatformContext) {
+class LyricsHelper(private val context: AppContext) {
     private fun providerOrder(): String =
         runCatching { context.dataStore[LyricsProviderOrderKey] }.getOrNull() ?: ""
 

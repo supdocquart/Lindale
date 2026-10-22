@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -41,13 +42,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
 import coil3.annotation.ExperimentalCoilApi
-import coil3.imageLoader
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
@@ -76,9 +75,9 @@ import kotlin.math.roundToInt
 fun StorageSettings(
     navController: NavController
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
-    val imageDiskCache = tryOrNull { context.imageLoader.diskCache }
+    val imageDiskCache = tryOrNull { coil3.SingletonImageLoader.get(coil3.PlatformContext.INSTANCE).diskCache }
     val playerCache = LocalPlayerConnection.current?.service?.playerCache
     val downloadCache = LocalPlayerConnection.current?.service?.downloadCache
 

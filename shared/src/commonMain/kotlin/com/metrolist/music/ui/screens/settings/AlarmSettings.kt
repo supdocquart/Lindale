@@ -1,4 +1,5 @@
 package com.metrolist.music.ui.screens.settings
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.getValue
@@ -42,7 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.platform.toUri
@@ -66,7 +66,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AlarmSettingsSection(showTitle: Boolean = true) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val locale = LocalLocale.current.platformLocale
     val database = LocalDatabase.current
     val scope = rememberCoroutineScope()
@@ -283,7 +283,7 @@ private fun AlarmEditorDialog(
     onDismiss: () -> Unit,
     onSave: (MusicAlarmEntry) -> Unit
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val locale = LocalLocale.current.platformLocale
     val noPlaylistsText = stringResource(Res.string.alarm_no_playlists)
     val selectPlaylistText = stringResource(Res.string.alarm_select_playlist)

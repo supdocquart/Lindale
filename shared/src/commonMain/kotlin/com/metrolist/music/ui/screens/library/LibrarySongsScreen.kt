@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.library
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
@@ -56,7 +57,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.viewmodels.metrolistViewModel
@@ -105,7 +105,7 @@ fun LibrarySongsScreen(
     onDeselect: () -> Unit,
     viewModel: LibrarySongsViewModel = metrolistViewModel(),
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val menuState = LocalMenuState.current
     val uploadUnsupportedFormatStr = stringResource(Res.string.upload_unsupported_format)
@@ -162,7 +162,7 @@ fun LibrarySongsScreen(
                             try {
                                 val (fileName, contentLength) =
                                     withContext(Dispatchers.IO) {
-                                        context.contentResolver.fileNameAndSize(uri)
+                                        fileNameAndSize(uri)
                                     }
                                 currentFileName = fileName
 
@@ -183,7 +183,7 @@ fun LibrarySongsScreen(
                                     YouTube.uploadSong(
                                         filename = fileName,
                                         contentLength = contentLength,
-                                        content = { checkNotNull(context.contentResolver.openInputStream(uri)) },
+                                        content = { checkNotNull(context.openInputStream(uri)) },
                                         onProgress = { progress -> uploadProgress = progress },
                                     )
 

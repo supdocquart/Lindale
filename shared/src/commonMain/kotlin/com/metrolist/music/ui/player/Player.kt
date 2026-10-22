@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.player
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.material3.SliderState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -14,10 +16,6 @@ import com.metrolist.music.platform.DesktopShare
 import com.metrolist.music.platform.KeepScreenAwake
 
 import com.metrolist.music.ui.utils.BackHandler
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -101,8 +99,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -125,7 +121,6 @@ import androidx.navigation.NavController
 import com.metrolist.music.ui.theme.Palette
 import com.metrolist.music.LocalNavController
 import coil3.compose.AsyncImage
-import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
 import com.metrolist.music.LocalDatabase
@@ -202,8 +197,7 @@ fun BottomSheetPlayer(
     modifier: Modifier = Modifier,
     pureBlack: Boolean,
 ) {
-    val context = LocalContext.current
-    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val context = LocalAppContext.current
     val menuState = LocalMenuState.current
     val sleepTimerDefaultSetTemplate = stringResource(Res.string.sleep_timer_default_set)
     val copiedTitleStr = stringResource(Res.string.copied_title)
@@ -384,7 +378,7 @@ fun BottomSheetPlayer(
                             .memoryCacheKey("gradient_${currentMetadata.id}")
                             .build()
 
-                    val result = runCatching { context.imageLoader.execute(request) }.getOrNull()
+                    val result = runCatching { coil3.SingletonImageLoader.get(coil3.PlatformContext.INSTANCE).execute(request) }.getOrNull()
                     if (result != null) {
                         val bitmap = result.image?.toBitmap()
                         if (bitmap != null) {
@@ -978,8 +972,7 @@ fun BottomSheetPlayer(
                                             }
                                         },
                                         onLongClick = {
-                                            val clip = ClipData.newPlainText(copiedTitleStr, title)
-                                            clipboardManager.setPrimaryClip(clip)
+                                            DesktopShare.copyToClipboard(title, notify = false)
                                             Toast
                                                 .makeText(context, copiedTitleStr, Toast.LENGTH_SHORT)
                                                 .show()
@@ -1057,12 +1050,7 @@ fun BottomSheetPlayer(
                                                     }
                                                 },
                                                 onLongClick = {
-                                                    val clip =
-                                                        ClipData.newPlainText(
-                                                            copiedArtistStr,
-                                                            annotatedString,
-                                                        )
-                                                    clipboardManager.setPrimaryClip(clip)
+                                                    DesktopShare.copyToClipboard(annotatedString, notify = false)
                                                     Toast
                                                         .makeText(
                                                             context,
@@ -1775,8 +1763,8 @@ fun BottomSheetPlayer(
             }
         }
 
-        when (LocalConfiguration.current.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
+        when (DesktopLayout.landscape) {
+            true -> {
                 // Calculate vertical padding like OuterTune
                 val density = LocalDensity.current
                 val verticalPadding =
@@ -1941,7 +1929,7 @@ fun InlineLyricsView(
     val queueWindows by playerConnection.queueWindows.collectAsStateWithLifecycle(initialValue = emptyList())
     val currentWindowIndex by playerConnection.currentWindowIndex.collectAsStateWithLifecycle(initialValue = -1)
     val lyrics = remember(currentLyrics) { currentLyrics?.lyrics?.trim() }
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val coroutineScope = rememberCoroutineScope()
 

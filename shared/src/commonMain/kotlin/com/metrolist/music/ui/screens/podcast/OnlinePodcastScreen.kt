@@ -1,4 +1,5 @@
 package com.metrolist.music.ui.screens.podcast
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.getValue
@@ -59,7 +60,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -171,7 +171,7 @@ fun OnlinePodcastScreen(
                 podcast?.let { podcastItem ->
                     if (!isSearching) {
                         item(key = "podcast_header") {
-                            val context = LocalContext.current
+                            val context = LocalAppContext.current
                             PodcastHeader(
                                 podcast = podcastItem,
                                 episodeCount = episodes.size,
@@ -309,7 +309,7 @@ private fun PodcastHeader(
     onLibraryClick: () -> Unit,
     onViewChannelClick: () -> Unit
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     Column(
         modifier = Modifier

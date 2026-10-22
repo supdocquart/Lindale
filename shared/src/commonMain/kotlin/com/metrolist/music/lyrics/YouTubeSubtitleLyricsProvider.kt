@@ -4,21 +4,21 @@
  */
 
 package com.metrolist.music.lyrics
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.innertube.YouTube
 
 object YouTubeSubtitleLyricsProvider : LyricsProvider {
     override val name = "YouTube Subtitle"
 
-    override fun isEnabled(context: PlatformContext) = true
+    override fun isEnabled(context: AppContext) = true
 
     override suspend fun getLyrics(
-        context: PlatformContext,
+        context: AppContext,
         id: String,
         title: String,
         artist: String,

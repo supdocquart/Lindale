@@ -4,6 +4,9 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopShare
+import com.metrolist.music.platform.DesktopLayout
 import com.metrolist.music.ui.component.DownloadCenter
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.getValue
@@ -13,8 +16,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.Context
-import android.content.res.Configuration
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -63,8 +64,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -110,7 +109,7 @@ fun PlayerMenu(
 ) {
     mediaMetadata ?: return
     val navController = LocalNavController.current
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val playerVolume = playerConnection.service.playerVolume.collectAsStateWithLifecycle()
@@ -292,8 +291,7 @@ fun PlayerMenu(
 
     Spacer(modifier = Modifier.height(12.dp))
 
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val isPortrait = !DesktopLayout.landscape
 
     LazyColumn(
         contentPadding =
@@ -352,16 +350,7 @@ fun PlayerMenu(
                             },
                             text = stringResource(Res.string.copy_link),
                             onClick = {
-                                val clipboard =
-                                    context.getSystemService(
-                                        android.content.Context.CLIPBOARD_SERVICE,
-                                    ) as android.content.ClipboardManager
-                                val clip =
-                                    android.content.ClipData.newPlainText(
-                                        "Song Link",
-                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}",
-                                    )
-                                clipboard.setPrimaryClip(clip)
+                                DesktopShare.copyToClipboard("https://music.youtube.com/watch?v=${mediaMetadata.id}", notify = false)
                                 com.metrolist.music.utils.Toast
                                     .makeText(context, Res.string.link_copied, com.metrolist.music.utils.Toast.LENGTH_SHORT)
                                     .show()
@@ -880,7 +869,7 @@ fun ListenTogetherDialog(
 ) {
     if (!visible) return
 
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val listenTogetherManager = com.metrolist.music.LocalListenTogetherManager.current
     val joiningRoomTemplate = stringResource(Res.string.joining_room)
 
@@ -1175,10 +1164,7 @@ fun ListenTogetherDialog(
 
                 is ListenTogetherEvent.RoomCreated -> {
                     isCreatingRoom = false
-                    val clipboard =
-                        context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    val clip = android.content.ClipData.newPlainText("ListenTogetherRoom", event.roomCode)
-                    clipboard.setPrimaryClip(clip)
+                    DesktopShare.copyToClipboard(event.roomCode, notify = false)
                 }
 
                 else -> { /* ignore other events here */ }
@@ -1392,12 +1378,7 @@ fun ListenTogetherDialog(
                                 ) {
                                     FilledTonalButton(
                                         onClick = {
-                                            val clipboard =
-                                                context.getSystemService(
-                                                    Context.CLIPBOARD_SERVICE,
-                                                ) as android.content.ClipboardManager
-                                            val clip = android.content.ClipData.newPlainText("Listen Together Link", inviteLink)
-                                            clipboard.setPrimaryClip(clip)
+                                            DesktopShare.copyToClipboard(inviteLink, notify = false)
                                             Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                                         },
                                     ) {
@@ -1414,12 +1395,7 @@ fun ListenTogetherDialog(
 
                                     FilledTonalButton(
                                         onClick = {
-                                            val clipboard =
-                                                context.getSystemService(
-                                                    Context.CLIPBOARD_SERVICE,
-                                                ) as android.content.ClipboardManager
-                                            val clip = android.content.ClipData.newPlainText("Room Code", room.roomCode)
-                                            clipboard.setPrimaryClip(clip)
+                                            DesktopShare.copyToClipboard(room.roomCode, notify = false)
                                             Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                                         },
                                     ) {

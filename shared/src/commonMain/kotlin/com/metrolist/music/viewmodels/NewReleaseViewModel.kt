@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class NewReleaseViewModel
 constructor(
-    val context: PlatformContext,
+    val context: AppContext,
     database: MusicDatabase,
 ) : ViewModel() {
     private val _newReleaseAlbums = MutableStateFlow<List<AlbumItem>>(emptyList())

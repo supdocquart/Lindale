@@ -4,6 +4,9 @@
  */
 
 package com.metrolist.music.ui.screens
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopShare
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.items
@@ -17,7 +20,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.Context
 import com.metrolist.music.utils.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -80,7 +82,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -112,7 +113,7 @@ fun ListenTogetherScreen(
     navController: NavController,
     showTopBar: Boolean = false,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val listenTogetherManager = LocalListenTogetherManager.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
     val joiningRoomTemplate = stringResource(Res.string.joining_room)
@@ -174,9 +175,7 @@ fun ListenTogetherScreen(
 
                 is ListenTogetherEvent.RoomCreated -> {
                     isCreatingRoom = false
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    val clip = android.content.ClipData.newPlainText("ListenTogetherRoom", event.roomCode)
-                    clipboard.setPrimaryClip(clip)
+                    DesktopShare.copyToClipboard(event.roomCode, notify = false)
                 }
 
                 else -> {}
@@ -650,7 +649,7 @@ private fun ConnectionStatusCard(
 private fun RoomStatusCard(
     roomCode: String,
     isHost: Boolean,
-    context: Context,
+    context: AppContext,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -708,9 +707,7 @@ private fun RoomStatusCard(
                 ) {
                     FilledTonalButton(
                         onClick = {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Listen Together Link", inviteLink)
-                            clipboard.setPrimaryClip(clip)
+                            DesktopShare.copyToClipboard(inviteLink, notify = false)
                             Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -726,9 +723,7 @@ private fun RoomStatusCard(
 
                     FilledTonalButton(
                         onClick = {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Room Code", roomCode)
-                            clipboard.setPrimaryClip(clip)
+                            DesktopShare.copyToClipboard(roomCode, notify = false)
                             Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                         },
                         shape = RoundedCornerShape(12.dp),

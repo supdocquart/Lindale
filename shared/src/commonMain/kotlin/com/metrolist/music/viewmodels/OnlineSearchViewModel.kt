@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -11,7 +12,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 class OnlineSearchViewModel
 constructor(
-    val context: PlatformContext,
+    val context: AppContext,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     val query = SearchRoutes.decodeQuery(savedStateHandle.get<String>("query").orEmpty())

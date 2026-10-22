@@ -23,7 +23,7 @@ object DesktopFiles {
         return (focused as? Frame) ?: Frame.getFrames().firstOrNull { it.isVisible }
     }
 
-    /** Maps MIME types (as Android pickers receive them) to a Windows wildcard filter, or null for all files. */
+    /** Maps MIME types to a Windows wildcard filter, or null for all files. */
     fun extensionsFor(mimeTypes: Array<out String>?): List<String>? {
         if (mimeTypes.isNullOrEmpty()) return null
         val result = linkedSetOf<String>()

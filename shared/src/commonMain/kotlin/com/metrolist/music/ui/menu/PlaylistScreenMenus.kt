@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.material3.MaterialTheme
 
 import com.metrolist.music.platform.DesktopShare
@@ -12,7 +14,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.Context
 import com.metrolist.music.platform.Uri
 import com.metrolist.music.utils.Toast
 import androidx.compose.foundation.clickable
@@ -32,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.playback.Download
 import com.metrolist.music.LocalListenTogetherManager
@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 fun LocalPlaylistMenu(
     playlist: Playlist,
     songs: List<PlaylistSong>,
-    context: Context,
+    context: AppContext,
     downloadState: Int,
     onEdit: () -> Unit,
     onSync: () -> Unit,
@@ -66,7 +66,7 @@ fun LocalPlaylistMenu(
     val listenTogetherManager = LocalListenTogetherManager.current
     val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
     val coroutineScope = rememberCoroutineScope()
-    val localContext = LocalContext.current
+    val localContext = LocalAppContext.current
 
     val (showExportDialog, setShowExportDialog) = remember { mutableStateOf(false) }
 
@@ -318,7 +318,7 @@ fun AutoPlaylistMenu(
     val listenTogetherManager = LocalListenTogetherManager.current
     val isGuest = listenTogetherManager?.isInRoom == true && !listenTogetherManager.isHost
     val coroutineScope = rememberCoroutineScope()
-    val localContext = LocalContext.current
+    val localContext = LocalAppContext.current
 
     val (showExportDialog, setShowExportDialog) = remember { mutableStateOf(false) }
 
@@ -583,7 +583,7 @@ fun TopPlaylistMenu(
 }
 
 private fun shareExportFile(
-    context: Context,
+    context: AppContext,
     uri: Uri,
     mimeType: String,
 ) {

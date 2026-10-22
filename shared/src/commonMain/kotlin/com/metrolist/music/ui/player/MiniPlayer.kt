@@ -6,6 +6,8 @@
  */
 
 package com.metrolist.music.ui.player
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
@@ -13,7 +15,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -72,7 +73,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -114,9 +114,7 @@ import com.metrolist.music.constants.MiniPlayerBackgroundStyle
 import com.metrolist.music.constants.MiniPlayerBackgroundStyleKey
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import com.metrolist.music.ui.theme.Palette
-import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
@@ -185,7 +183,7 @@ private fun NewMiniPlayer(
         MiniPlayerBackgroundStyleKey,
         defaultValue = MiniPlayerBackgroundStyle.DEFAULT,
     )
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
@@ -224,11 +222,10 @@ private fun NewMiniPlayer(
     val coroutineScope = rememberCoroutineScope()
 
     val windowInfo = LocalWindowInfo.current
-    val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val isTabletLandscape =
-        remember(windowInfo.containerSize.width, configuration.orientation) {
-            (windowInfo.containerSize.width / density.density) >= 600f && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        remember(windowInfo.containerSize.width) {
+            (windowInfo.containerSize.width / density.density) >= 600f && DesktopLayout.landscape
         }
 
     // Swipe animation state
@@ -712,11 +709,10 @@ private fun LegacyMiniPlayer(
     val coroutineScope = rememberCoroutineScope()
 
     val windowInfo = LocalWindowInfo.current
-    val configuration = LocalConfiguration.current
     val density = LocalDensity.current
     val isTabletLandscape =
-        remember(windowInfo.containerSize.width, configuration.orientation) {
-            (windowInfo.containerSize.width / density.density) >= 600f && configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        remember(windowInfo.containerSize.width) {
+            (windowInfo.containerSize.width / density.density) >= 600f && DesktopLayout.landscape
         }
 
     val offsetXAnimatable = remember { Animatable(0f) }

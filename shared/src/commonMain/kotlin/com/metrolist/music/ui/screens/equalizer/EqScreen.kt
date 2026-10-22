@@ -1,4 +1,7 @@
 package com.metrolist.music.ui.screens.equalizer
+import com.metrolist.music.platform.LocalAppContext
+
+import com.metrolist.music.platform.DesktopFiles
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -9,7 +12,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.provider.OpenableColumns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.Box
@@ -41,7 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.viewmodels.metrolistViewModel
@@ -60,7 +61,7 @@ fun EqScreen(
 ) {
     val navController = LocalNavController.current
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     var showError by remember { mutableStateOf<String?>(null) }
     var showAddMenu by remember { mutableStateOf(false) }
@@ -69,23 +70,8 @@ fun EqScreen(
     val filePickerLauncher = rememberOpenFileLauncher { uri ->
         if (uri != null) {
             try {
-                val contentResolver = context.contentResolver
-
-                // Extract file name from URI
-                var fileName = "custom_eq.txt"
-                contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        val displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                        if (displayNameIndex >= 0) {
-                            val name = cursor.getString(displayNameIndex)
-                            if (!name.isNullOrBlank()) {
-                                fileName = name
-                            }
-                        }
-                    }
-                }
-
-                val inputStream = contentResolver.openInputStream(uri)
+                val fileName = DesktopFiles.toFile(uri)?.name?.takeIf { it.isNotBlank() } ?: "custom_eq.txt"
+                val inputStream = DesktopFiles.toFile(uri)?.takeIf { it.isFile }?.inputStream()
 
                 if (inputStream != null) {
                     viewModel.importCustomProfile(

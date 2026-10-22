@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens.wrapped
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -34,7 +35,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -89,7 +89,7 @@ sealed class WrappedScreenType {
 @Composable
 fun WrappedScreen() {
     val navController = LocalNavController.current
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = com.metrolist.music.utils.LocalDatabase.current
     val manager = remember(context, database) { WrappedManager(database, context) }
 
@@ -119,7 +119,7 @@ fun WrappedScreenContent() {
                 )
             },
         )
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val scope = rememberCoroutineScope()
     val manager = LocalWrappedManager.current
     val audioService = remember { WrappedAudioService(context) }

@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.metrolist.innertube.YouTube
@@ -43,7 +43,7 @@ import kotlinx.datetime.daysUntil
 @OptIn(ExperimentalCoroutinesApi::class)
 class HistoryViewModel
 constructor(
-    private val context: PlatformContext,
+    private val context: AppContext,
     val database: MusicDatabase,
 ) : ViewModel() {
     var historySource = MutableStateFlow(HistorySource.LOCAL)

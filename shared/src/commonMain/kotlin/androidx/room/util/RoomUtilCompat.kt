@@ -2,6 +2,9 @@ package androidx.room.util
 
 import androidx.collection.ArrayMap
 
+// Room's KSP output for the JVM target calls this helper, which room-runtime does not ship for the JVM.
+// It must keep this package name so the generated DAO code resolves it.
+
 fun <K : Any, V> recursiveFetchArrayMap(
     map: ArrayMap<K, V>,
     isFetch: Boolean,

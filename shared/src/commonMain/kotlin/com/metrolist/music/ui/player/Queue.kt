@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.player
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.datastore.preferences.core.edit
@@ -91,7 +92,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -158,7 +158,7 @@ fun Queue(
     onToggleLyrics: () -> Unit = {},
 ) {
     val navController = LocalNavController.current
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val haptic = LocalHapticFeedback.current
     val clipboardManager = LocalClipboard.current
     val menuState = LocalMenuState.current

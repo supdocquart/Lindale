@@ -1,6 +1,6 @@
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.music.db.entities.PlaylistSong
 import java.io.File
 
@@ -9,13 +9,13 @@ object PlaylistExporter {
     internal data class Row(val id: String, val title: String, val artists: String, val album: String?, val durationSec: Int)
 
     fun exportPlaylistAsCSV(
-        context: PlatformContext,
+        context: AppContext,
         playlistName: String,
         songs: List<PlaylistSong>,
     ): Result<File> = writeCsv(playlistName, songs.map { it.toRow() })
 
     fun exportPlaylistAsM3U(
-        context: PlatformContext,
+        context: AppContext,
         playlistName: String,
         songs: List<PlaylistSong>,
     ): Result<File> = writeM3u(playlistName, songs.map { it.toRow() })
@@ -29,7 +29,7 @@ object PlaylistExporter {
     )
 
     internal fun exportDir(): File =
-        File(android.content.Context().cacheDir, "exports").apply { mkdirs() }
+        File(AppContext().cacheDir, "exports").apply { mkdirs() }
 
     internal fun safeName(name: String): String =
         name.replace(Regex("""[\\/:*?"<>|]"""), "_").trim().ifEmpty { "playlist" }.take(80)

@@ -1,17 +1,17 @@
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 
 class CrashHandler private constructor(
-    private val applicationContext: PlatformContext
+    private val applicationContext: AppContext
 ) : Thread.UncaughtExceptionHandler {
     private val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
     override fun uncaughtException(t: Thread, e: Throwable) {}
     companion object {
-        fun install(context: PlatformContext) {}
+        fun install(context: AppContext) {}
     }
 }

@@ -71,11 +71,11 @@ class DiscordAuth(
     private val httpClient: HttpClient = createDefaultClient(),
 ) {
 
-    suspend fun authorize(activity: Any?): DiscordAuthResult {
+    suspend fun authorize(): DiscordAuthResult {
         val pkce = generatePkcePair()
         val state = generateState()
-        DiscordOAuthActivity.newDeferred()
-        val receiver = runCatching { DiscordOAuthActivity.platformReceiver?.invoke() }
+        DiscordOAuthCallback.newDeferred()
+        val receiver = runCatching { DiscordOAuthCallback.platformReceiver?.invoke() }
             .onFailure { Timber.tag(TAG).e(it, "authorize: callback receiver failed to start") }
             .getOrNull()
 
@@ -95,7 +95,7 @@ class DiscordAuth(
                 throw DiscordAuthException.NoBrowser()
             }
             java.awt.Desktop.getDesktop().browse(java.net.URI(authUrl))
-            val callback = DiscordOAuthActivity.awaitCode(timeoutMs = 120_000L)
+            val callback = DiscordOAuthCallback.awaitCode(timeoutMs = 120_000L)
 
             if (callback.state != state) {
                 Timber.tag(TAG).w(
@@ -122,7 +122,7 @@ class DiscordAuth(
     }
 
     fun cancel() {
-        DiscordOAuthActivity.cancelPending()
+        DiscordOAuthCallback.cancelPending()
     }
 
     fun close() {

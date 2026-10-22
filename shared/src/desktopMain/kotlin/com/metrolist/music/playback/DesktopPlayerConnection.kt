@@ -12,7 +12,7 @@ import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
 import com.metrolist.music.db.entities.LyricsEntity
 import com.metrolist.music.db.entities.Song
-import com.metrolist.music.defaultDesktopContext
+import com.metrolist.music.platform.AppContext
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.nowLocalDateTime
 import com.metrolist.music.extensions.toMediaItem
@@ -112,7 +112,7 @@ class DesktopPlayerConnection(
     override val player: DesktopPlayer = DesktopPlayer()
 
     init {
-        InnerTubeXPlayer.initialize(defaultDesktopContext)
+        InnerTubeXPlayer.initialize(AppContext.Default)
         initVlcEngine()
 
         // Volume synchronization

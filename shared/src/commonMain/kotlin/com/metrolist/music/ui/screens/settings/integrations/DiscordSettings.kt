@@ -1,4 +1,5 @@
 package com.metrolist.music.ui.screens.settings.integrations
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -8,7 +9,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -65,7 +65,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 
@@ -131,7 +130,7 @@ fun DiscordSettings(
     }
 
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     var discordUsername by rememberPreference(DiscordUsernameKey, "")
     var discordName by rememberPreference(DiscordNameKey, "")
@@ -450,24 +449,18 @@ fun DiscordSettings(
                         OutlinedButton(
                             onClick = {
                                 isBusy = true
-                                val activity = findActivity(context)
-                                if (activity == null) {
+                                DiscordRpcManager.authorize { success ->
                                     isBusy = false
-                                    Timber.w("DiscordSettings: cannot start authorize without Activity context")
-                                } else {
-                                    DiscordRpcManager.authorize(activity) { success ->
-                                        isBusy = false
-                                        if (success) {
-                                            coroutineScope.launch(Dispatchers.IO) {
-                                                val token = DiscordRpcManager.getAccessToken()
-                                                if (token != null) {
-                                                    val user = DiscordRpcManager.fetchCurrentUser(token)
-                                                    if (user != null) {
-                                                        withContext(Dispatchers.Main) {
-                                                            discordUsername = user.username
-                                                            discordName = user.name
-                                                            discordAvatar = user.avatar ?: ""
-                                                        }
+                                    if (success) {
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            val token = DiscordRpcManager.getAccessToken()
+                                            if (token != null) {
+                                                val user = DiscordRpcManager.fetchCurrentUser(token)
+                                                if (user != null) {
+                                                    withContext(Dispatchers.Main) {
+                                                        discordUsername = user.username
+                                                        discordName = user.name
+                                                        discordAvatar = user.avatar ?: ""
                                                     }
                                                 }
                                             }
@@ -957,7 +950,7 @@ fun RichPresence(
     btn2Url: String = DiscordDefaults.BUTTON2_URL,
     btn2Enabled: Boolean = true,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     val previewSongTitle = song?.song?.title ?: "Song Title"
     val previewArtistName = song?.artists?.joinToString { it.name } ?: "Artist"
@@ -1167,4 +1160,3 @@ fun SongProgressBar(
     }
 }
 
-private fun findActivity(context: Any?): Activity? = context as? Activity ?: Activity()

@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.screens
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -11,7 +12,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
 
-import android.content.res.Configuration.Companion.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.viewmodels.metrolistViewModel
@@ -52,8 +51,7 @@ fun MoodAndGenresScreen(
     navController: NavController,
     viewModel: MoodAndGenresViewModel = metrolistViewModel(),
 ) {
-    val localConfiguration = LocalConfiguration.current
-    val itemsPerRow = if (localConfiguration.orientation == ORIENTATION_LANDSCAPE) 3 else 2
+    val itemsPerRow = if (DesktopLayout.landscape) 3 else 2
 
     val moodAndGenresList by viewModel.moodAndGenres.collectAsStateWithLifecycle()
 

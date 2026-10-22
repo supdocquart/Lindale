@@ -4,17 +4,12 @@
  */
 
 package com.metrolist.music.viewmodels
-import com.metrolist.music.openInputStream
-import com.metrolist.music.openOutputStream
-import com.metrolist.music.getDatabasePath
-import com.metrolist.music.filesDir
-import com.metrolist.music.cacheDir
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 
 import com.metrolist.music.utils.Toast
 import androidx.datastore.preferences.core.edit
@@ -77,7 +72,7 @@ data class ConvertedSongLog(
 class BackupRestoreViewModel constructor(
     val database: MusicDatabase,
 ) : ViewModel() {
-    fun backup(context: PlatformContext, uri: Any) {
+    fun backup(context: AppContext, uri: Any) {
         runCatching {
             context.openOutputStream(uri)?.use {
                 it.buffered().zipOutputStream().use { outputStream ->
@@ -123,7 +118,7 @@ class BackupRestoreViewModel constructor(
         }
     }
 
-    fun restore(context: PlatformContext, uri: Any, clearAuthData: Boolean = false) {
+    fun restore(context: AppContext, uri: Any, clearAuthData: Boolean = false) {
         // Run in viewModelScope to allow suspending
         viewModelScope.launch(Dispatchers.IO) {
             val restoreDbName = "restored_${MusicDatabase.DB_NAME}"
@@ -330,7 +325,7 @@ class BackupRestoreViewModel constructor(
         }
     }
 
-    fun previewBackup(context: PlatformContext, uri: Any): BackupPreviewInfo {
+    fun previewBackup(context: AppContext, uri: Any): BackupPreviewInfo {
         return runCatching {
             context.openInputStream(uri)?.use { raw ->
                 raw.zipInputStream().use { inputStream ->
@@ -417,7 +412,7 @@ class BackupRestoreViewModel constructor(
         return null
     }
 
-    fun previewCsvFile(context: PlatformContext, uri: Any): CsvImportState {
+    fun previewCsvFile(context: AppContext, uri: Any): CsvImportState {
         val previewRows = mutableListOf<List<String>>()
         val csvState: CsvImportState
         runCatching {
@@ -441,7 +436,7 @@ class BackupRestoreViewModel constructor(
     }
 
     suspend fun importPlaylistFromCsv(
-        context: PlatformContext,
+        context: AppContext,
         uri: Any,
         columnMapping: CsvImportState,
         onProgress: (Int) -> Unit = {},
@@ -502,7 +497,7 @@ class BackupRestoreViewModel constructor(
         songs
     }
 
-    suspend fun importPlaylistFromCsv(context: PlatformContext, uri: Any): ArrayList<Song> {
+    suspend fun importPlaylistFromCsv(context: AppContext, uri: Any): ArrayList<Song> {
         return importPlaylistFromCsv(context, uri, CsvImportState())
     }
 
@@ -525,7 +520,7 @@ class BackupRestoreViewModel constructor(
         return result.map { it.trim().trim('"') }
     }
 
-    fun loadM3UOnline(context: PlatformContext, uri: Any): ArrayList<Song> {
+    fun loadM3UOnline(context: AppContext, uri: Any): ArrayList<Song> {
         val songs = ArrayList<Song>()
 
         runCatching {

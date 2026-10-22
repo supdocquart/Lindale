@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.screens.settings.integrations
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopShare
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -70,7 +72,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -83,7 +84,6 @@ import com.metrolist.music.constants.ListenTogetherServerUrlKey
 import com.metrolist.music.constants.ListenTogetherSyncVolumeKey
 import com.metrolist.music.constants.ListenTogetherUsernameKey
 import com.metrolist.music.LocalListenTogetherManager
-import com.metrolist.music.getSystemService
 import com.metrolist.music.listentogether.ConnectionState
 import com.metrolist.music.listentogether.ListenTogetherEvent
 import com.metrolist.music.listentogether.ListenTogetherServer
@@ -103,7 +103,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ListenTogetherSettings(navController: NavController) {
     val manager = LocalListenTogetherManager.current ?: return
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val cannotEditUsernameInRoomStr = stringResource(Res.string.listen_together_cannot_edit_username_in_room)
     val coroutineScope = rememberCoroutineScope()
 
@@ -542,7 +542,7 @@ fun LogsDialog(
         }
     }
 
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     DefaultDialog(
         onDismiss = onDismiss,
@@ -562,9 +562,7 @@ fun LogsDialog(
                                 log.details?.let { d -> append(" -- $d") }
                             }
                         }
-                    val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    val clip = android.content.ClipData.newPlainText("ListenTogetherLogs", textToCopy)
-                    cm.setPrimaryClip(clip)
+                    DesktopShare.copyToClipboard(textToCopy, notify = false)
                     Toast.makeText(context, Res.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
                 },
                 enabled = logs.isNotEmpty(),
@@ -724,7 +722,7 @@ private fun ServerChooserDialog(
 
 @Composable
 fun LogEntryItem(log: LogEntry) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
 
     Column(
         modifier =

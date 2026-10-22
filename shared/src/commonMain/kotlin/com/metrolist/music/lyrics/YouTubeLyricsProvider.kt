@@ -4,12 +4,12 @@
  */
 
 package com.metrolist.music.lyrics
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.WatchEndpoint
 import kotlinx.coroutines.CancellationException
@@ -19,10 +19,10 @@ import kotlinx.coroutines.withContext
 object YouTubeLyricsProvider : LyricsProvider {
     override val name = "YouTube Music"
 
-    override fun isEnabled(context: PlatformContext) = true
+    override fun isEnabled(context: AppContext) = true
 
     override suspend fun getLyrics(
-        context: PlatformContext,
+        context: AppContext,
         id: String,
         title: String,
         artist: String,

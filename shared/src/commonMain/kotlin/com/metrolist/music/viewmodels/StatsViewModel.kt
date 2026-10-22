@@ -4,13 +4,13 @@
  */
 
 package com.metrolist.music.viewmodels
+import com.metrolist.music.platform.AppContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.getString
 
-import com.metrolist.music.PlatformContext
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
@@ -49,7 +49,7 @@ import kotlin.collections.emptyList
 @OptIn(ExperimentalCoroutinesApi::class)
 class StatsViewModel
 constructor(
-    private val context: PlatformContext,
+    private val context: AppContext,
     val database: MusicDatabase,
 ) : ViewModel() {
     private val periodicMostPlaylistSyncMutex = Mutex()

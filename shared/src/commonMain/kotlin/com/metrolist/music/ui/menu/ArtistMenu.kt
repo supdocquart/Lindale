@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
 
 import com.metrolist.music.platform.DesktopShare
@@ -12,7 +14,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -29,8 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalListenTogetherManager
@@ -57,7 +56,7 @@ fun ArtistMenu(
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit,
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     val database = LocalDatabase.current
     val playerConnection = LocalPlayerConnection.current ?: return
     val listenTogetherManager = LocalListenTogetherManager.current
@@ -76,8 +75,7 @@ fun ArtistMenu(
 
     Spacer(modifier = Modifier.height(12.dp))
 
-    val configuration = LocalConfiguration.current
-    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val isPortrait = !DesktopLayout.landscape
 
     LazyColumn(
         contentPadding = PaddingValues(

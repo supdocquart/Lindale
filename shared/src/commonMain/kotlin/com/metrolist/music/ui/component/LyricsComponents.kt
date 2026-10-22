@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextStyle
@@ -62,8 +63,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -229,7 +228,7 @@ internal fun LyricsShareDialog(
     onDismiss: () -> Unit,
     onShareAsImage: () -> Unit
 ) {
-    val context = LocalContext.current
+    val context = LocalAppContext.current
     BasicAlertDialog(onDismissRequest = onDismiss) {
         Card(
             shape = MaterialTheme.shapes.medium,
@@ -292,8 +291,7 @@ internal fun LyricsColorPickerDialog(
     onDismiss: () -> Unit,
     onShare: (backgroundColor: Color, textColor: Color, secondaryTextColor: Color, style: LyricsBackgroundStyle) -> Unit
 ) {
-    val context = LocalContext.current
-    val configuration = LocalConfiguration.current
+    val context = LocalAppContext.current
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     

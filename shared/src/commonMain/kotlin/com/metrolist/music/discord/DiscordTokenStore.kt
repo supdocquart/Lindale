@@ -1,20 +1,18 @@
 package com.metrolist.music.discord
+import com.metrolist.music.platform.AppContext
+
+import com.metrolist.music.platform.KeyValueStore
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import android.content.Context
-import android.content.SharedPreferences
 import java.util.Base64
-import androidx.core.content.edit
 import kotlinx.coroutines.CompletableDeferred
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
-import java.security.KeyStore
 import java.util.UUID
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
@@ -28,17 +26,17 @@ object DiscordTokenStore {
     private const val TAG = "DiscordSvc"
 
     @Volatile
-    private var prefs: SharedPreferences? = null
+    private var prefs: KeyValueStore? = null
 
     private val initDeferred = CompletableDeferred<Unit>()
 
-    fun init(context: Context) {
+    fun init(context: AppContext) {
         if (prefs != null) return
         synchronized(this) {
             if (prefs != null) return
             try {
                 AesKeystore.getOrCreateKey()
-                prefs = context.getSharedPreferences(PREFS_NAME, 0)
+                prefs = KeyValueStore.get(PREFS_NAME)
                 initDeferred.complete(Unit)
             } catch (e: Exception) {
                 Timber.e(e, "DiscordTokenStore init failed")
@@ -165,7 +163,6 @@ object DiscordTokenStore {
     }
 
     internal object AesKeystore {
-        private const val KEY_ALIAS = "metrolist_discord_token_key"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val GCM_IV_SIZE = 12
         private const val GCM_TAG_SIZE = 128
@@ -179,18 +176,10 @@ object DiscordTokenStore {
 
         fun getOrCreateKey(): SecretKey {
             secretKey?.let { return it }
-            val key = try {
-                val ks = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
-                (ks.getKey(KEY_ALIAS, null) as? SecretKey) ?: run {
-                    val kGen = KeyGenerator.getInstance("AES", "AndroidKeyStore")
-                    kGen.generateKey()
-                }
-            } catch (_: Exception) {
-                javax.crypto.spec.SecretKeySpec(
-                    "MetrolistDiscordToken2026KeyDesk!".toByteArray(StandardCharsets.UTF_8).copyOf(32),
-                    "AES"
-                )
-            }
+            val key = javax.crypto.spec.SecretKeySpec(
+                "MetrolistDiscordToken2026KeyDesk!".toByteArray(StandardCharsets.UTF_8).copyOf(32),
+                "AES",
+            )
             secretKey = key
             return key
         }

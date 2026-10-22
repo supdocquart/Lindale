@@ -5,7 +5,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Album-art colour extraction modelled on AndroidX Palette: pixels are quantised into
+ * Album-art colour extraction: pixels are quantised into
  * 5-bit-per-channel buckets and the target swatches are picked by saturation, lightness
  * and population. Platform code installs [pixelReader] to turn an image into ARGB pixels.
  */

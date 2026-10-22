@@ -6,6 +6,7 @@
  */
 
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -67,7 +68,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -1823,7 +1823,7 @@ fun SwipeToSongBox(
     mediaItem: MediaItem,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val ctx = LocalContext.current
+    val ctx = LocalAppContext.current
     val player = LocalPlayerConnection.current
     val scope = rememberCoroutineScope()
     val offset = remember { mutableFloatStateOf(0f) }

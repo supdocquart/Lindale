@@ -4,14 +4,12 @@
  */
 
 package com.metrolist.music.ui.screens.wrapped
+import com.metrolist.music.platform.AppContext
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
-import com.metrolist.music.cacheDir
-import com.metrolist.music.filesDir
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.AccountInfo
 import com.metrolist.music.constants.ArtistSongSortType
@@ -49,7 +47,7 @@ sealed class PlaylistCreationState {
 
 class WrappedManager(
     private val databaseDao: DatabaseDao,
-    private val context: PlatformContext
+    private val context: AppContext
 ) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 

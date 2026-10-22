@@ -1,10 +1,12 @@
 package com.metrolist.music.utils
+import com.metrolist.music.platform.AppContext
+
+import com.metrolist.music.platform.KeyValueStore
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.music.PlatformContext
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.Thumbnail
 import com.metrolist.innertube.models.Thumbnails
@@ -40,14 +42,14 @@ import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import kotlin.time.Clock
 
-/** The sole stream extraction entry point for the Android app. */
+/** The sole stream extraction entry point for the app. */
 object InnerTubeXPlayer {
     private const val TAG = "InnerTubeXPlayer"
     private const val STREAM_CLIENT_FAILURE_TTL_MS = 5 * 60 * 1000L
     private const val DEFAULT_STREAM_TTL_SECONDS = 5 * 60
 
     @Volatile
-    private var applicationContext: PlatformContext? = null
+    private var applicationContext: AppContext? = null
 
     @Volatile
     private var currentBundle: ExtractionBundle? = null
@@ -56,7 +58,7 @@ object InnerTubeXPlayer {
     private val streamClientFailures = java.util.concurrent.ConcurrentHashMap<String, FailedStreamClients>()
 
     @Synchronized
-    fun initialize(context: PlatformContext) {
+    fun initialize(context: AppContext) {
         if (applicationContext == null) applicationContext = context
     }
 
@@ -234,7 +236,7 @@ object InnerTubeXPlayer {
     }
 
     private val configRepository: PlayerConfigRepository by lazy {
-        AndroidPlayerConfigRepository(requireNotNull(applicationContext) { "InnerTubeXPlayer is not initialized" })
+        DesktopPlayerConfigRepository()
     }
 
     private val poTokenGenerator: PoTokenGenerator by lazy {
@@ -298,24 +300,24 @@ object InnerTubeXPlayer {
         val failedAtMs: Long,
     )
 
-    private class AndroidPlayerConfigRepository(context: PlatformContext) : PlayerConfigRepository {
-        private val preferences = context.getSharedPreferences("innertubex_player_config", android.content.Context.MODE_PRIVATE)
+    private class DesktopPlayerConfigRepository : PlayerConfigRepository {
+        private val preferences = KeyValueStore.get("innertubex_player_config")
 
         override val enabled: Boolean = true
         override val sourceUrl: String = PLAYER_CONFIG_URL
         override val defaultSourceUrl: String = PLAYER_CONFIG_URL
         override var cachedJson: String
             get() = preferences.getString("json", "").orEmpty()
-            set(value) = preferences.edit().putString("json", value).apply()
+            set(value) { preferences.edit().putString("json", value).commit() }
         override var cachedAtMs: Long
             get() = preferences.getLong("cached_at_ms", 0L)
-            set(value) = preferences.edit().putLong("cached_at_ms", value).apply()
+            set(value) { preferences.edit().putLong("cached_at_ms", value).commit() }
         override var cachedSourceUrl: String
             get() = preferences.getString("source_url", "").orEmpty()
-            set(value) = preferences.edit().putString("source_url", value).apply()
+            set(value) { preferences.edit().putString("source_url", value).commit() }
         override var cachedEtag: String
             get() = preferences.getString("etag", "").orEmpty()
-            set(value) = preferences.edit().putString("etag", value).apply()
+            set(value) { preferences.edit().putString("etag", value).commit() }
 
         private companion object {
             const val PLAYER_CONFIG_URL =

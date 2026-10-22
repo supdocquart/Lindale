@@ -1,4 +1,5 @@
 package com.metrolist.music.eq.data
+import com.metrolist.music.platform.AppContext
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +57,7 @@ private data class EqStoreFile(
 /** Process-wide EQ profile store persisted to eq_profiles.json in the app data folder. */
 internal object EqStore {
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
-    private val file: File by lazy { File(android.content.Context().filesDir, "eq_profiles.json") }
+    private val file: File by lazy { File(AppContext().filesDir, "eq_profiles.json") }
     private val lock = Any()
 
     val profiles = MutableStateFlow<List<SavedEQProfile>>(emptyList())
@@ -164,7 +165,7 @@ class GitHubAutoEqSearch(context: Any? = null) {
         val path: String = "",
     )
 
-    private val indexFile = File(android.content.Context().filesDir, "autoeq/INDEX.md")
+    private val indexFile = File(AppContext().filesDir, "autoeq/INDEX.md")
 
     fun isDatabaseCached(): Boolean = indexFile.isFile && indexFile.length() > 0
 
