@@ -40,6 +40,7 @@ class DesktopDiscordPresence(
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val syncMutex = Mutex()
+    private val ipc = DiscordIpcClient(com.metrolist.music.BuildConfig.DISCORD_APP_ID.toString())
 
     @Volatile
     private var enabled = true
@@ -59,7 +60,7 @@ class DesktopDiscordPresence(
                 .collect { value ->
                     enabled = value
                     Timber.tag(TAG).i("desktopPresence: enabled=%s", value)
-                    if (value) sync() else if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
+                    if (value) sync() else clearAll()
                 }
         }
 
@@ -81,6 +82,19 @@ class DesktopDiscordPresence(
         scope.launch {
             DiscordRpcManager.settingsChanged.collect { sync() }
         }
+
+        // Picks up the Discord app being started or closed while music is playing.
+        scope.launch {
+            while (true) {
+                delay(20_000)
+                if (enabled && !ipc.isConnected) sync()
+            }
+        }
+    }
+
+    private fun clearAll() {
+        ipc.clear()
+        if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
     }
 
     private suspend fun sync() = syncMutex.withLock {
@@ -92,11 +106,15 @@ class DesktopDiscordPresence(
         if (!enabled) return
         val meta = connection.mediaMetadata.value
         if (meta == null) {
-            if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
+            clearAll()
             return
         }
 
-        if (!DiscordRpcManager.isReady()) {
+        val useIpc = ipc.ensureConnected()
+        if (useIpc) {
+            // Avoid a second, duplicate activity coming from the account session.
+            if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
+        } else if (!DiscordRpcManager.isReady()) {
             val token = DiscordRpcManager.getAccessToken()
             val now = System.currentTimeMillis()
             if (token != null && now - lastReconnectAttemptAtMs > 30_000L) {
@@ -108,7 +126,7 @@ class DesktopDiscordPresence(
         }
 
         val isPlaying = connection.isPlaying.value
-        if (DiscordRpcManager.isShowingSong(meta.id, isPlaying)) return
+        if (if (useIpc) ipc.isShowing(meta.id, isPlaying) else DiscordRpcManager.isShowingSong(meta.id, isPlaying)) return
 
         val song = database.song(meta.id).first()
         if (song == null) {
@@ -152,8 +170,12 @@ class DesktopDiscordPresence(
             else -> PresenceStatus.Online
         }
 
-        Timber.tag(TAG).i("desktopPresence: setActivity song=%s isPlaying=%s", song.song.title, isPlaying)
-        DiscordRpcManager.setActivity(activity, songId = song.song.id, isPlaying = isPlaying, status = status)
+        Timber.tag(TAG).i("desktopPresence: setActivity song=%s isPlaying=%s via=%s", song.song.title, isPlaying, if (useIpc) "ipc" else "gateway")
+        if (useIpc) {
+            ipc.setActivity(activity, songId = song.song.id, isPlaying = isPlaying)
+        } else {
+            DiscordRpcManager.setActivity(activity, songId = song.song.id, isPlaying = isPlaying, status = status)
+        }
     }
 
     private companion object {
