@@ -1,4 +1,7 @@
 import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.isAltPressed
+import androidx.compose.ui.input.key.KeyEvent
 import com.metrolist.music.ui.component.GlobalSearch
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
@@ -54,7 +57,7 @@ private fun runApp() = application {
                     GlobalSearch.focus()
                     true
                 }
-                else -> false
+                else -> handlePlayerShortcut(event, playerConnection)
             }
         },
     ) {
@@ -79,4 +82,40 @@ private fun runApp() = application {
             playerConnection = playerConnection,
         )
     }
+}
+
+/**
+ * Spotify-style shortcuts. The window only sees keys nothing focused consumed, so typing a space
+ * in the search box never toggles playback.
+ */
+private fun handlePlayerShortcut(event: KeyEvent, player: DesktopPlayerConnection): Boolean {
+    if (event.isAltPressed) return false
+    val ctrl = event.isCtrlPressed
+    val shift = event.isShiftPressed
+    fun changeVolume(delta: Float) {
+        val volume = player.service.playerVolume
+        if (player.isMuted.value) player.setMuted(false)
+        volume.value = (volume.value + delta).coerceIn(0f, 1f)
+    }
+    fun seekBy(deltaMs: Long) {
+        val duration = player.player.duration.takeIf { it > 0 } ?: return
+        player.seekTo((player.player.currentPosition + deltaMs).coerceIn(0L, duration))
+    }
+    when {
+        event.key == Key.MediaPlayPause -> player.togglePlayPause()
+        event.key == Key.MediaNext -> player.seekToNext()
+        event.key == Key.MediaPrevious -> player.seekToPrevious()
+        event.key == Key.Spacebar && !ctrl && !shift -> player.togglePlayPause()
+        ctrl && !shift && event.key == Key.DirectionRight -> player.seekToNext()
+        ctrl && !shift && event.key == Key.DirectionLeft -> player.seekToPrevious()
+        ctrl && !shift && event.key == Key.DirectionUp -> changeVolume(0.1f)
+        ctrl && !shift && event.key == Key.DirectionDown -> changeVolume(-0.1f)
+        shift && !ctrl && event.key == Key.DirectionRight -> seekBy(5_000)
+        shift && !ctrl && event.key == Key.DirectionLeft -> seekBy(-5_000)
+        ctrl && !shift && event.key == Key.S -> player.player.shuffleModeEnabled = !player.player.shuffleModeEnabled
+        ctrl && !shift && event.key == Key.R -> player.toggleRepeatMode()
+        ctrl && !shift && event.key == Key.M -> player.toggleMute()
+        else -> return false
+    }
+    return true
 }

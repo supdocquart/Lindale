@@ -20,7 +20,7 @@ import com.metrolist.music.platform.Uri
 import com.metrolist.music.utils.Toast
 import com.metrolist.music.ui.utils.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
+import com.metrolist.music.ui.utils.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
