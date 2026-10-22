@@ -47,11 +47,20 @@ private val platformScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 @Volatile
 private var initialized = false
 
+/** Releases caches while the window is minimized. */
+fun trimDesktopMemory() {
+    ImageLoaderSetup.trimMemory()
+    System.gc()
+    Timber.i("memory trimmed: %s", MemoryMonitor.snapshot())
+}
+
 fun initDesktopPlatform() {
     if (initialized) return
     initialized = true
 
     WindowsDpapi.install()
+    ImageLoaderSetup.install()
+    MemoryMonitor.start()
     com.metrolist.music.discord.DiscordDesktopOAuth.install()
     com.metrolist.music.ui.theme.DesktopPaletteReader.install()
     WindowsScreenWake.install()

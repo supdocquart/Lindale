@@ -1,3 +1,8 @@
+import androidx.compose.ui.input.key.isCtrlPressed
+import com.metrolist.music.ui.component.GlobalSearch
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import com.metrolist.music.platform.trimDesktopMemory
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -15,6 +20,8 @@ import com.metrolist.music.playback.DesktopPlayerConnection
 import com.metrolist.music.platform.initDesktopPlatform
 
 fun main() {
+    // Lets a launcher pick Skia's backend (e.g. OPENGL, SOFTWARE) for memory comparisons.
+    System.getenv("METROLIST_RENDER_API")?.takeIf { it.isNotBlank() }?.let { System.setProperty("skiko.renderApi", it) }
     DebugLog.install()
     runApp()
 }
@@ -40,9 +47,23 @@ private fun runApp() = application {
         title = "Metrolist",
         state = windowState,
         onKeyEvent = { event ->
-            event.type == KeyEventType.KeyDown && event.key == Key.Escape && BackDispatcher.dispatch()
+            when {
+                event.type != KeyEventType.KeyDown -> false
+                event.key == Key.Escape -> BackDispatcher.dispatch()
+                event.isCtrlPressed && (event.key == Key.K || event.key == Key.F) -> {
+                    GlobalSearch.focus()
+                    true
+                }
+                else -> false
+            }
         },
     ) {
+        LaunchedEffect(windowState.isMinimized) {
+            if (windowState.isMinimized) {
+                delay(5_000)
+                trimDesktopMemory()
+            }
+        }
         DisposableEffect(Unit) {
             // Mouse "back" side button (XButton1) arrives as AWT button 4.
             val listener = java.awt.event.AWTEventListener { ev ->

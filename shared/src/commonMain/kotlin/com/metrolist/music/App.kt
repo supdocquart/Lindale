@@ -1,4 +1,23 @@
 package com.metrolist.music
+
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import com.metrolist.music.ui.utils.BackHandler
+import com.metrolist.music.ui.component.DesktopSearchField
+import com.metrolist.music.ui.component.DesktopSearchPanel
+import com.metrolist.music.ui.component.GlobalSearch
+import com.metrolist.music.ui.component.rememberSearchSubmit
 import com.metrolist.music.platform.AppContext
 
 import com.metrolist.music.ui.utils.BackDispatcher
@@ -79,17 +98,49 @@ fun MetrolistApp(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val navigationItems = remember {
-        listOfNotNull(Screens.Home, Screens.Search, Screens.Library)
+        // Search lives in the top bar on desktop (Ctrl+K), not in the rail.
+        listOfNotNull(Screens.Home, Screens.Library)
     }
 
     val currentTitleRes = remember(currentRoute) {
         when (currentRoute) {
             Screens.Home.route -> Res.string.home
-            Screens.Search.route -> Res.string.search
+            // The search screen draws its own bar with the input field.
             Screens.Library.route -> Res.string.filter_library
             else -> null
         }
     }
+
+    var searchText by remember { mutableStateOf(TextFieldValue()) }
+    var searchOpen by remember { mutableStateOf(false) }
+    val searchFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val submitSearch = rememberSearchSubmit(navController, database, playerConnection)
+    val closeSearch = {
+        searchOpen = false
+        focusManager.clearFocus()
+    }
+    val onSearchSubmit: (String) -> Unit = { query ->
+        if (query.isNotBlank()) {
+            searchText = TextFieldValue(query, TextRange(query.length))
+            closeSearch()
+            submitSearch(query)
+        }
+    }
+    LaunchedEffect(currentRoute) { searchOpen = false }
+    val hasSearchBar by rememberUpdatedState(currentTitleRes != null)
+    DisposableEffect(navController) {
+        GlobalSearch.focusHandler = {
+            if (hasSearchBar) {
+                searchOpen = true
+                runCatching { searchFocusRequester.requestFocus() }
+            } else {
+                navController.navigate(Screens.Search.route) { launchSingleTop = true }
+            }
+        }
+        onDispose { GlobalSearch.focusHandler = null }
+    }
+    BackHandler(enabled = searchOpen) { closeSearch() }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isLandscape = maxWidth > maxHeight
@@ -234,11 +285,37 @@ fun MetrolistApp(
                             }
 
                             if (currentTitleRes != null) {
+                                if (searchOpen) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(top = 64.dp)
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = null,
+                                                onClick = closeSearch,
+                                            ),
+                                    ) {
+                                        DesktopSearchPanel(
+                                            value = searchText,
+                                            onValueChange = { searchText = it },
+                                            onSubmit = onSearchSubmit,
+                                            pureBlack = pureBlack,
+                                            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+                                        )
+                                    }
+                                }
                                 TopAppBar(
                                     title = {
-                                        Text(
-                                            text = stringResource(currentTitleRes),
-                                            style = MaterialTheme.typography.titleLarge,
+                                        DesktopSearchField(
+                                            value = searchText,
+                                            onValueChange = {
+                                                searchText = it
+                                                searchOpen = true
+                                            },
+                                            onSubmit = onSearchSubmit,
+                                            onFocused = { searchOpen = true },
+                                            focusRequester = searchFocusRequester,
                                         )
                                     },
                                     actions = {
