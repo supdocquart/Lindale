@@ -49,6 +49,7 @@ compose.desktop {
             // paketle.bat copies VLC into appResources/windows/vlc so playback works without a VLC install.
             appResourcesRootDir.set(project.layout.projectDirectory.dir("appResources"))
             windows {
+                iconFile.set(project.file("icon.ico"))
                 menuGroup = "Metrolist"
                 shortcut = true
                 perUserInstall = true
