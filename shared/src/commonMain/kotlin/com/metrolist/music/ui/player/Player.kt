@@ -866,21 +866,14 @@ fun BottomSheetPlayer(
                 }
             }
         },
-        onDismiss =
-            if (!isListenTogetherGuest) {
-                {
-                    playerConnection.service.clearAutomix()
-                    playerConnection.player.stop()
-                    playerConnection.player.clearMediaItems()
-                }
-            } else {
-                null
-            },
+        // DESKTOP: no swipe-down-to-stop; an accidental mouse drag on the bar must not end playback.
+        onDismiss = null,
         collapsedContent = {
-            MiniPlayer(
+            // DESKTOP: desktop bar instead of the phone MiniPlayer.
+            DesktopPlayerBar(
                 positionState = positionState,
                 durationState = durationState,
-                onClick = { state.expandSoft() },
+                onExpand = { state.expandSoft() },
             )
         },
     ) {

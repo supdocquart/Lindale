@@ -1,5 +1,7 @@
 package com.metrolist.music
 
+import com.metrolist.music.ui.player.DesktopPlayerBarHeight
+
 import androidx.compose.foundation.layout.fillMaxWidth
 
 import androidx.compose.ui.text.input.TextFieldValue
@@ -151,7 +153,7 @@ fun MetrolistApp(
 
         val playerBottomSheetState = rememberBottomSheetState(
             dismissedBound = 0.dp,
-            collapsedBound = if (showRail) MiniPlayerHeight else (MiniPlayerHeight + NavigationBarHeight),
+            collapsedBound = if (showRail) DesktopPlayerBarHeight else (DesktopPlayerBarHeight + NavigationBarHeight),
             expandedBound = maxHeight,
         )
 
@@ -188,7 +190,7 @@ fun MetrolistApp(
                 left = 0.dp,
                 top = AppBarHeight,
                 right = 0.dp,
-                bottom = if (!playerBottomSheetState.isDismissed) MiniPlayerHeight else 0.dp,
+                bottom = if (!playerBottomSheetState.isDismissed) DesktopPlayerBarHeight else 0.dp,
             )
         }
 
@@ -384,7 +386,7 @@ fun MetrolistApp(
                 )
 
                 ToastOverlay(
-                    bottomPadding = if (playerBottomSheetState.isDismissed) 32.dp else MiniPlayerHeight + 24.dp,
+                    bottomPadding = if (playerBottomSheetState.isDismissed) 32.dp else DesktopPlayerBarHeight + 24.dp,
                 )
             }
         }
