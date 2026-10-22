@@ -147,6 +147,8 @@ class DesktopPlayerConnection(
             val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
             val vlcBase = File(localAppData, "Metrolist/vlc")
             val candidateDirs = buildList {
+                // Packaged builds ship VLC next to the app (see paketle.bat).
+                System.getProperty("compose.application.resources.dir")?.let { add(File(it, "vlc")) }
                 add(File(vlcBase, "vlc-3.0.24"))
                 if (vlcBase.exists()) {
                     vlcBase.listFiles()?.filter { it.isDirectory }?.forEach { add(it) }

@@ -28,7 +28,6 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "MainKt"
-        jvmArgs("-Dmetrolist.logDir=" + rootProject.file("logs").absolutePath)
         // Keep the heap small and hand unused memory back to Windows instead of holding on to it.
         // Serial GC and the C1-only JIT carry far less native overhead than G1 + C2 for a UI-sized heap.
         jvmArgs(
@@ -40,15 +39,30 @@ compose.desktop {
             "-XX:MaxHeapFreeRatio=25",
             "-XX:+UseStringDeduplication",
             "-XX:ReservedCodeCacheSize=64m",
-            // Diagnostic: lets MemoryMonitor report the JVM's own native memory. Remove after measuring.
-            "-XX:NativeMemoryTracking=summary",
         )
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
-            packageName = "MetrolistDesktop"
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe)
+            packageName = "Metrolist"
             packageVersion = "1.0.0"
-            modules("jdk.httpserver")
+            // Ship the whole runtime: a missing JDK module only shows up as a crash on the tester's PC.
+            includeAllModules = true
+            // paketle.bat copies VLC into appResources/windows/vlc so playback works without a VLC install.
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("appResources"))
+            windows {
+                menuGroup = "Metrolist"
+                shortcut = true
+                perUserInstall = true
+                dirChooser = true
+            }
         }
     }
 }
 
+
+// Dev runs (Metrolist.bat): logs in the repo + native memory tracking for MemoryMonitor. Not in packaged builds.
+tasks.withType<JavaExec>().configureEach {
+    if (name == "run") {
+        systemProperty("metrolist.logDir", rootProject.file("logs").absolutePath)
+        jvmArgs("-XX:NativeMemoryTracking=summary")
+    }
+}

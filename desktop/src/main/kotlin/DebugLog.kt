@@ -29,7 +29,13 @@ object DebugLog {
     fun install() {
         if (System.getProperty("metrolist.trace") == "false" || file != null) return
         runCatching {
-            val dir = File(System.getProperty("metrolist.logDir") ?: File(System.getProperty("user.dir"), "logs").path)
+            val packaged = System.getProperty("compose.application.resources.dir") != null
+            val dir = when {
+                System.getProperty("metrolist.logDir") != null -> File(System.getProperty("metrolist.logDir"))
+                // Installed apps cannot write next to the exe; keep logs in the user's profile.
+                packaged -> File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), "Metrolist/logs")
+                else -> File(System.getProperty("user.dir"), "logs")
+            }
             dir.mkdirs()
             val latest = File(dir, "latest.log")
             if (latest.exists()) {
