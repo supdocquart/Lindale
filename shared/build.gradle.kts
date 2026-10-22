@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     alias(libs.plugins.kotlin.serialization)
@@ -70,11 +72,35 @@ dependencies {
     add("kspDesktop", libs.room.compiler)
 }
 
+// DESKTOP: the string XML keeps Android escapes (\' and \") which Compose resources show
+// literally. Strip them from the prepared .cvr files (base64 values) instead of editing the
+// shared string files.
+tasks.matching { it.name.startsWith("prepareComposeResourcesTaskFor") }.configureEach {
+    doLast {
+        outputs.files.files.forEach { root ->
+            root.walkTopDown()
+                .filter { it.isFile && it.extension == "cvr" && it.parentFile.name.startsWith("values") }
+                .forEach { file -> unescapeCvr(file) }
+        }
+    }
+}
 
-
-
-
-
-
-
-
+fun unescapeCvr(file: File) {
+    val dec = Base64.getDecoder()
+    val enc = Base64.getEncoder()
+    fun fix(b64: String): String {
+        val text = String(dec.decode(b64), Charsets.UTF_8)
+        val fixed = text.replace("\\'", "'").replace("\\\"", "\"")
+        return if (fixed == text) b64 else enc.encodeToString(fixed.toByteArray(Charsets.UTF_8))
+    }
+    val lines = file.readLines().map { line ->
+        val parts = line.split("|", limit = 3)
+        if (parts.size < 3) return@map line
+        val values = parts[2].split(",").joinToString(",") { item ->
+            val colon = item.indexOf(':')
+            if (colon >= 0) item.substring(0, colon + 1) + fix(item.substring(colon + 1)) else fix(item)
+        }
+        "${parts[0]}|${parts[1]}|$values"
+    }
+    file.writeText(lines.joinToString("\n") + "\n")
+}

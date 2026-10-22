@@ -20,10 +20,13 @@ import metrolist.shared.generated.resources.arrow_forward
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-/** Previous/next buttons on the edges of a horizontal pager (desktop has no swipe). */
+/**
+ * Previous/next buttons on the edges of a horizontal pager (desktop has no swipe).
+ * Pass [visible] from a hover state so the arrows don't cover tiles until the mouse is over the row.
+ */
 @Composable
-fun PagerArrows(state: PagerState, modifier: Modifier = Modifier) {
-    if (state.pageCount <= 1) return
+fun PagerArrows(state: PagerState, modifier: Modifier = Modifier, visible: Boolean = true) {
+    if (state.pageCount <= 1 || !visible) return
     val scope = rememberCoroutineScope()
     Box(modifier) {
         if (state.canScrollBackward) {
