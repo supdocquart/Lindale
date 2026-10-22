@@ -1811,8 +1811,12 @@ fun InlineLyricsView(
         val stored = currentLyrics
         // Lyrics cached before synced providers worked on desktop are plain YouTube text; retry once per session.
         val shouldUpgrade = mediaMetadata != null && stored != null && stored.id == mediaMetadata.id &&
-            stored.provider.startsWith("YouTube") &&
-            !com.metrolist.music.lyrics.lyricsTextLooksSynced(stored.lyrics) &&
+            (
+                // DESKTOP: songs saved as "not found" get one fresh search per session, since the
+                // lyrics lookup now tries cleaned-up titles and more providers.
+                stored.lyrics == LyricsEntity.LYRICS_NOT_FOUND ||
+                    (stored.provider.startsWith("YouTube") && !com.metrolist.music.lyrics.lyricsTextLooksSynced(stored.lyrics))
+            ) &&
             LyricsUpgradeTracker.markAttempt(mediaMetadata.id)
         if (mediaMetadata != null && (stored == null || stored.lyrics.isNullOrBlank() || shouldUpgrade)) {
             delay(500)
