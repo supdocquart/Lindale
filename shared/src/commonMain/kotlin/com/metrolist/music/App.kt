@@ -234,7 +234,8 @@ fun MetrolistApp(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxSize()
+                    // DESKTOP: remember where the user clicked so menus open at the cursor.
+                    modifier = Modifier.fillMaxSize().trackMenuAnchor()
                 ) { innerPadding ->
                     Row(
                         modifier = Modifier

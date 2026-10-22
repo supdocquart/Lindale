@@ -14,6 +14,30 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Surface
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -121,43 +145,97 @@ fun AnimatedBottomSheet(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** Last pointer press in window coordinates; desktop menus open next to it. */
+object MenuAnchor {
+    var lastPress by mutableStateOf(IntOffset.Zero)
+}
+
+/** Records every press (without consuming it) so [BottomSheetMenu] can open at the cursor. */
+fun Modifier.trackMenuAnchor(): Modifier {
+    var coords: LayoutCoordinates? = null
+    return this
+        .onGloballyPositioned { coords = it }
+        .pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                    if (event.type == PointerEventType.Press) {
+                        val local = event.changes.firstOrNull()?.position ?: continue
+                        val window = coords?.localToWindow(local) ?: local
+                        MenuAnchor.lastPress = IntOffset(window.x.roundToInt(), window.y.roundToInt())
+                    }
+                }
+            }
+        }
+}
+
+private class CursorPositionProvider(
+    private val anchor: IntOffset,
+    private val marginPx: Int,
+) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset {
+        val maxX = (windowSize.width - popupContentSize.width - marginPx).coerceAtLeast(marginPx)
+        val x = anchor.x.coerceIn(marginPx, maxX)
+        val fitsBelow = anchor.y + popupContentSize.height + marginPx <= windowSize.height
+        val y = if (fitsBelow) anchor.y else anchor.y - popupContentSize.height
+        val maxY = (windowSize.height - popupContentSize.height - marginPx).coerceAtLeast(marginPx)
+        return IntOffset(x, y.coerceIn(marginPx, maxY))
+    }
+}
+
+// DESKTOP: menus open as a popup next to the cursor instead of a phone bottom sheet.
 @Composable
 fun BottomSheetMenu(
     modifier: Modifier = Modifier,
     state: MenuState,
-    background: Color = MaterialTheme.colorScheme.surface,
+    background: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
 ) {
+    if (!state.isVisible) return
     val focusManager = LocalFocusManager.current
-    val sheetState = rememberMaterialBottomSheetState()
-
-    AnimatedBottomSheet(
-        isVisible = state.isVisible,
-        onDismissRequest = {
-            focusManager.clearFocus()
-            state.isVisible = false
-        },
-        sheetState = sheetState,
-        containerColor = background,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .size(width = 40.dp, height = 4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-            )
-        },
-        modifier = modifier.fillMaxHeight()
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+    val density = LocalDensity.current
+    val anchor = remember(state.content) { MenuAnchor.lastPress }
+    val provider = remember(anchor) { CursorPositionProvider(anchor, with(density) { 8.dp.roundToPx() }) }
+    val dismiss = {
+        focusManager.clearFocus()
+        state.isVisible = false
+    }
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val maxMenuHeight = maxHeight * 0.85f
+        Popup(
+            popupPositionProvider = provider,
+            onDismissRequest = dismiss,
+            properties = PopupProperties(focusable = true),
         ) {
-            state.content(this)
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = background,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                shadowElevation = 8.dp,
+                modifier = Modifier
+                    .width(360.dp)
+                    .heightIn(max = maxMenuHeight)
+                    .onPreviewKeyEvent {
+                        if (it.key == Key.Escape && it.type == KeyEventType.KeyDown) {
+                            dismiss()
+                            true
+                        } else {
+                            false
+                        }
+                    },
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 12.dp),
+                ) {
+                    state.content(this)
+                }
+            }
         }
     }
 }
-
