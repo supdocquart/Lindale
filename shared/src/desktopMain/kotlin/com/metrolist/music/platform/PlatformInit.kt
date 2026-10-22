@@ -51,6 +51,7 @@ fun initDesktopPlatform() {
     if (initialized) return
     initialized = true
 
+    WindowsDpapi.install()
     com.metrolist.music.discord.DiscordDesktopOAuth.install()
     com.metrolist.music.ui.theme.DesktopPaletteReader.install()
     WindowsScreenWake.install()

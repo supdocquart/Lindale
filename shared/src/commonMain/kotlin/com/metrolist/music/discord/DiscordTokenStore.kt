@@ -1,4 +1,6 @@
 package com.metrolist.music.discord
+
+import com.metrolist.music.platform.SecretProtector
 import com.metrolist.music.platform.AppContext
 
 import com.metrolist.music.platform.KeyValueStore
@@ -37,6 +39,7 @@ object DiscordTokenStore {
             try {
                 AesKeystore.getOrCreateKey()
                 prefs = KeyValueStore.get(PREFS_NAME)
+                migrateToOsProtection()
                 initDeferred.complete(Unit)
             } catch (e: Exception) {
                 Timber.e(e, "DiscordTokenStore init failed")
@@ -45,10 +48,31 @@ object DiscordTokenStore {
         }
     }
 
+    private const val OS_PREFIX = "dpapi:"
+
+    /** Re-encrypts tokens saved with the legacy shared key using the OS user key. */
+    private fun migrateToOsProtection() {
+        if (SecretProtector.backend == null) return
+        val p = prefs ?: return
+        for (key in listOf(TOKEN_KEY, REFRESH_TOKEN_KEY)) {
+            val stored = p.getString(key, null) ?: continue
+            if (stored.startsWith(OS_PREFIX)) continue
+            val plain = decrypt(stored) ?: continue
+            val upgraded = encrypt(plain) ?: continue
+            p.edit { putString(key, upgraded) }
+            Timber.tag(TAG).i("tokenStore: migrated %s to OS-protected storage", key)
+        }
+    }
+
     private fun encrypt(value: String?): String? {
         if (value == null) return null
         return try {
-            AesKeystore.encrypt(value)
+            val os = SecretProtector.backend
+            if (os != null) {
+                OS_PREFIX + Base64.getEncoder().encodeToString(os.protect(value.toByteArray(StandardCharsets.UTF_8)))
+            } else {
+                AesKeystore.encrypt(value)
+            }
         } catch (e: Exception) {
             Timber.e(e, "DiscordTokenStore: encrypt failed")
             null
@@ -58,7 +82,12 @@ object DiscordTokenStore {
     private fun decrypt(value: String?): String? {
         if (value == null) return null
         return try {
-            AesKeystore.decrypt(value)
+            if (value.startsWith(OS_PREFIX)) {
+                val os = SecretProtector.backend ?: error("OS-protected token but no protector installed")
+                String(os.unprotect(Base64.getDecoder().decode(value.removePrefix(OS_PREFIX))), StandardCharsets.UTF_8)
+            } else {
+                AesKeystore.decrypt(value)
+            }
         } catch (e: Exception) {
             Timber.e(e, "DiscordTokenStore: decrypt failed")
             null
@@ -162,6 +191,7 @@ object DiscordTokenStore {
         Timber.tag(TAG).d("tokenStore: cleared")
     }
 
+    /** Legacy shared-key AES storage; only used to read old tokens and where no OS protector exists. */
     internal object AesKeystore {
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val GCM_IV_SIZE = 12
