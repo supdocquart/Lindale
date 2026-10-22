@@ -210,6 +210,11 @@ fun MetrolistApp(
             pureBlack = pureBlack,
             themeColor = themeColor,
         ) {
+            // DESKTOP: paint the native title bar in the top bar's color so they read as one piece.
+            val chromeColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+            androidx.compose.runtime.SideEffect {
+                com.metrolist.music.platform.WindowChrome.set(chromeColor.toArgb(), isDark)
+            }
             CompositionLocalProvider(
                 LocalDatabase provides database,
                 LocalNavController provides navController,

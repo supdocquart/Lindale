@@ -61,6 +61,26 @@ private fun runApp() = application {
             }
         },
     ) {
+        // Title bar follows the app theme (see WindowChrome / WindowsTitleBar).
+        DisposableEffect(window) {
+            com.metrolist.music.platform.WindowChrome.applier = { argb, dark ->
+                java.awt.EventQueue.invokeLater {
+                    com.metrolist.music.platform.WindowsTitleBar.apply(window, argb, dark)
+                }
+            }
+            com.metrolist.music.platform.WindowChrome.reapply()
+            // The native handle may not exist on the first composition; apply again once shown.
+            val opened = object : java.awt.event.WindowAdapter() {
+                override fun windowOpened(e: java.awt.event.WindowEvent?) {
+                    com.metrolist.music.platform.WindowChrome.reapply()
+                }
+            }
+            window.addWindowListener(opened)
+            onDispose {
+                window.removeWindowListener(opened)
+                com.metrolist.music.platform.WindowChrome.applier = null
+            }
+        }
         LaunchedEffect(windowState.isMinimized) {
             if (windowState.isMinimized) {
                 delay(5_000)
