@@ -220,7 +220,13 @@ fun MetrolistApp(
                                     if (playerBottomSheetState.isExpanded) {
                                         playerBottomSheetState.collapseSoft()
                                     }
-                                    if (!isSelected) {
+                                    // DESKTOP: Home is the start destination; restoring its saved state would
+                                    // bring back the page we just left (Settings/Stats), so just pop to it.
+                                    if (screen.route == Screens.Home.route) {
+                                        if (!navController.popBackStack(Screens.Home.route, inclusive = false)) {
+                                            navController.navigate(Screens.Home.route) { launchSingleTop = true }
+                                        }
+                                    } else if (!isSelected) {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -252,7 +258,13 @@ fun MetrolistApp(
                                     if (playerBottomSheetState.isExpanded) {
                                         playerBottomSheetState.collapseSoft()
                                     }
-                                    if (!isSelected) {
+                                    // DESKTOP: Home is the start destination; restoring its saved state would
+                                    // bring back the page we just left (Settings/Stats), so just pop to it.
+                                    if (screen.route == Screens.Home.route) {
+                                        if (!navController.popBackStack(Screens.Home.route, inclusive = false)) {
+                                            navController.navigate(Screens.Home.route) { launchSingleTop = true }
+                                        }
+                                    } else if (!isSelected) {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
