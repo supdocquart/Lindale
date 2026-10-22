@@ -1,5 +1,6 @@
 package com.metrolist.music
 
+import androidx.compose.ui.graphics.toArgb
 import com.metrolist.music.ui.player.DesktopPlayerBarHeight
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -93,6 +94,16 @@ fun MetrolistApp(
     }
     val pureBlackPref by rememberPreference(PureBlackKey, defaultValue = false)
     val pureBlack = pureBlackPref && isDark
+
+    // DESKTOP: theme seed = chosen palette color, or the playing song's cover when "Dynamic" is
+    // selected (same rules as upstream MainActivity).
+    val enableDynamicTheme by rememberPreference(com.metrolist.music.constants.DynamicThemeKey, defaultValue = true)
+    val selectedThemeColorInt by rememberPreference(
+        com.metrolist.music.constants.SelectedThemeColorKey,
+        defaultValue = com.metrolist.music.ui.theme.DefaultThemeColor.toArgb(),
+    )
+    val selectedThemeColor = Color(selectedThemeColorInt)
+    val themeColor = com.metrolist.music.ui.theme.rememberThemeSeedColor(playerConnection, enableDynamicTheme, selectedThemeColor)
 
     val showChangelog = remember { mutableStateOf(false) }
     var showAccountDialog by remember { mutableStateOf(false) }
@@ -197,6 +208,7 @@ fun MetrolistApp(
         MetrolistTheme(
             darkTheme = isDark,
             pureBlack = pureBlack,
+            themeColor = themeColor,
         ) {
             CompositionLocalProvider(
                 LocalDatabase provides database,

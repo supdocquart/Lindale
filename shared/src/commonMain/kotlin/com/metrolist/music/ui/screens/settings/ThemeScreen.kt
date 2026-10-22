@@ -1,4 +1,6 @@
 package com.metrolist.music.ui.screens.settings
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.FlowRow
 import com.metrolist.music.platform.LocalAppContext
 import com.metrolist.music.platform.DesktopLayout
 import androidx.compose.runtime.getValue
@@ -133,7 +135,8 @@ fun ThemeScreen(
     val (_, onDynamicThemeChange) = rememberPreference(DynamicThemeKey, defaultValue = true)
 
     val selectedThemeColor = Color(selectedThemeColorInt)
-    val isLandscape = DesktopLayout.landscape
+    // DESKTOP: always the side-by-side layout (preview left, controls right).
+    val isLandscape = true
 
     // Helper function to handle color selection with dynamic theme toggle
     val handleColorSelection: (Color) -> Unit = { color ->
@@ -146,7 +149,7 @@ fun ThemeScreen(
 
     if (isLandscape) {
         LandscapeThemeLayout(
-            innerPadding = PaddingValues(0.dp),
+            innerPadding = PaddingValues(top = 64.dp),
             darkMode = darkMode,
             onDarkModeChange = onDarkModeChange,
             pureBlack = pureBlack,
@@ -245,21 +248,16 @@ fun LandscapeThemeLayout(
                 .weight(0.4f)
                 .fillMaxHeight()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .heightIn(max = 300.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                ThemeMockup(
-                    darkMode = darkMode,
-                    pureBlack = pureBlack,
-                    themeColor = selectedThemeColor
-                )
-            }
+            // DESKTOP: preview shaped like the desktop window instead of a phone.
+            DesktopThemeMockup(
+                darkMode = darkMode,
+                pureBlack = pureBlack,
+                themeColor = selectedThemeColor,
+                modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp),
+            )
         }
 
         Column(
@@ -384,11 +382,13 @@ fun ThemeControls(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    contentPadding = PaddingValues(horizontal = 4.dp)
+                // DESKTOP: wrap the swatches instead of a one-line swipe row.
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(horizontal = 4.dp),
                 ) {
-                    items(PaletteColors) { palette ->
+                    PaletteColors.forEach { palette ->
                         val isDynamicPalette = palette.seedColor == Color.Transparent
                         val isSelected = if (isDynamicPalette) {
                             selectedThemeColor == DefaultThemeColor
@@ -871,6 +871,79 @@ fun ThemeMockupPortrait(
                             .size(18.dp)
                             .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
                     )
+                }
+            }
+        }
+    }
+}
+
+/** DESKTOP: miniature of the desktop window (rail, content cards, player bar) in the chosen theme. */
+@Composable
+fun DesktopThemeMockup(
+    darkMode: DarkMode,
+    pureBlack: Boolean,
+    themeColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    val useDark = when (darkMode) {
+        DarkMode.AUTO -> isSystemInDarkTheme()
+        DarkMode.ON -> true
+        DarkMode.OFF -> false
+    }
+    MetrolistTheme(darkTheme = useDark, pureBlack = pureBlack, themeColor = themeColor) {
+        val cs = MaterialTheme.colorScheme
+        Card(
+            modifier = modifier.aspectRatio(16f / 10f),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = cs.surface),
+            border = BorderStroke(1.dp, cs.outlineVariant),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                Row(Modifier.weight(1f).fillMaxWidth()) {
+                    // Navigation rail
+                    Column(
+                        modifier = Modifier.fillMaxHeight().width(36.dp).background(cs.surfaceContainer).padding(vertical = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Box(Modifier.width(22.dp).height(12.dp).background(cs.secondaryContainer, CircleShape))
+                        repeat(3) { Box(Modifier.size(10.dp).background(cs.onSurfaceVariant.copy(alpha = 0.5f), CircleShape)) }
+                    }
+                    // Content
+                    Column(
+                        modifier = Modifier.weight(1f).fillMaxHeight().padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Box(Modifier.fillMaxWidth(0.55f).height(14.dp).align(Alignment.CenterHorizontally).background(cs.surfaceContainerHigh, CircleShape))
+                        Box(Modifier.width(60.dp).height(8.dp).background(cs.primary, RoundedCornerShape(4.dp)))
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            listOf(cs.primaryContainer, cs.secondaryContainer, cs.tertiaryContainer, cs.primaryContainer, cs.secondaryContainer).forEach {
+                                Box(Modifier.weight(1f).aspectRatio(1f).background(it, RoundedCornerShape(6.dp)))
+                            }
+                        }
+                        Box(Modifier.width(48.dp).height(8.dp).background(cs.primary, RoundedCornerShape(4.dp)))
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            listOf(cs.tertiaryContainer, cs.surfaceContainerHighest, cs.secondaryContainer).forEach {
+                                Box(Modifier.weight(1f).height(36.dp).background(it, RoundedCornerShape(8.dp)))
+                            }
+                        }
+                    }
+                }
+                // Player bar
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(30.dp).background(cs.surfaceContainer).padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(Modifier.size(18.dp).background(cs.tertiary, RoundedCornerShape(4.dp)))
+                    Spacer(Modifier.width(6.dp))
+                    Box(Modifier.width(40.dp).height(6.dp).background(cs.onSurface.copy(alpha = 0.6f), CircleShape))
+                    Spacer(Modifier.weight(1f))
+                    Box(Modifier.size(16.dp).background(cs.primary, CircleShape))
+                    Spacer(Modifier.width(6.dp))
+                    Box(Modifier.width(80.dp).height(3.dp).background(cs.primary, CircleShape))
+                    Spacer(Modifier.weight(1f))
+                    Box(Modifier.width(30.dp).height(3.dp).background(cs.onSurfaceVariant, CircleShape))
                 }
             }
         }

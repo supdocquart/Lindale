@@ -109,6 +109,20 @@ fun DesktopPlayerBar(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
         ) {
+            // Warm the disk cache with the large cover the now-playing page uses, so opening it
+            // doesn't wait on the network mid-animation.
+            val bigCover = metadata.thumbnailUrl?.resize(1080, 1080)
+            androidx.compose.runtime.LaunchedEffect(bigCover) {
+                if (bigCover != null) {
+                    coil3.SingletonImageLoader.get(coil3.PlatformContext.INSTANCE).enqueue(
+                        coil3.request.ImageRequest.Builder(coil3.PlatformContext.INSTANCE)
+                            .data(bigCover)
+                            .size(64, 64) // only the downloaded bytes matter; keep the decode cheap
+                            .memoryCachePolicy(coil3.request.CachePolicy.DISABLED)
+                            .build(),
+                    )
+                }
+            }
             // Left: track
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -66,6 +66,10 @@ class DesktopPlayerConnection(
     private var mediaPlayerFactory: MediaPlayerFactory? = null
     private var vlcPlayer: MediaPlayer? = null
 
+    // Declared before init {} runs initVlcEngine(), which reads it.
+    @Volatile
+    private var playbackParams: PlaybackParameters = PlaybackParameters.DEFAULT
+
     private var activeQueue: Queue? = null
     private var playJob: Job? = null
 
@@ -142,6 +146,47 @@ class DesktopPlayerConnection(
         }
     }
 
+    /** Same speed and pitch = "varispeed" (pitch follows speed, like a record). */
+    private fun PlaybackParameters.isVarispeed() = speed != 1f && kotlin.math.abs(pitch - speed) < 0.001f
+
+    private fun PlaybackParameters.semitones(): Float = (12.0 * kotlin.math.log2(pitch.toDouble())).toFloat()
+
+    private fun vlcArgs(params: PlaybackParameters): Array<String> = buildList {
+        add("--no-video")
+        add("--no-stats")
+        add("--network-caching=1500")
+        add("--http-reconnect")
+        // Pitch can only be set when libVLC starts, so a pitch change rebuilds the engine below.
+        if (params.isVarispeed()) {
+            add("--no-audio-time-stretch")
+        } else if (kotlin.math.abs(params.semitones()) > 0.01f) {
+            add("--audio-filter=scaletempo_pitch")
+            add("--pitch-shift=${params.semitones()}")
+        }
+    }.toTypedArray()
+
+    /** DESKTOP: Tempo & pitch / speed dialogs. Tempo changes live; pitch restarts VLC at the same spot. */
+    private fun applyPlaybackParameters(params: PlaybackParameters) {
+        val old = playbackParams
+        playbackParams = params
+        val pitchChanged = old.isVarispeed() != params.isVarispeed() ||
+            (!params.isVarispeed() && kotlin.math.abs(old.semitones() - params.semitones()) > 0.01f)
+        if (!pitchChanged) {
+            runCatching { vlcPlayer?.controls()?.setRate(params.speed) }
+            return
+        }
+        val index = currentMediaItemIndex.value
+        val position = player.currentPosition
+        val wasActive = vlcPlayer?.status()?.isPlaying == true || isPlaying.value
+        runCatching { vlcPlayer?.controls()?.stop() }
+        runCatching { vlcPlayer?.release() }
+        runCatching { mediaPlayerFactory?.release() }
+        vlcPlayer = null
+        mediaPlayerFactory = null
+        initVlcEngine()
+        if (wasActive && index in player.itemsList.indices) playIndex(index, position)
+    }
+
     private fun initVlcEngine() {
         try {
             val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
@@ -166,12 +211,7 @@ class DesktopPlayerConnection(
                 Timber.d("Loaded 64-bit libvlc from: $path")
             }
 
-            val factory = MediaPlayerFactory(
-                "--no-video",
-                "--no-stats",
-                "--network-caching=1500",
-                "--http-reconnect",
-            )
+            val factory = MediaPlayerFactory(*vlcArgs(playbackParams))
             mediaPlayerFactory = factory
             val mp = factory.mediaPlayers().newMediaPlayer()
             mp.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
@@ -183,6 +223,9 @@ class DesktopPlayerConnection(
                 }
 
                 override fun playing(mediaPlayer: MediaPlayer) {
+                    // VLC resets the rate for each new media; keep the user's tempo.
+                    val speed = playbackParams.speed
+                    if (speed != 1f) runCatching { mediaPlayer.controls().setRate(speed) }
                     playbackState.value = Player.STATE_READY
                     isPlaying.value = true
                     player.playWhenReady = true
@@ -586,7 +629,9 @@ class DesktopPlayerConnection(
 
     override fun play() {
         val mp = vlcPlayer ?: return
-        if (playbackState.value == Player.STATE_IDLE || playbackState.value == Player.STATE_ENDED) {
+        // A fresh VLC player (app start, or rebuilt after a pitch change) has no media loaded yet.
+        val hasMedia = runCatching { mp.media().isValid }.getOrDefault(false)
+        if (!hasMedia || playbackState.value == Player.STATE_IDLE || playbackState.value == Player.STATE_ENDED) {
             if (player.mediaItemCount > 0) {
                 playIndex(currentMediaItemIndex.value, player.currentPosition)
             }
@@ -750,6 +795,10 @@ class DesktopPlayerConnection(
 
         override val currentPosition: Long
             get() = internalPosition
+
+        override var playbackParameters: PlaybackParameters
+            get() = this@DesktopPlayerConnection.playbackParams
+            set(value) = this@DesktopPlayerConnection.applyPlaybackParameters(value)
 
         override val duration: Long
             get() = internalDuration

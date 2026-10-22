@@ -657,6 +657,8 @@ fun PlayerMenu(
                                         )
                                     },
                                     onClick = {
+                                        // DESKTOP: the page opens under the full-screen player otherwise.
+                                        playerBottomSheetState.collapseSoft()
                                         navController.navigate("equalizer")
                                         onDismiss()
                                     },

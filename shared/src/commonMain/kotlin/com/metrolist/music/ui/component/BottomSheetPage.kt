@@ -4,6 +4,8 @@
  */
 
 package com.metrolist.music.ui.component
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -57,43 +59,38 @@ class BottomSheetPageState(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+// DESKTOP: pages (song details etc.) open as a centered dialog instead of a phone bottom sheet.
 @Composable
 fun BottomSheetPage(
     modifier: Modifier = Modifier,
     state: BottomSheetPageState,
-    background: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation),
+    background: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
+    if (!state.isVisible) return
     val focusManager = LocalFocusManager.current
-    val sheetState = rememberModalBottomSheetState()
-
-    AnimatedBottomSheet(
-        isVisible = state.isVisible,
+    androidx.compose.ui.window.Dialog(
         onDismissRequest = {
             focusManager.clearFocus()
             state.isVisible = false
         },
-        sheetState = sheetState,
-        containerColor = background,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .size(width = 32.dp, height = 4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-            )
-        },
-        modifier = modifier.fillMaxHeight()
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
+        androidx.compose.material3.Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = background,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            modifier = modifier
+                .widthIn(max = 600.dp)
+                .fillMaxWidth(0.9f)
+                .heightIn(max = 720.dp),
         ) {
-            state.content(this)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                state.content(this)
+            }
         }
     }
 }

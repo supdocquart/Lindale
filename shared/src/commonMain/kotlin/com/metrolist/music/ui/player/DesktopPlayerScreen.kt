@@ -1,5 +1,10 @@
 package com.metrolist.music.ui.player
 
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,6 +88,18 @@ fun DesktopPlayerScreen(
     val metadata = mediaMetadata ?: return
     var tab by rememberSaveable { mutableIntStateOf(0) }
     val dim = MaterialTheme.colorScheme.onSurfaceVariant
+
+    // Building lyrics/queue in the same frame the sheet starts moving made the open animation
+    // stutter. Show them once the sheet has finished expanding, with a short fade.
+    var panelReady by remember { mutableStateOf(state.isExpanded) }
+    LaunchedEffect(state.isExpanded) {
+        if (state.isExpanded) panelReady = true
+    }
+    val panelAlpha by animateFloatAsState(
+        targetValue = if (panelReady) 1f else 0f,
+        animationSpec = tween(180),
+        label = "panelAlpha",
+    )
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -193,13 +210,17 @@ fun DesktopPlayerScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.6f)),
                 ) {
-                    when (tab) {
-                        0 -> InlineLyricsView(
-                            mediaMetadata = metadata,
-                            showLyrics = true,
-                            positionProvider = positionProvider,
-                        )
-                        else -> DesktopQueueList()
+                    if (panelReady) {
+                        Box(Modifier.fillMaxSize().graphicsLayer { alpha = panelAlpha }) {
+                            when (tab) {
+                                0 -> InlineLyricsView(
+                                    mediaMetadata = metadata,
+                                    showLyrics = true,
+                                    positionProvider = positionProvider,
+                                )
+                                else -> DesktopQueueList()
+                            }
+                        }
                     }
                 }
             }
