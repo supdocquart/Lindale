@@ -205,6 +205,14 @@ class BackupRestoreViewModel constructor(
                         }
                         return@launch
                     }
+                    // DESKTOP: no Room migrations yet; an older DB would make the app fail to open on every start.
+                    if (backupDbVersion < currentDbVersion) {
+                        Timber.tag("RESTORE").w("Backup DB version $backupDbVersion < current $currentDbVersion, refusing (no migrations on desktop)")
+                        kotlinx.coroutines.withContext(Dispatchers.Main) {
+                            Toast.makeText(context, Res.string.restore_database_too_old, Toast.LENGTH_LONG).show()
+                        }
+                        return@launch
+                    }
                 }
 
                 // === Proceed with restore ===

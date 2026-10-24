@@ -896,6 +896,7 @@
     <string name="restore_account_warning">The following account information will be restored and preserved:</string>
     <string name="restore">Restore</string>
     <string name="restore_database_incompatible">Cannot restore backup: database version incompatible. Your current data has been preserved.</string>
+    <string name="restore_database_too_old">This backup is from an older Metrolist version. Update Metrolist on your phone, create a new backup and restore that one.</string>
     <string name="checking_previous_account">Checking for previous account…</string>
     <string name="no_account_found">No account found</string>
 
