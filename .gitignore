@@ -122,3 +122,4 @@ logs/
 # Desktop packaging (VLC copy + test builds)
 desktop/appResources/
 dist/
+
