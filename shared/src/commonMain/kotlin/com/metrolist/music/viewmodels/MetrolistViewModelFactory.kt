@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 class MetrolistViewModelFactory(
     private val database: MusicDatabase,
     private val context: AppContext = AppContext(),
-    private val syncUtils: SyncUtils = SyncUtils(context, database),
+    private val syncUtils: SyncUtils = SyncUtils.get(context, database),
     private val downloadUtil: DownloadUtil = DownloadUtil(),
 ) : ViewModelProvider.Factory {
 

@@ -1,4 +1,7 @@
 package com.metrolist.music.db
+
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -59,11 +62,16 @@ class MusicDatabase(
     fun query(block: suspend MusicDatabase.() -> Unit): kotlinx.coroutines.Job =
         scope.launch(Dispatchers.IO) { block(this@MusicDatabase) }
 
+    // Like upstream: runs in the background, but inside a real database transaction.
     fun transaction(block: suspend MusicDatabase.() -> Unit): kotlinx.coroutines.Job =
-        scope.launch(Dispatchers.IO) { block(this@MusicDatabase) }
+        scope.launch(Dispatchers.IO) { withTransaction(block) }
 
+    // DESKTOP: Room KMP has no runInTransaction/withTransaction; DAO calls made inside this
+    // block run on the same writer connection, so they commit or roll back together.
     suspend fun withTransaction(block: suspend MusicDatabase.() -> Unit) {
-        block(this@MusicDatabase)
+        delegate.useWriterConnection { transactor ->
+            transactor.immediateTransaction { block(this@MusicDatabase) }
+        }
     }
 
     companion object {

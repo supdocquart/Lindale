@@ -700,6 +700,9 @@ interface DatabaseDao {
     )
     suspend fun songIdsWithoutArtists(songIds: List<String>): List<String>
 
+    @Query("SELECT * FROM song WHERE liked ORDER BY title")
+    suspend fun likedSongEntitiesByNameAsc(): List<SongEntity>
+
     @Transaction
     @Query("SELECT * FROM song")
     fun allSongs(): Flow<List<Song>>

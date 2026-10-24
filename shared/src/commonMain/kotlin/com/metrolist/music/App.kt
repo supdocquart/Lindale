@@ -63,7 +63,7 @@ fun MetrolistApp(
     database: MusicDatabase,
     playerConnection: PlayerConnection = remember { object : PlayerConnection {} },
     downloadUtil: DownloadUtil = remember { DownloadUtil() },
-    syncUtils: SyncUtils = remember(database) { SyncUtils(AppContext(), database) },
+    syncUtils: SyncUtils = remember(database) { SyncUtils.get(AppContext(), database) },
 ) {
     val navController = rememberNavController()
     DisposableEffect(navController) {
