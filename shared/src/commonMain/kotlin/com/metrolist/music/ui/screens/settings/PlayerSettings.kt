@@ -68,6 +68,7 @@ import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
 import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.VarispeedKey
+import com.metrolist.music.platform.DesktopFeatures
 import com.metrolist.music.ui.component.DefaultDialog
 import com.metrolist.music.ui.component.EnumDialog
 import com.metrolist.music.ui.component.IconButton
@@ -300,53 +301,19 @@ fun PlayerSettings(
                     },
                     onClick = { showAudioQualityDialog = true }
                 ))
-                add(Material3SettingsItem(
-                    icon = painterResource(Res.drawable.linear_scale),
-                    title = { Text(stringResource(Res.string.crossfade)) },
-                    description = { Text(stringResource(Res.string.crossfade_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = crossfadeEnabled,
-                            onCheckedChange = onCrossfadeEnabledChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (crossfadeEnabled) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onCrossfadeEnabledChange(!crossfadeEnabled) }
-                ))
-                if (crossfadeEnabled) {
+                // DESKTOP: crossfade is not implemented by the VLC engine.
+                if (DesktopFeatures.CROSSFADE) {
                     add(Material3SettingsItem(
-                        icon = painterResource(Res.drawable.timer),
-                        title = { Text(stringResource(Res.string.crossfade_duration)) },
-                        description = {
-                            Column {
-                                Text(pluralStringResource(Res.plurals.seconds, crossfadeDuration.toInt(), crossfadeDuration.toInt()))
-                                Slider(
-                                    value = crossfadeDuration,
-                                    onValueChange = onCrossfadeDurationChange,
-                                    valueRange = 1f..15f,
-                                    steps = 14
-                                )
-                            }
-                        }
-                    ))
-                    add(Material3SettingsItem(
-                        icon = painterResource(Res.drawable.album),
-                        title = { Text(stringResource(Res.string.crossfade_gapless)) },
-                        description = { Text(stringResource(Res.string.crossfade_gapless_desc)) },
+                        icon = painterResource(Res.drawable.linear_scale),
+                        title = { Text(stringResource(Res.string.crossfade)) },
+                        description = { Text(stringResource(Res.string.crossfade_desc)) },
                         trailingContent = {
                             Switch(
-                                checked = crossfadeGapless,
-                                onCheckedChange = onCrossfadeGaplessChange,
+                                checked = crossfadeEnabled,
+                                onCheckedChange = onCrossfadeEnabledChange,
                                 thumbContent = {
                                     Icon(
-                                        painter = painterResource(if (crossfadeGapless) Res.drawable.check else Res.drawable.close
+                                        painter = painterResource(if (crossfadeEnabled) Res.drawable.check else Res.drawable.close
                                         ),
                                         contentDescription = null,
                                         modifier = Modifier.size(SwitchDefaults.IconSize)
@@ -354,8 +321,45 @@ fun PlayerSettings(
                                 }
                             )
                         },
-                        onClick = { onCrossfadeGaplessChange(!crossfadeGapless) }
+                        onClick = { onCrossfadeEnabledChange(!crossfadeEnabled) }
                     ))
+                    if (crossfadeEnabled) {
+                        add(Material3SettingsItem(
+                            icon = painterResource(Res.drawable.timer),
+                            title = { Text(stringResource(Res.string.crossfade_duration)) },
+                            description = {
+                                Column {
+                                    Text(pluralStringResource(Res.plurals.seconds, crossfadeDuration.toInt(), crossfadeDuration.toInt()))
+                                    Slider(
+                                        value = crossfadeDuration,
+                                        onValueChange = onCrossfadeDurationChange,
+                                        valueRange = 1f..15f,
+                                        steps = 14
+                                    )
+                                }
+                            }
+                        ))
+                        add(Material3SettingsItem(
+                            icon = painterResource(Res.drawable.album),
+                            title = { Text(stringResource(Res.string.crossfade_gapless)) },
+                            description = { Text(stringResource(Res.string.crossfade_gapless_desc)) },
+                            trailingContent = {
+                                Switch(
+                                    checked = crossfadeGapless,
+                                    onCheckedChange = onCrossfadeGaplessChange,
+                                    thumbContent = {
+                                        Icon(
+                                            painter = painterResource(if (crossfadeGapless) Res.drawable.check else Res.drawable.close
+                                            ),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(SwitchDefaults.IconSize)
+                                        )
+                                    }
+                                )
+                            },
+                            onClick = { onCrossfadeGaplessChange(!crossfadeGapless) }
+                        ))
+                    }
                 }
                 add(Material3SettingsItem(
                     icon = painterResource(Res.drawable.history),
@@ -371,47 +375,50 @@ fun PlayerSettings(
                         }
                     }
                 ))
-                add(Material3SettingsItem(
-                    icon = painterResource(Res.drawable.fast_forward),
-                    title = { Text(stringResource(Res.string.skip_silence)) },
-                    description = { Text(stringResource(Res.string.skip_silence_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = skipSilence,
-                            onCheckedChange = onSkipSilenceChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (skipSilence) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onSkipSilenceChange(!skipSilence) }
-                ))
-                add(Material3SettingsItem(
-                    icon = painterResource(Res.drawable.skip_next),
-                    title = { Text(stringResource(Res.string.skip_silence_instant)) },
-                    description = { Text(stringResource(Res.string.skip_silence_instant_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = skipSilenceInstant,
-                            onCheckedChange = { onSkipSilenceInstantChange(it) },
-                            enabled = skipSilence,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (skipSilenceInstant) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { if (skipSilence) onSkipSilenceInstantChange(!skipSilenceInstant) }
-                ))
+                // DESKTOP: silence skipping is not implemented by the VLC engine.
+                if (DesktopFeatures.SKIP_SILENCE) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.fast_forward),
+                        title = { Text(stringResource(Res.string.skip_silence)) },
+                        description = { Text(stringResource(Res.string.skip_silence_desc)) },
+                        trailingContent = {
+                            Switch(
+                                checked = skipSilence,
+                                onCheckedChange = onSkipSilenceChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (skipSilence) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onSkipSilenceChange(!skipSilence) }
+                    ))
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.skip_next),
+                        title = { Text(stringResource(Res.string.skip_silence_instant)) },
+                        description = { Text(stringResource(Res.string.skip_silence_instant_desc)) },
+                        trailingContent = {
+                            Switch(
+                                checked = skipSilenceInstant,
+                                onCheckedChange = { onSkipSilenceInstantChange(it) },
+                                enabled = skipSilence,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (skipSilenceInstant) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { if (skipSilence) onSkipSilenceInstantChange(!skipSilenceInstant) }
+                    ))
+                }
                 add(Material3SettingsItem(
                     icon = painterResource(Res.drawable.volume_up),
                     title = { Text(stringResource(Res.string.audio_normalization)) },
@@ -441,32 +448,35 @@ fun PlayerSettings(
                         onClick = { showLoudnessLevelDialog = true }
                     ))
                 }
-                add(Material3SettingsItem(
-                    icon = painterResource(Res.drawable.graphic_eq),
-                    title = { Text(stringResource(Res.string.audio_offload)) },
-                    description = {
-                        Text(
-                            if (crossfadeEnabled) stringResource(Res.string.audio_offload_disabled_by_crossfade)
-                            else stringResource(Res.string.audio_offload_description)
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = if (crossfadeEnabled) false else audioOffload,
-                            onCheckedChange = onAudioOffloadChange,
-                            enabled = !crossfadeEnabled,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (!crossfadeEnabled && audioOffload) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { if (!crossfadeEnabled) onAudioOffloadChange(!audioOffload) }
-                ))
+                // DESKTOP: audio offload is an Android-only audio output feature.
+                if (DesktopFeatures.ANDROID_AUDIO_OUTPUT) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.graphic_eq),
+                        title = { Text(stringResource(Res.string.audio_offload)) },
+                        description = {
+                            Text(
+                                if (crossfadeEnabled) stringResource(Res.string.audio_offload_disabled_by_crossfade)
+                                else stringResource(Res.string.audio_offload_description)
+                            )
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = if (crossfadeEnabled) false else audioOffload,
+                                onCheckedChange = onAudioOffloadChange,
+                                enabled = !crossfadeEnabled,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (!crossfadeEnabled && audioOffload) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { if (!crossfadeEnabled) onAudioOffloadChange(!audioOffload) }
+                    ))
+                }
                 add(Material3SettingsItem(
                     icon = painterResource(Res.drawable.graphic_eq),
                     title = { Text(stringResource(Res.string.varispeed)) },
@@ -491,30 +501,34 @@ fun PlayerSettings(
                     },
                     onClick = { onVarispeedChange(!varispeed) }
                 ))
-                add(Material3SettingsItem(
-                    icon = painterResource(Res.drawable.speed),
-                    title = { Text(stringResource(Res.string.audio_track_playback_params)) },
-                    description = {
-                        Text(stringResource(Res.string.audio_track_playback_params_description))
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = audioTrackPlaybackParams,
-                            onCheckedChange = onAudioTrackPlaybackParamsChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (audioTrackPlaybackParams) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onAudioTrackPlaybackParamsChange(!audioTrackPlaybackParams) }
-                ))
+                // DESKTOP: AudioTrack playback params are Android-only.
+                if (DesktopFeatures.ANDROID_AUDIO_OUTPUT) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.speed),
+                        title = { Text(stringResource(Res.string.audio_track_playback_params)) },
+                        description = {
+                            Text(stringResource(Res.string.audio_track_playback_params_description))
+                        },
+                        trailingContent = {
+                            Switch(
+                                checked = audioTrackPlaybackParams,
+                                onCheckedChange = onAudioTrackPlaybackParamsChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (audioTrackPlaybackParams) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onAudioTrackPlaybackParamsChange(!audioTrackPlaybackParams) }
+                    ))
+                }
                 // Only show Cast setting in GMS builds (not in F-Droid/FOSS)
-                if (BuildConfig.CAST_AVAILABLE) {
+                // DESKTOP: no Google Cast on desktop.
+                if (BuildConfig.CAST_AVAILABLE && DesktopFeatures.CAST) {
                     add(Material3SettingsItem(
                         icon = painterResource(Res.drawable.cast),
                         title = { Text(stringResource(Res.string.google_cast)) },
@@ -979,27 +993,30 @@ fun PlayerSettings(
 
         Material3SettingsGroup(
             title = stringResource(Res.string.misc),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.clear_all),
-                    title = { Text(stringResource(Res.string.stop_music_on_task_clear)) },
-                    trailingContent = {
-                        Switch(
-                            checked = stopMusicOnTaskClear,
-                            onCheckedChange = onStopMusicOnTaskClearChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (stopMusicOnTaskClear) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onStopMusicOnTaskClearChange(!stopMusicOnTaskClear) }
-                ),
-                Material3SettingsItem(
+            items = buildList {
+                // DESKTOP: no "recent apps" on desktop.
+                if (DesktopFeatures.TASK_CLEAR_STOP) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.clear_all),
+                        title = { Text(stringResource(Res.string.stop_music_on_task_clear)) },
+                        trailingContent = {
+                            Switch(
+                                checked = stopMusicOnTaskClear,
+                                onCheckedChange = onStopMusicOnTaskClearChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (stopMusicOnTaskClear) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onStopMusicOnTaskClearChange(!stopMusicOnTaskClear) }
+                    ))
+                }
+                add(Material3SettingsItem(
                     icon = painterResource(Res.drawable.volume_off_pause),
                     title = { Text(stringResource(Res.string.pause_music_when_media_is_muted)) },
                     trailingContent = {
@@ -1017,27 +1034,30 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onPauseOnMuteChange(!pauseOnMute) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.bluetooth),
-                    title = { Text(stringResource(Res.string.resume_on_bluetooth_connect)) },
-                    trailingContent = {
-                        Switch(
-                            checked = resumeOnBluetoothConnect,
-                            onCheckedChange = onResumeOnBluetoothConnectChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (resumeOnBluetoothConnect) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onResumeOnBluetoothConnectChange(!resumeOnBluetoothConnect) }
-                ),
-                Material3SettingsItem(
+                ))
+                // DESKTOP: Bluetooth resume is Android-only.
+                if (DesktopFeatures.BLUETOOTH_RESUME) {
+                    add(Material3SettingsItem(
+                        icon = painterResource(Res.drawable.bluetooth),
+                        title = { Text(stringResource(Res.string.resume_on_bluetooth_connect)) },
+                        trailingContent = {
+                            Switch(
+                                checked = resumeOnBluetoothConnect,
+                                onCheckedChange = onResumeOnBluetoothConnectChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter = painterResource(if (resumeOnBluetoothConnect) Res.drawable.check else Res.drawable.close
+                                        ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize)
+                                    )
+                                }
+                            )
+                        },
+                        onClick = { onResumeOnBluetoothConnectChange(!resumeOnBluetoothConnect) }
+                    ))
+                }
+                add(Material3SettingsItem(
                     icon = painterResource(Res.drawable.screenshot),
                     title = { Text(stringResource(Res.string.keep_screen_on_when_player_is_expanded)) },
                     trailingContent = {
@@ -1055,8 +1075,8 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onKeepScreenOnChange(!keepScreenOn) }
-                )
-            )
+                ))
+            }
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
