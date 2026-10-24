@@ -15,6 +15,8 @@ import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.accessibility.Accessible
+import javax.accessibility.AccessibleRole
+import javax.accessibility.AccessibleState
 import javax.swing.SwingUtilities
 
 /**
@@ -115,9 +117,19 @@ object DebugLog {
         while (ctx != null && depth++ < 40) {
             val name = ctx.accessibleName?.trim()?.takeIf { it.isNotEmpty() }
             val desc = ctx.accessibleDescription?.trim()?.takeIf { it.isNotEmpty() && it != name }
+            // DESKTOP: text inputs only log their role, never name/description, because the accessible
+            // name of a field can be the text typed or pasted into it (cookies, tokens).
+            val textInput = ctx.accessibleRole == AccessibleRole.TEXT ||
+                ctx.accessibleRole == AccessibleRole.PASSWORD_TEXT ||
+                ctx.accessibleEditableText != null ||
+                ctx.accessibleStateSet?.contains(AccessibleState.EDITABLE) == true
             if (name != null || desc != null) {
                 val role = ctx.accessibleRole?.toDisplayString()
-                parts += listOfNotNull(role, name, desc).joinToString(":").take(80)
+                parts += if (textInput) {
+                    listOfNotNull(role, "<text>").joinToString(":").take(80)
+                } else {
+                    listOfNotNull(role, name, desc).joinToString(":").take(80)
+                }
             }
             val comp = ctx.accessibleComponent ?: break
             val child: Accessible = comp.getAccessibleAt(local) ?: break
