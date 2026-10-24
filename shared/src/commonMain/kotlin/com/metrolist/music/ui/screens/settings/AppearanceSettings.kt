@@ -120,6 +120,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.roundToInt
 
+// DESKTOP: no effect on Windows
+private const val SHOW_ANDROID_ONLY_SETTINGS = false
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceSettings(
@@ -903,52 +906,58 @@ fun AppearanceSettings(
             title = stringResource(Res.string.theme),
             items =
                 buildList {
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(Res.drawable.speed),
-                            title = { Text(stringResource(Res.string.enable_high_refresh_rate)) },
-                            description = { Text(stringResource(Res.string.enable_high_refresh_rate_desc)) },
-                            trailingContent = {
-                                Switch(
-                                    checked = enableHighRefreshRate,
-                                    onCheckedChange = onEnableHighRefreshRateChange,
-                                    thumbContent = {
-                                        Icon(
-                                            painter =
-                                                painterResource(if (enableHighRefreshRate) Res.drawable.check else Res.drawable.close,
-                                                ),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                                        )
-                                    },
-                                )
-                            },
-                            onClick = { onEnableHighRefreshRateChange(!enableHighRefreshRate) },
-                        ),
-                    )
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(Res.drawable.fullscreen),
-                            title = { Text(stringResource(Res.string.enable_landscape_scaling)) },
-                            description = { Text(stringResource(Res.string.enable_landscape_scaling_desc)) },
-                            trailingContent = {
-                                Switch(
-                                    checked = enableLandscapeScaling,
-                                    onCheckedChange = onEnableLandscapeScalingChange,
-                                    thumbContent = {
-                                        Icon(
-                                            painter =
-                                                painterResource(if (enableLandscapeScaling) Res.drawable.check else Res.drawable.close,
-                                                ),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                                        )
-                                    },
-                                )
-                            },
-                            onClick = { onEnableLandscapeScalingChange(!enableLandscapeScaling) },
-                        ),
-                    )
+                    // DESKTOP: Android-only setting, kept but hidden
+                    if (SHOW_ANDROID_ONLY_SETTINGS) {
+                        add(
+                            Material3SettingsItem(
+                                icon = painterResource(Res.drawable.speed),
+                                title = { Text(stringResource(Res.string.enable_high_refresh_rate)) },
+                                description = { Text(stringResource(Res.string.enable_high_refresh_rate_desc)) },
+                                trailingContent = {
+                                    Switch(
+                                        checked = enableHighRefreshRate,
+                                        onCheckedChange = onEnableHighRefreshRateChange,
+                                        thumbContent = {
+                                            Icon(
+                                                painter =
+                                                    painterResource(if (enableHighRefreshRate) Res.drawable.check else Res.drawable.close,
+                                                    ),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            )
+                                        },
+                                    )
+                                },
+                                onClick = { onEnableHighRefreshRateChange(!enableHighRefreshRate) },
+                            ),
+                        )
+                    }
+                    // DESKTOP: Android-only setting, kept but hidden
+                    if (SHOW_ANDROID_ONLY_SETTINGS) {
+                        add(
+                            Material3SettingsItem(
+                                icon = painterResource(Res.drawable.fullscreen),
+                                title = { Text(stringResource(Res.string.enable_landscape_scaling)) },
+                                description = { Text(stringResource(Res.string.enable_landscape_scaling_desc)) },
+                                trailingContent = {
+                                    Switch(
+                                        checked = enableLandscapeScaling,
+                                        onCheckedChange = onEnableLandscapeScalingChange,
+                                        thumbContent = {
+                                            Icon(
+                                                painter =
+                                                    painterResource(if (enableLandscapeScaling) Res.drawable.check else Res.drawable.close,
+                                                    ),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            )
+                                        },
+                                    )
+                                },
+                                onClick = { onEnableLandscapeScalingChange(!enableLandscapeScaling) },
+                            ),
+                        )
+                    }
                     // Only show dynamic theme option when using the default/dynamic color
                     // When a custom color is selected, dynamic theme is automatically disabled
                     if (!isUsingCustomColor) {
@@ -975,29 +984,32 @@ fun AppearanceSettings(
                             ),
                         )
                     }
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(Res.drawable.palette),
-                            title = { Text(stringResource(Res.string.enable_dynamic_icon)) },
-                            description = { Text(stringResource(Res.string.enable_dynamic_icon_desc)) },
-                            trailingContent = {
-                                Switch(
-                                    checked = enableDynamicIcon,
-                                    onCheckedChange = onEnableDynamicIconChange,
-                                    thumbContent = {
-                                        Icon(
-                                            painter =
-                                                painterResource(if (enableDynamicIcon) Res.drawable.check else Res.drawable.close,
-                                                ),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                                        )
-                                    },
-                                )
-                            },
-                            onClick = { onEnableDynamicIconChange(!enableDynamicIcon) },
-                        ),
-                    )
+                    // DESKTOP: Android-only setting, kept but hidden
+                    if (SHOW_ANDROID_ONLY_SETTINGS) {
+                        add(
+                            Material3SettingsItem(
+                                icon = painterResource(Res.drawable.palette),
+                                title = { Text(stringResource(Res.string.enable_dynamic_icon)) },
+                                description = { Text(stringResource(Res.string.enable_dynamic_icon_desc)) },
+                                trailingContent = {
+                                    Switch(
+                                        checked = enableDynamicIcon,
+                                        onCheckedChange = onEnableDynamicIconChange,
+                                        thumbContent = {
+                                            Icon(
+                                                painter =
+                                                    painterResource(if (enableDynamicIcon) Res.drawable.check else Res.drawable.close,
+                                                    ),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            )
+                                        },
+                                    )
+                                },
+                                onClick = { onEnableDynamicIconChange(!enableDynamicIcon) },
+                            ),
+                        )
+                    }
                     add(
                         Material3SettingsItem(
                             icon = painterResource(Res.drawable.palette),
@@ -1009,81 +1021,84 @@ fun AppearanceSettings(
                 },
         )
 
-        Spacer(modifier = Modifier.height(27.dp))
+        // DESKTOP: the mini-player design settings are Android-only, so the whole section is hidden while they are off
+        if (SHOW_ANDROID_ONLY_SETTINGS) {
+            Spacer(modifier = Modifier.height(27.dp))
 
-        val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) =
-            rememberPreference(
-                PureBlackMiniPlayerKey,
-                defaultValue = false,
+            val (pureBlackMiniPlayer, onPureBlackMiniPlayerChange) =
+                rememberPreference(
+                    PureBlackMiniPlayerKey,
+                    defaultValue = false,
+                )
+
+            Material3SettingsGroup(
+                title = stringResource(Res.string.mini_player),
+                items =
+                    buildList {
+                        add(
+                            Material3SettingsItem(
+                                icon = painterResource(Res.drawable.nav_bar),
+                                title = { Text(stringResource(Res.string.new_mini_player_design)) },
+                                trailingContent = {
+                                    Switch(
+                                        checked = useNewMiniPlayerDesign,
+                                        onCheckedChange = onUseNewMiniPlayerDesignChange,
+                                        thumbContent = {
+                                            Icon(
+                                                painter =
+                                                    painterResource(if (useNewMiniPlayerDesign) Res.drawable.check else Res.drawable.close,
+                                                    ),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            )
+                                        },
+                                    )
+                                },
+                                onClick = { onUseNewMiniPlayerDesignChange(!useNewMiniPlayerDesign) },
+                            ),
+                        )
+                        add(
+                            Material3SettingsItem(
+                                icon = painterResource(Res.drawable.gradient),
+                                title = {
+                                    Text(
+                                        text = stringResource(Res.string.mini_player_background_style),
+                                        color =
+                                            if (!useNewMiniPlayerDesign) {
+                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurface
+                                            },
+                                    )
+                                },
+                                description = {
+                                    Text(
+                                        text =
+                                            if (!useNewMiniPlayerDesign) {
+                                                stringResource(Res.string.mini_player_background_not_available)
+                                            } else {
+                                                when (miniPlayerBackground) {
+                                                    MiniPlayerBackgroundStyle.DEFAULT -> stringResource(Res.string.follow_theme)
+                                                    MiniPlayerBackgroundStyle.TRANSPARENT -> stringResource(Res.string.transparent)
+                                                    MiniPlayerBackgroundStyle.BLUR -> stringResource(Res.string.player_background_blur)
+                                                    MiniPlayerBackgroundStyle.GRADIENT -> stringResource(Res.string.gradient)
+                                                    MiniPlayerBackgroundStyle.PURE_BLACK -> stringResource(Res.string.pure_black)
+                                                }
+                                            },
+                                        color =
+                                            if (!useNewMiniPlayerDesign) {
+                                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurfaceVariant
+                                            },
+                                    )
+                                },
+                                onClick = { if (useNewMiniPlayerDesign) showMiniPlayerBackgroundDialog = true },
+                            ),
+                        )
+                    },
             )
-
-        Material3SettingsGroup(
-            title = stringResource(Res.string.mini_player),
-            items =
-                buildList {
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(Res.drawable.nav_bar),
-                            title = { Text(stringResource(Res.string.new_mini_player_design)) },
-                            trailingContent = {
-                                Switch(
-                                    checked = useNewMiniPlayerDesign,
-                                    onCheckedChange = onUseNewMiniPlayerDesignChange,
-                                    thumbContent = {
-                                        Icon(
-                                            painter =
-                                                painterResource(if (useNewMiniPlayerDesign) Res.drawable.check else Res.drawable.close,
-                                                ),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                                        )
-                                    },
-                                )
-                            },
-                            onClick = { onUseNewMiniPlayerDesignChange(!useNewMiniPlayerDesign) },
-                        ),
-                    )
-                    add(
-                        Material3SettingsItem(
-                            icon = painterResource(Res.drawable.gradient),
-                            title = {
-                                Text(
-                                    text = stringResource(Res.string.mini_player_background_style),
-                                    color =
-                                        if (!useNewMiniPlayerDesign) {
-                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                        } else {
-                                            MaterialTheme.colorScheme.onSurface
-                                        },
-                                )
-                            },
-                            description = {
-                                Text(
-                                    text =
-                                        if (!useNewMiniPlayerDesign) {
-                                            stringResource(Res.string.mini_player_background_not_available)
-                                        } else {
-                                            when (miniPlayerBackground) {
-                                                MiniPlayerBackgroundStyle.DEFAULT -> stringResource(Res.string.follow_theme)
-                                                MiniPlayerBackgroundStyle.TRANSPARENT -> stringResource(Res.string.transparent)
-                                                MiniPlayerBackgroundStyle.BLUR -> stringResource(Res.string.player_background_blur)
-                                                MiniPlayerBackgroundStyle.GRADIENT -> stringResource(Res.string.gradient)
-                                                MiniPlayerBackgroundStyle.PURE_BLACK -> stringResource(Res.string.pure_black)
-                                            }
-                                        },
-                                    color =
-                                        if (!useNewMiniPlayerDesign) {
-                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                        } else {
-                                            MaterialTheme.colorScheme.onSurfaceVariant
-                                        },
-                                )
-                            },
-                            onClick = { if (useNewMiniPlayerDesign) showMiniPlayerBackgroundDialog = true },
-                        ),
-                    )
-                },
-        )
+        }
 
         Spacer(modifier = Modifier.height(27.dp))
 

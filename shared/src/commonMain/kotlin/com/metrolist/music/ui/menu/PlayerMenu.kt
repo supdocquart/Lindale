@@ -4,6 +4,7 @@
  */
 
 package com.metrolist.music.ui.menu
+import com.metrolist.music.platform.DesktopFeatures
 import com.metrolist.music.platform.LocalAppContext
 import com.metrolist.music.platform.DesktopShare
 import com.metrolist.music.platform.DesktopLayout
@@ -565,39 +566,42 @@ fun PlayerMenu(
             Material3MenuGroup(
                 items =
                     buildList {
-                        add(
-                            Material3MenuItemData(
-                                title = { Text(text = stringResource(Res.string.listen_together)) },
-                                icon = {
-                                    // Show a small badge when there are pending suggestions
-                                    Box {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.group),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp),
-                                        )
-                                        if (pendingSuggestions.isNotEmpty()) {
-                                            Surface(
-                                                shape = RoundedCornerShape(12.dp),
-                                                color = MaterialTheme.colorScheme.primary,
-                                                modifier =
-                                                    Modifier
-                                                        .offset(x = 8.dp, y = (-6).dp)
-                                                        .align(Alignment.TopEnd),
-                                            ) {
-                                                Text(
-                                                    text = pendingSuggestions.size.toString(),
-                                                    color = MaterialTheme.colorScheme.onPrimary,
-                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                )
+                        // DESKTOP: Listen Together is unfinished on desktop, hidden until DesktopFeatures.LISTEN_TOGETHER is enabled
+                        if (DesktopFeatures.LISTEN_TOGETHER) {
+                            add(
+                                Material3MenuItemData(
+                                    title = { Text(text = stringResource(Res.string.listen_together)) },
+                                    icon = {
+                                        // Show a small badge when there are pending suggestions
+                                        Box {
+                                            Icon(
+                                                painter = painterResource(Res.drawable.group),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp),
+                                            )
+                                            if (pendingSuggestions.isNotEmpty()) {
+                                                Surface(
+                                                    shape = RoundedCornerShape(12.dp),
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    modifier =
+                                                        Modifier
+                                                            .offset(x = 8.dp, y = (-6).dp)
+                                                            .align(Alignment.TopEnd),
+                                                ) {
+                                                    Text(
+                                                        text = pendingSuggestions.size.toString(),
+                                                        color = MaterialTheme.colorScheme.onPrimary,
+                                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                    )
+                                                }
                                             }
                                         }
-                                    }
-                                },
-                                onClick = { showListenTogetherDialog = true },
-                            ),
-                        )
+                                    },
+                                    onClick = { showListenTogetherDialog = true },
+                                ),
+                            )
+                        }
                         if (isListenTogetherGuest) {
                             add(
                                 Material3MenuItemData(

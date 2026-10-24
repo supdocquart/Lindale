@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.player
 import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.DesktopFeatures
 import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -578,12 +579,15 @@ private fun ThumbnailItem(
             }
             
             // Cast button at top-right corner of thumbnail
-            CastButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp),
-                tintColor = textBackgroundColor
-            )
+            // DESKTOP: no Google Cast on desktop, hidden until DesktopFeatures.CAST is enabled
+            if (DesktopFeatures.CAST) {
+                CastButton(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    tintColor = textBackgroundColor
+                )
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.BuildConfig
 import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.platform.DesktopFeatures
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
@@ -142,23 +143,32 @@ fun SettingsScreen(
         // Player & Content Section (moved up and combined with content)
         Material3SettingsGroup(
             title = stringResource(Res.string.settings_section_player_content),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.play),
-                    title = { Text(stringResource(Res.string.player_and_audio)) },
-                    onClick = { navController.navigate("settings/player") }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.language),
-                    title = { Text(stringResource(Res.string.content)) },
-                    onClick = { navController.navigate("settings/content") }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.translate),
-                    title = { Text(stringResource(Res.string.ai_lyrics_translation)) },
-                    onClick = { navController.navigate("settings/ai") }
+            items = buildList {
+                add(
+                    Material3SettingsItem(
+                        icon = painterResource(Res.drawable.play),
+                        title = { Text(stringResource(Res.string.player_and_audio)) },
+                        onClick = { navController.navigate("settings/player") }
+                    )
                 )
-            )
+                add(
+                    Material3SettingsItem(
+                        icon = painterResource(Res.drawable.language),
+                        title = { Text(stringResource(Res.string.content)) },
+                        onClick = { navController.navigate("settings/content") }
+                    )
+                )
+                // DESKTOP: AI lyrics translation is a stub on desktop, hidden until DesktopFeatures.AI_LYRICS_TRANSLATION is enabled
+                if (DesktopFeatures.AI_LYRICS_TRANSLATION) {
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(Res.drawable.translate),
+                            title = { Text(stringResource(Res.string.ai_lyrics_translation)) },
+                            onClick = { navController.navigate("settings/ai") }
+                        )
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -210,13 +220,16 @@ fun SettingsScreen(
                     )
                 }
                 val showChangelog = com.metrolist.music.LocalChangelogState.current
-                add(
-                    Material3SettingsItem(
-                        icon = painterResource(Res.drawable.newspaper),
-                        title = { Text(stringResource(Res.string.changelog)) },
-                        onClick = { showChangelog.value = true }
+                // DESKTOP: the changelog shows the original project's releases, hidden until BuildConfig.UPDATER_AVAILABLE
+                if (BuildConfig.UPDATER_AVAILABLE) {
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(Res.drawable.newspaper),
+                            title = { Text(stringResource(Res.string.changelog)) },
+                            onClick = { showChangelog.value = true }
+                        )
                     )
-                )
+                }
                 add(
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.info),
@@ -252,10 +265,11 @@ fun SettingsScreen(
                 }
             }
         )
+    // DESKTOP: release notes come from the original project, hidden until BuildConfig.UPDATER_AVAILABLE
     if (BuildConfig.UPDATER_AVAILABLE && latestVersionName != BuildConfig.BASE_VERSION_NAME) {
-            Spacer(modifier = Modifier.height(16.dp))
-            ReleaseNotesCard()
-        }
+        Spacer(modifier = Modifier.height(16.dp))
+        ReleaseNotesCard()
+    }
 
         Spacer(modifier = Modifier.height(16.dp))
     }

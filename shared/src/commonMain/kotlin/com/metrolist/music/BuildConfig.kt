@@ -8,7 +8,8 @@ object BuildConfig {
     const val FLAVOR = "foss"
     const val ARCHITECTURE = "universal"
     const val CAST_AVAILABLE = false
-    const val UPDATER_AVAILABLE = true
+    // DESKTOP: updater still points at the original project; disabled until the fork has its own releases.
+    const val UPDATER_AVAILABLE = false
     const val LASTFM_API_KEY = ""
     const val LASTFM_SECRET = ""
     const val DISCORD_APP_ID = 1447278780795064401L
