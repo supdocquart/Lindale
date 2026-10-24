@@ -40,6 +40,7 @@ import com.metrolist.music.playback.PlaybackConstants.PERSISTENT_PLAYER_STATE_FI
 import com.metrolist.music.playback.PlaybackConstants.PERSISTENT_QUEUE_FILE
 import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.ArtistNameAliases
+import com.metrolist.music.utils.EncryptedPreferencesSerializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -76,11 +77,12 @@ class BackupRestoreViewModel constructor(
         runCatching {
             context.openOutputStream(uri)?.use {
                 it.buffered().zipOutputStream().use { outputStream ->
-                    (context.filesDir / "datastore" / SETTINGS_FILENAME).inputStream().buffered()
-                        .use { inputStream ->
-                            outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
-                            inputStream.copyTo(outputStream)
-                        }
+                    // DESKTOP: the settings file may be DPAPI-encrypted; backups must stay portable.
+                    val settingsBytes = EncryptedPreferencesSerializer.plainBytes(
+                        (context.filesDir / "datastore" / SETTINGS_FILENAME).readBytes()
+                    )
+                    outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
+                    outputStream.write(settingsBytes)
                     outputStream.putNextEntry(ZipEntry(ArtistNameAliases.BACKUP_FILENAME))
                     outputStream.write(ArtistNameAliases.serialize().encodeToByteArray())
                     runBlocking(Dispatchers.IO) {

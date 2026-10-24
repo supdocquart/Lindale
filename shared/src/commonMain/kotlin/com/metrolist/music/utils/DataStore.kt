@@ -22,6 +22,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.core.okio.OkioStorage
+import okio.FileSystem
 import okio.Path.Companion.toPath
 import com.metrolist.music.extensions.toEnum
 import kotlinx.coroutines.Dispatchers
@@ -51,8 +53,10 @@ val AppContext.dataStore: DataStore<Preferences>
             val settingsFile =
                 if (legacyFile.exists() && !targetFile.exists() && !moveLegacySettings(legacyFile, targetFile)) legacyFile
                 else targetFile
-            return androidx.datastore.preferences.core.PreferenceDataStoreFactory.createWithPath(
-                produceFile = { settingsFile.absolutePath.toPath() }
+            return androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+                storage = OkioStorage(FileSystem.SYSTEM, EncryptedPreferencesSerializer) {
+                    settingsFile.absolutePath.toPath()
+                }
             ).also { dataStoreInstance = it }
         }
     }
