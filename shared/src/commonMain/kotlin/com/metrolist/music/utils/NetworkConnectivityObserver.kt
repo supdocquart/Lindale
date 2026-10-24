@@ -15,5 +15,6 @@ class NetworkConnectivityObserver(context: AppContext) {
     fun start() {}
     fun stop() {}
     fun isConnected(): Boolean = true
-    private fun isCurrentlyConnected(): Boolean = true
+    // DESKTOP: no connectivity API wired yet; providers fail fast on their own when offline.
+    fun isCurrentlyConnected(): Boolean = true
 }

@@ -1,130 +1,255 @@
+/**
+ * Metrolist Project (C) 2026
+ * Licensed under GPL-3.0 | See git history for contributors
+ */
+
 package com.metrolist.music.lyrics
-import com.metrolist.music.platform.AppContext
-import kotlinx.coroutines.launch
 
 import com.metrolist.music.constants.LyricsProviderOrderKey
-import com.metrolist.music.utils.dataStore
-import com.metrolist.music.utils.get
-import com.metrolist.music.db.entities.LyricsEntity
+import com.metrolist.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.platform.AppContext
+import com.metrolist.music.utils.NetworkConnectivityObserver
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.reportException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import timber.log.Timber
+
+private const val MAX_LYRICS_FETCH_MS = 25000L
+
+// DESKTOP: upper bound for LyricsSmartFallback, which retries several title/artist guesses.
+private const val MAX_FALLBACK_MS = 30000L
+private const val PER_PROVIDER_TIMEOUT_MS = 8000L
+private const val PROVIDER_NONE = ""
+
+// DESKTOP: android.util.LruCache does not exist here; same tiny, access-ordered cache.
+private class LyricsLruCache<K, V>(private val maxSize: Int) {
+    private val map = object : java.util.LinkedHashMap<K, V>(maxSize, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, V>?): Boolean = size > maxSize
+    }
+
+    @Synchronized
+    fun get(key: K): V? = map[key]
+
+    @Synchronized
+    fun put(key: K, value: V) {
+        map[key] = value
+    }
+}
+
+class LyricsHelper(
+    private val context: AppContext,
+    private val networkConnectivity: NetworkConnectivityObserver = NetworkConnectivityObserver(context),
+) {
+    val preferred =
+        context.dataStore.data
+            .map { preferences ->
+                resolveLyricsProviders(preferences)
+            }.distinctUntilChanged()
+
+    private val cache = LyricsLruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
+    private var currentLyricsJob: Job? = null
+
+    suspend fun getLyrics(mediaMetadata: MediaMetadata): LyricsWithProvider {
+        currentLyricsJob?.cancel()
+
+        val cached = cache.get(mediaMetadata.id)?.firstOrNull()
+        if (cached != null) {
+            return LyricsWithProvider(cached.lyrics, cached.providerName)
+        }
+
+        val orderedProviders = context.dataStore.data
+            .map { preferences -> resolveLyricsProviders(preferences) }
+            .first()
+
+        val isNetworkAvailable = try {
+            networkConnectivity.isCurrentlyConnected()
+        } catch (e: Exception) {
+            true
+        }
+
+        if (!isNetworkAvailable) {
+            return LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+        }
+
+        val result = withTimeoutOrNull(MAX_LYRICS_FETCH_MS) {
+            val cleanedTitle = LyricsUtils.cleanTitleForSearch(mediaMetadata.title)
+            val enabledProviders = orderedProviders.filter { it.isEnabled(context) }
+
+            Timber.tag("LyricsHelper").d("Starting sequential fetch for: $cleanedTitle by ${mediaMetadata.artists.joinToString { it.name }}")
+            Timber.tag("LyricsHelper").d("Enabled providers in order: ${enabledProviders.joinToString { it.name }}")
+
+            for (provider in enabledProviders) {
+                Timber.tag("LyricsHelper").d("Trying provider: ${provider.name}")
+                val providerResult = try {
+                    withTimeoutOrNull(PER_PROVIDER_TIMEOUT_MS) {
+                        provider.getLyrics(
+                            context,
+                            mediaMetadata.id,
+                            cleanedTitle,
+                            mediaMetadata.artists.joinToString { it.name },
+                            mediaMetadata.duration,
+                            mediaMetadata.album?.title,
+                        )
+                    }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Timber.tag("LyricsHelper").w("${provider.name} threw: ${e.message}")
+                    null
+                }
+
+                if (providerResult != null && providerResult.isSuccess) {
+                    Timber.tag("LyricsHelper").i("Got lyrics from ${provider.name}")
+                    val filtered = LyricsUtils.filterLyricsCreditLines(providerResult.getOrNull()!!)
+                    return@withTimeoutOrNull LyricsWithProvider(filtered, provider.name)
+                } else {
+                    val errorMsg = providerResult?.exceptionOrNull()?.message ?: "timeout or exception"
+                    Timber.tag("LyricsHelper").w("${provider.name} failed: $errorMsg")
+                }
+            }
+
+            Timber.tag("LyricsHelper").w("No lyrics found after checking all providers")
+            LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+        }
+
+        // DESKTOP: upstream found nothing, so give our cleaned-up title/artist guesses a chance.
+        if (result == null || result.lyrics == LYRICS_NOT_FOUND) {
+            val enabledProviders = orderedProviders.filter { it.isEnabled(context) }
+            val fallback = withTimeoutOrNull(MAX_FALLBACK_MS) {
+                LyricsSmartFallback.find(
+                    context,
+                    enabledProviders,
+                    mediaMetadata.id,
+                    mediaMetadata.title,
+                    mediaMetadata.artists.joinToString { it.name },
+                    mediaMetadata.duration,
+                    mediaMetadata.album?.title,
+                )
+            }
+            if (fallback != null) {
+                return LyricsWithProvider(
+                    LyricsUtils.filterLyricsCreditLines(fallback.lyrics),
+                    fallback.provider,
+                )
+            }
+        }
+
+        return result ?: LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+    }
+
+    suspend fun getAllLyrics(
+        mediaId: String,
+        songTitle: String,
+        songArtists: String,
+        duration: Int,
+        album: String? = null,
+        callback: (LyricsResult) -> Unit,
+    ) {
+        currentLyricsJob?.cancel()
+
+        val cacheKey = "$songArtists-$songTitle".replace(" ", "")
+        cache.get(cacheKey)?.let { results ->
+            results.forEach { callback(it) }
+            return
+        }
+
+        val isNetworkAvailable = try {
+            networkConnectivity.isCurrentlyConnected()
+        } catch (e: Exception) {
+            true
+        }
+
+        if (!isNetworkAvailable) return
+
+        val allResult = mutableListOf<LyricsResult>()
+        currentLyricsJob = CoroutineScope(SupervisorJob()).launch {
+            val cleanedTitle = LyricsUtils.cleanTitleForSearch(songTitle)
+            val allProviders = context.dataStore.data
+                .map { preferences -> resolveLyricsProviders(preferences) }
+                .first()
+            val enabledProviders = allProviders.filter { it.isEnabled(context) }
+
+            val otherProviders = enabledProviders.filter { it.name != "LyricsPlus" }
+            val lyricsPlusProvider = enabledProviders.find { it.name == "LyricsPlus" }
+
+            val callbackMutex = Any()
+
+            val otherJobs = otherProviders.map { provider ->
+                launch {
+                    try {
+                        provider.getAllLyrics(context, mediaId, cleanedTitle, songArtists, duration, album) { lyrics ->
+                            val filteredLyrics = LyricsUtils.filterLyricsCreditLines(lyrics)
+                            val result = LyricsResult(provider.name, filteredLyrics)
+                            synchronized(callbackMutex) {
+                                allResult += result
+                                callback(result)
+                            }
+                        }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        reportException(e)
+                    }
+                }
+            }
+            otherJobs.forEach { it.join() }
+
+            val otherLyricsCount = allResult.count { it.providerName != "LyricsPlus" }
+            if (lyricsPlusProvider != null && otherLyricsCount <= 2) {
+                launch {
+                    try {
+                        lyricsPlusProvider.getAllLyrics(context, mediaId, cleanedTitle, songArtists, duration, album) { lyrics ->
+                            val filteredLyrics = LyricsUtils.filterLyricsCreditLines(lyrics)
+                            val result = LyricsResult(lyricsPlusProvider.name, filteredLyrics)
+                            synchronized(callbackMutex) {
+                                allResult += result
+                                callback(result)
+                            }
+                        }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        reportException(e)
+                    }
+                }.join()
+            }
+
+            cache.put(cacheKey, allResult)
+        }
+
+        currentLyricsJob?.join()
+    }
+
+    private fun resolveLyricsProviders(preferences: androidx.datastore.preferences.core.Preferences): List<LyricsProvider> {
+        val providerOrder = preferences[LyricsProviderOrderKey].orEmpty()
+        if (providerOrder.isNotBlank()) {
+            return LyricsProviderRegistry.getOrderedProviders(providerOrder)
+        }
+
+        return LyricsProviderRegistry.getDefaultProviderOrder()
+            .mapNotNull { LyricsProviderRegistry.getProviderByName(it) }
+    }
+
+    companion object {
+        private const val MAX_CACHE_SIZE = 3
+    }
+}
+
+data class LyricsResult(
+    val providerName: String,
+    val lyrics: String,
+)
 
 data class LyricsWithProvider(
     val lyrics: String,
     val provider: String,
 )
-
-class LyricsHelper(private val context: AppContext) {
-    private fun providerOrder(): String =
-        runCatching { context.dataStore[LyricsProviderOrderKey] }.getOrNull() ?: ""
-
-    suspend fun getLyrics(mediaMetadata: MediaMetadata): LyricsWithProvider {
-        val artist = mediaMetadata.artists.joinToString(", ") { it.name }
-        return find(mediaMetadata.id, mediaMetadata.title, artist, mediaMetadata.duration, mediaMetadata.album?.title)
-            ?: LyricsWithProvider(LyricsEntity.LYRICS_NOT_FOUND, "Unknown")
-    }
-
-    suspend fun getLyrics(
-        id: String,
-        title: String,
-        artist: String,
-        duration: Int,
-        album: String?,
-    ): Result<String> =
-        find(id, title, artist, duration, album)?.let { Result.success(it.lyrics) }
-            ?: Result.failure(NoSuchElementException("Lyrics not found"))
-
-    /**
-     * DESKTOP: three passes so more songs get lyrics:
-     * 1. every provider with the song's own metadata (upstream behaviour),
-     * 2. text providers with cleaned-up title/artist guesses (see [LyricsQuery]),
-     * 3. the same guesses ignoring duration, for uploads with intros/outros.
-     * Providers that look songs up by video id are only asked once.
-     */
-    private suspend fun find(
-        id: String,
-        title: String,
-        artist: String,
-        duration: Int,
-        album: String?,
-    ): LyricsWithProvider? {
-        val providers = LyricsProviderRegistry.getOrderedProviders(providerOrder())
-            .filter { runCatching { it.isEnabled(context) }.getOrDefault(true) }
-
-        // Ask all providers at once; prefer the earliest one in the user's order, but don't wait
-        // more than a few seconds on slower, higher-priority providers once something was found.
-        suspend fun tryAll(list: List<LyricsProvider>, t: String, a: String, d: Int, al: String?): LyricsWithProvider? =
-            kotlinx.coroutines.coroutineScope {
-                val n = list.size
-                val results = java.util.concurrent.atomic.AtomicReferenceArray<String?>(n)
-                val done = java.util.concurrent.atomic.AtomicIntegerArray(n)
-                val jobs = list.mapIndexed { i, provider ->
-                    launch {
-                        val text = runCatching {
-                            kotlinx.coroutines.withTimeoutOrNull(20_000) {
-                                provider.getLyrics(context, id, t, a, d, al).getOrNull()
-                            }
-                        }.getOrNull()
-                        if (!text.isNullOrBlank() && text != LyricsEntity.LYRICS_NOT_FOUND) results.set(i, text)
-                        done.set(i, 1)
-                    }
-                }
-                var firstHitAt = 0L
-                var picked: Int? = null
-                while (picked == null) {
-                    var allBeforeDone = true
-                    for (i in 0 until n) {
-                        if (results.get(i) != null && allBeforeDone) { picked = i; break }
-                        if (done.get(i) == 0) allBeforeDone = false
-                    }
-                    if (picked != null) break
-                    val firstHit = (0 until n).firstOrNull { results.get(it) != null }
-                    if (firstHit != null) {
-                        if (firstHitAt == 0L) firstHitAt = System.currentTimeMillis()
-                        if (System.currentTimeMillis() - firstHitAt > 3_000) { picked = firstHit; break }
-                    }
-                    if ((0 until n).all { done.get(it) == 1 }) break
-                    kotlinx.coroutines.delay(50)
-                }
-                jobs.forEach { it.cancel() }
-                picked?.let { i ->
-                    if (t != title || a != artist || d != duration) {
-                        timber.log.Timber.i("lyrics: %s matched with title='%s' artist='%s' duration=%d", list[i].name, t, a, d)
-                    }
-                    LyricsWithProvider(results.get(i)!!, list[i].name)
-                }
-            }
-
-        tryAll(providers, title, artist, duration, album)?.let { return it }
-
-        val byText = providers.filterNot { it is YouTubeLyricsProvider || it is YouTubeSubtitleLyricsProvider }
-        val guesses = LyricsQuery.variants(title, artist).drop(1)
-        for ((t, a) in guesses) {
-            tryAll(byText, t, a, duration, null)?.let { return it }
-        }
-        if (duration > 0) {
-            for ((t, a) in guesses.take(3)) {
-                tryAll(byText, t, a, -1, null)?.let { return it }
-            }
-        }
-        timber.log.Timber.i("lyrics: none found for '%s' / '%s' (tried %d guesses)", title, artist, guesses.size + 1)
-        return null
-    }
-
-    suspend fun searchLyrics(
-        title: String,
-        artist: String,
-        duration: Int,
-        album: String?,
-    ): Result<List<String>> {
-        val found = mutableListOf<String>()
-        for (provider in LyricsProviderRegistry.getOrderedProviders(providerOrder())) {
-            val res = runCatching {
-                provider.getLyrics(context, "", title, artist, duration, album).getOrNull()
-            }.getOrNull()
-            if (!res.isNullOrBlank()) {
-                found.add(res)
-            }
-        }
-        return Result.success(found)
-    }
-}
