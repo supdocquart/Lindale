@@ -3,10 +3,20 @@ package com.metrolist.music.playback
 import com.metrolist.music.playback.Timeline
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.response.PlayerResponse
 import com.metrolist.innertubex.extraction.ContentHints
+import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
+import com.metrolist.music.constants.AudioQualityKey
+import com.metrolist.music.constants.AutoLoadMoreKey
+import com.metrolist.music.constants.AutoRadioQueueKey
+import com.metrolist.music.constants.AutoSkipNextOnErrorKey
+import com.metrolist.music.constants.AutoplayKey
+import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
+import com.metrolist.music.constants.LoudnessLevel
+import com.metrolist.music.constants.LoudnessLevelKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -15,13 +25,17 @@ import com.metrolist.music.db.entities.Song
 import com.metrolist.music.platform.AppContext
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.extensions.nowLocalDateTime
+import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.Queue
+import com.metrolist.music.playback.queues.YouTubeQueue
 import com.metrolist.music.utils.InnerTubeXPlayer
 import com.metrolist.music.utils.VideoId
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.normalizationGainMb
 import com.sun.jna.NativeLibrary
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
@@ -34,8 +48,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -52,7 +68,11 @@ import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
+import kotlin.math.pow
 import kotlin.math.roundToInt
+
+// DESKTOP: stop auto-skipping after this many consecutive failures to avoid spinning through a broken queue.
+private const val MAX_CONSECUTIVE_PLAYBACK_ERRORS = 5
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DesktopPlayerConnection(
@@ -63,6 +83,49 @@ class DesktopPlayerConnection(
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val resolvedStreams = ConcurrentHashMap<String, ResolvedStreamInfo>()
     private val streamProxy = DesktopStreamProxy()
+
+    // DESKTOP: playback preferences cached from DataStore, like Android's MusicService does.
+    @Volatile
+    private var audioQualityCached: AudioQuality = AudioQuality.AUTO
+
+    @Volatile
+    private var normalizationEnabledCached: Boolean = true
+
+    @Volatile
+    private var loudnessLevelCached: LoudnessLevel = LoudnessLevel.BALANCED
+
+    @Volatile
+    private var autoSkipNextOnErrorCached: Boolean = false
+
+    // DESKTOP: queue preferences cached from DataStore, like Android's MusicService does.
+    @Volatile
+    private var autoLoadMoreCached: Boolean = true
+
+    @Volatile
+    private var disableLoadMoreWhenRepeatAllCached: Boolean = false
+
+    @Volatile
+    private var autoplayCached: Boolean = true
+
+    @Volatile
+    private var autoRadioQueueCached: Boolean = true
+
+    // DESKTOP: guards the auto load more request so the same page is not fetched twice.
+    @Volatile
+    private var autoLoadMoreInFlight: Boolean = false
+
+    // DESKTOP: linear gain for the current track, derived from its loudness metadata.
+    @Volatile
+    private var normalizationFactor: Double = 1.0
+
+    @Volatile
+    private var lastLoudnessDb: Double? = null
+
+    @Volatile
+    private var lastPerceptualLoudnessDb: Double? = null
+
+    @Volatile
+    private var consecutivePlaybackErrors: Int = 0
 
     private var mediaPlayerFactory: MediaPlayerFactory? = null
     private var vlcPlayer: MediaPlayer? = null
@@ -122,10 +185,89 @@ class DesktopPlayerConnection(
 
         // Volume synchronization
         scope.launch {
-            service.playerVolume.collect { vol ->
-                val vlcVol = (vol.coerceIn(0f, 1f) * 100f).roundToInt()
-                runCatching { vlcPlayer?.audio()?.setVolume(if (isMuted.value) 0 else vlcVol) }
-            }
+            service.playerVolume.collect { applyVolume() }
+        }
+
+        // DESKTOP: cache audio quality; Android reads the same key in MusicService.
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { prefs ->
+                    prefs[AudioQualityKey]?.let { value ->
+                        if (value == "VERY_HIGH") AudioQuality.HIGH
+                        else AudioQuality.entries.find { it.name == value }
+                    } ?: AudioQuality.AUTO
+                }
+                .distinctUntilChanged()
+                .collect { newQuality ->
+                    val oldQuality = audioQualityCached
+                    audioQualityCached = newQuality
+                    if (oldQuality != newQuality) {
+                        // DESKTOP: drop cached stream URLs so the next track resolves with the new quality.
+                        resolvedStreams.clear()
+                        Timber.d("Audio quality changed: %s -> %s; cleared stream cache", oldQuality, newQuality)
+                    }
+                }
+        }
+
+        // DESKTOP: cache normalization and auto-skip preferences; Android reads them in MusicService.
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { prefs ->
+                    Triple(
+                        prefs[AudioNormalizationKey] ?: true,
+                        prefs[LoudnessLevelKey].toEnum(LoudnessLevel.BALANCED),
+                        prefs[AutoSkipNextOnErrorKey] ?: false,
+                    )
+                }
+                .distinctUntilChanged()
+                .collect { (normalize, loudnessLevel, autoSkip) ->
+                    val normalizationChanged = normalize != normalizationEnabledCached ||
+                        loudnessLevel != loudnessLevelCached
+                    normalizationEnabledCached = normalize
+                    loudnessLevelCached = loudnessLevel
+                    autoSkipNextOnErrorCached = autoSkip
+                    Timber.d(
+                        "Playback settings: normalize=%s level=%s autoSkipOnError=%s",
+                        normalize,
+                        loudnessLevel,
+                        autoSkip,
+                    )
+                    if (normalizationChanged) {
+                        // DESKTOP: apply the new gain to the current track without restarting it.
+                        updateNormalizationFactor()
+                        applyVolume()
+                    }
+                }
+        }
+
+        // DESKTOP: queue / autoplay preferences cached the same way Android's MusicService does.
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { it[AutoplayKey] ?: true }
+                .distinctUntilChanged()
+                .collect { autoplayCached = it }
+        }
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { it[AutoLoadMoreKey] ?: true }
+                .distinctUntilChanged()
+                .collect { autoLoadMoreCached = it }
+        }
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { it[DisableLoadMoreWhenRepeatAllKey] ?: false }
+                .distinctUntilChanged()
+                .collect { disableLoadMoreWhenRepeatAllCached = it }
+        }
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { it[AutoRadioQueueKey] ?: true }
+                .distinctUntilChanged()
+                .collect {
+                    autoRadioQueueCached = it
+                    // DESKTOP: mirrors the auto radio queue preference Android reads when building queues.
+                    Timber.d("Auto radio queue preference: %s", it)
+                }
         }
 
         // Position & duration polling loop while active
@@ -188,6 +330,32 @@ class DesktopPlayerConnection(
         if (wasActive && index in player.itemsList.indices) playIndex(index, position)
     }
 
+    /** DESKTOP: the only place that pushes volume to VLC, with the loudness normalization gain applied. */
+    private fun applyVolume() {
+        val mp = vlcPlayer ?: return
+        val playerVolume = service.playerVolume.value.coerceIn(0f, 1f)
+        val factor = if (normalizationEnabledCached) normalizationFactor else 1.0
+        val vlcVolume = (playerVolume * factor * 100).roundToInt().coerceIn(0, 200)
+        runCatching { mp.audio().setVolume(if (isMuted.value) 0 else vlcVolume) }
+    }
+
+    /** DESKTOP: gain calculation mirrors the upstream MusicService.normalizationGainMb behaviour. */
+    private fun updateNormalizationFactor() {
+        val gainMb = if (normalizationEnabledCached) {
+            normalizationGainMb(lastLoudnessDb, lastPerceptualLoudnessDb, loudnessLevelCached.targetLufs)
+        } else {
+            null
+        }
+        normalizationFactor = gainMb?.let { 10.0.pow(it / 2000.0) } ?: 1.0
+        Timber.d(
+            "Normalization: enabled=%s level=%s gainMb=%s factor=%.4f",
+            normalizationEnabledCached,
+            loudnessLevelCached,
+            gainMb,
+            normalizationFactor,
+        )
+    }
+
     private fun initVlcEngine() {
         try {
             val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
@@ -227,6 +395,8 @@ class DesktopPlayerConnection(
                     // VLC resets the rate for each new media; keep the user's tempo.
                     val speed = playbackParams.speed
                     if (speed != 1f) runCatching { mediaPlayer.controls().setRate(speed) }
+                    // DESKTOP: a successful start breaks the auto-skip error streak.
+                    consecutivePlaybackErrors = 0
                     playbackState.value = Player.STATE_READY
                     isPlaying.value = true
                     player.playWhenReady = true
@@ -271,6 +441,27 @@ class DesktopPlayerConnection(
                         PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
                         "Playback error",
                     )
+
+                    // DESKTOP: mirror upstream AutoSkipNextOnErrorKey without looping forever on a broken queue.
+                    val hasNext = player.nextMediaItemIndex != -1
+                    if (autoSkipNextOnErrorCached && hasNext &&
+                        consecutivePlaybackErrors < MAX_CONSECUTIVE_PLAYBACK_ERRORS
+                    ) {
+                        consecutivePlaybackErrors++
+                        Timber.d(
+                            "Auto-skipping to next track after playback error (%d/%d)",
+                            consecutivePlaybackErrors,
+                            MAX_CONSECUTIVE_PLAYBACK_ERRORS,
+                        )
+                        ioScope.launch { seekToNext() }
+                    } else {
+                        Timber.d(
+                            "Staying on the errored item: autoSkipOnError=%s hasNext=%s consecutiveErrors=%d",
+                            autoSkipNextOnErrorCached,
+                            hasNext,
+                            consecutivePlaybackErrors,
+                        )
+                    }
                 }
             })
             vlcPlayer = mp
@@ -282,7 +473,8 @@ class DesktopPlayerConnection(
         }
     }
 
-    private fun onTrackEndedNaturally() {
+    // DESKTOP: suspend so autoplay can fetch the radio queue when the queue ends.
+    private suspend fun onTrackEndedNaturally() {
         val currentMeta = mediaMetadata.value
         val dur = player.duration.takeIf { it > 0 } ?: ((currentMeta?.duration ?: 0) * 1000L)
         if (currentMeta != null && dur > 0) {
@@ -319,18 +511,80 @@ class DesktopPlayerConnection(
                 val next = currentMediaItemIndex.value + 1
                 if (next < player.mediaItemCount) {
                     playIndex(next, 0L)
+                } else if (autoplayCached) {
+                    // DESKTOP: the queue ended; continue with the last song's radio instead of stopping.
+                    if (loadRadioIntoQueue()) {
+                        playIndex(currentMediaItemIndex.value + 1, 0L)
+                    } else {
+                        Timber.w("Autoplay radio failed for %s; ending playback", currentMeta?.id)
+                        endPlayback()
+                    }
                 } else {
-                    playbackState.value = Player.STATE_ENDED
-                    isPlaying.value = false
-                    player.notifyPlaybackState(Player.STATE_ENDED)
-                    player.notifyIsPlaying(false)
+                    endPlayback()
                 }
             }
         }
     }
 
+    // DESKTOP: playback only ends when autoplay is off or the radio could not be loaded.
+    private fun endPlayback() {
+        playbackState.value = Player.STATE_ENDED
+        isPlaying.value = false
+        player.notifyPlaybackState(Player.STATE_ENDED)
+        player.notifyIsPlaying(false)
+    }
+
+    /**
+     * DESKTOP: keeps the current song playing and replaces everything after it with its radio,
+     * mirroring upstream MusicService.startRadioSeamlessly(). Returns true when the queue changed.
+     */
+    private suspend fun loadRadioIntoQueue(): Boolean {
+        val currentMediaId = mediaMetadata.value?.id ?: return false
+        val currentIndex = currentMediaItemIndex.value
+
+        // DESKTOP: a plain videoId endpoint lets YouTube personalize the recommendations, like upstream.
+        val radioQueue = YouTubeQueue(WatchEndpoint(videoId = currentMediaId))
+
+        var newQueue: Queue? = radioQueue
+        val radioItems: List<MediaItem> = try {
+            val status = radioQueue.getInitialStatus()
+            status.title?.let { queueTitle.value = it }
+            status.items.filter { it.mediaId != currentMediaId }
+        } catch (e: Exception) {
+            Timber.w(e, "Radio queue failed for %s; falling back to related songs", currentMediaId)
+            newQueue = null
+            try {
+                val relatedEndpoint = YouTube.next(WatchEndpoint(videoId = currentMediaId))
+                    .getOrNull()?.relatedEndpoint
+                val songs = relatedEndpoint?.let { YouTube.related(it).getOrNull() }?.songs
+                    ?: return false
+                songs.filter { it.id != currentMediaId }.map { it.toMediaItem() }
+            } catch (fallbackError: Exception) {
+                Timber.e(fallbackError, "Related songs fallback failed for %s", currentMediaId)
+                return false
+            }
+        }
+
+        if (radioItems.isEmpty()) return false
+
+        newQueue?.let {
+            activeQueue = it
+            // DESKTOP: the radio queue has its own continuation; allow auto load more for it again.
+            autoLoadMoreInFlight = false
+        }
+        val itemCount = player.mediaItemCount
+        if (itemCount > currentIndex + 1) {
+            player.removeMediaItems(currentIndex + 1, itemCount)
+        }
+        player.addMediaItems(currentIndex + 1, radioItems)
+        Timber.d("Radio for %s: replaced queue tail with %d items", currentMediaId, radioItems.size)
+        return true
+    }
+
     override fun playQueue(queue: Queue) {
         activeQueue = queue
+        // DESKTOP: a new queue starts with a clean auto load more state.
+        autoLoadMoreInFlight = false
         playJob?.cancel()
         playJob = ioScope.launch {
             try {
@@ -379,6 +633,10 @@ class DesktopPlayerConnection(
         val meta = item.metadata
         mediaMetadata.value = meta
         error.value = null
+        // DESKTOP: reset normalization until the new stream's loudness metadata is known.
+        lastLoudnessDb = null
+        lastPerceptualLoudnessDb = null
+        updateNormalizationFactor()
         player.internalPosition = startPositionMs
         player.internalDuration = ((meta?.duration?.takeIf { it > 0 } ?: 0) * 1000L)
         playbackState.value = Player.STATE_BUFFERING
@@ -394,15 +652,26 @@ class DesktopPlayerConnection(
             }
         }
 
-        // Prefetch next page if near the end of the queue
+        // DESKTOP: auto load more, mirroring upstream MusicService.onMediaItemTransition.
         val q = activeQueue
-        if (q != null && index >= items.size - 3 && q.hasNextPage()) {
+        if (autoLoadMoreCached &&
+            q != null &&
+            index >= items.size - 5 &&
+            q.hasNextPage() &&
+            !(disableLoadMoreWhenRepeatAllCached && repeatMode.value == Player.REPEAT_MODE_ALL) &&
+            !autoLoadMoreInFlight
+        ) {
+            autoLoadMoreInFlight = true
             ioScope.launch {
-                runCatching {
+                try {
                     val more = q.nextPage()
-                    if (more.isNotEmpty()) {
+                    if (more.isNotEmpty() && activeQueue === q && playbackState.value != Player.STATE_IDLE) {
                         player.addMediaItems(more)
                     }
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to load the next queue page")
+                } finally {
+                    autoLoadMoreInFlight = false
                 }
             }
         }
@@ -417,8 +686,7 @@ class DesktopPlayerConnection(
                 val mp = vlcPlayer
                 if (mp != null) {
                     Timber.i("Playing downloaded file for %s", videoId)
-                    val vol = (service.playerVolume.value.coerceIn(0f, 1f) * 100f).roundToInt()
-                    mp.audio().setVolume(if (isMuted.value) 0 else vol)
+                    applyVolume()
                     val options = if (startPositionMs > 0L) arrayOf(":start-time=${startPositionMs / 1000.0}") else emptyArray()
                     mp.media().play(localFile.absolutePath, *options)
                     return@launch
@@ -433,11 +701,15 @@ class DesktopPlayerConnection(
                     player.internalDuration = resolved.durationMs
                 }
 
+                // DESKTOP: normalization gain for this stream, matching upstream MusicService.
+                lastLoudnessDb = resolved.loudnessDb
+                lastPerceptualLoudnessDb = resolved.perceptualLoudnessDb
+                updateNormalizationFactor()
+
                 val proxyUrl = streamProxy.getStreamUrl(videoId)
                 val mp = vlcPlayer
                 if (mp != null) {
-                    val vol = (service.playerVolume.value.coerceIn(0f, 1f) * 100f).roundToInt()
-                    mp.audio().setVolume(if (isMuted.value) 0 else vol)
+                    applyVolume()
                     val options = if (startPositionMs > 0L) {
                         arrayOf(":start-time=${startPositionMs / 1000.0}")
                     } else {
@@ -475,7 +747,7 @@ class DesktopPlayerConnection(
         // 1. Try InnerTubeXPlayer
         val innerTubeXResult = InnerTubeXPlayer.playerResponseForPlayback(
             videoId = videoId,
-            audioQuality = AudioQuality.AUTO,
+            audioQuality = audioQualityCached,
             connectivityManager = Any(),
             contentHints = ContentHints(
                 isExplicit = meta?.explicit,
@@ -523,6 +795,8 @@ class DesktopPlayerConnection(
                     durationMs = durationMs,
                     clientName = data.streamClient,
                     expiresAtMs = System.currentTimeMillis() + (data.streamExpiresInSeconds * 1000L),
+                    loudnessDb = data.audioConfig?.loudnessDb,
+                    perceptualLoudnessDb = data.audioConfig?.perceptualLoudnessDb,
                 )
             )
         }
@@ -610,6 +884,8 @@ class DesktopPlayerConnection(
                     durationMs = durationMs,
                     clientName = client.clientName,
                     expiresAtMs = System.currentTimeMillis() + ((response.streamingData?.expiresInSeconds ?: 3600) * 1000L),
+                    loudnessDb = response.playerConfig?.audioConfig?.loudnessDb,
+                    perceptualLoudnessDb = response.playerConfig?.audioConfig?.perceptualLoudnessDb,
                 )
             )
         }
@@ -730,15 +1006,21 @@ class DesktopPlayerConnection(
 
     override fun setMuted(muted: Boolean) {
         isMuted.value = muted
-        val vol = (service.playerVolume.value.coerceIn(0f, 1f) * 100f).roundToInt()
-        runCatching { vlcPlayer?.audio()?.setVolume(if (muted) 0 else vol) }
+        applyVolume()
     }
 
     override fun toggleRepeatMode() {
         player.toggleRepeatMode()
     }
 
-    override fun startRadioSeamlessly() {}
+    override fun startRadioSeamlessly() {
+        // DESKTOP: keep the current song playing and replace the rest of the queue with its radio.
+        ioScope.launch {
+            if (!loadRadioIntoQueue()) {
+                Timber.w("startRadioSeamlessly: no radio items for %s", mediaMetadata.value?.id)
+            }
+        }
+    }
 
     override fun refreshSongMetadata(song: Song) {
         if (mediaMetadata.value?.id == song.id) {
@@ -1024,6 +1306,9 @@ class DesktopPlayerConnection(
         val durationMs: Long,
         val clientName: String,
         val expiresAtMs: Long,
+        // DESKTOP: loudness metadata used for volume normalization.
+        val loudnessDb: Double? = null,
+        val perceptualLoudnessDb: Double? = null,
     ) {
         fun isExpired(): Boolean = System.currentTimeMillis() >= expiresAtMs - 30_000L
     }
