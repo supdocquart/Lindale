@@ -43,12 +43,27 @@ val AppContext.dataStore: DataStore<Preferences>
         dataStoreInstance?.let { return it }
         synchronized(dataStoreLock) {
             dataStoreInstance?.let { return it }
-            val baseDir = this.filesDir
+            // DESKTOP: Android's location (<data>/datastore/settings.preferences_pb), which backup/restore use.
+            // Early desktop builds kept the file directly in the data folder; move it once.
+            val legacyFile = this.filesDir.resolve("settings.preferences_pb")
+            val targetFile = this.filesDir.resolve("datastore").resolve("settings.preferences_pb")
+            // If the move fails, keep using the old file rather than starting with empty settings.
+            val settingsFile =
+                if (legacyFile.exists() && !targetFile.exists() && !moveLegacySettings(legacyFile, targetFile)) legacyFile
+                else targetFile
             return androidx.datastore.preferences.core.PreferenceDataStoreFactory.createWithPath(
-                produceFile = { baseDir.resolve("settings.preferences_pb").absolutePath.toPath() }
+                produceFile = { settingsFile.absolutePath.toPath() }
             ).also { dataStoreInstance = it }
         }
     }
+
+private fun moveLegacySettings(legacy: java.io.File, target: java.io.File): Boolean {
+    target.parentFile?.mkdirs()
+    val ok = legacy.renameTo(target)
+    if (ok) Timber.i("settings: moved to datastore folder")
+    else Timber.e("settings: could not move legacy settings file; keeping the old location")
+    return ok
+}
 
 suspend fun AppContext.safeDataStoreEdit(
     transform: suspend (MutablePreferences) -> Unit,
