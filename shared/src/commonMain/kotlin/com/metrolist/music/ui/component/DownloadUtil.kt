@@ -6,6 +6,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.music.db.entities.Song
 import com.metrolist.music.models.MediaMetadata
 import com.metrolist.music.models.toMediaMetadata
+import com.metrolist.music.utils.VideoId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -84,9 +85,11 @@ object DownloadCenter {
             .filter { it.isFile && !it.name.endsWith(".part") }
             .associate { it.nameWithoutExtension to Download(it.nameWithoutExtension, Download.STATE_COMPLETED, 1f) }
 
-    fun localFile(id: String): File? =
-        directory.listFiles { f -> f.isFile && f.nameWithoutExtension == id && !f.name.endsWith(".part") }
+    fun localFile(id: String): File? {
+        if (!VideoId.isValid(id)) return null
+        return directory.listFiles { f -> f.isFile && f.nameWithoutExtension == id && !f.name.endsWith(".part") }
             ?.firstOrNull()
+    }
 
     fun downloadFlow(id: String): StateFlow<Download?> =
         perId.getOrPut(id) { MutableStateFlow(_downloads.value[id]) }.asStateFlow()
@@ -98,6 +101,11 @@ object DownloadCenter {
 
     fun enqueue(meta: MediaMetadata) {
         val id = meta.id
+        // DESKTOP: the id becomes a file name under <app data>/downloads, so reject anything that is not a video id.
+        if (!VideoId.isValid(id)) {
+            timber.log.Timber.w("download: refusing invalid id (length %d)", id.length)
+            return
+        }
         if (_downloads.value[id]?.state == Download.STATE_COMPLETED && localFile(id) != null) return
         if (jobs[id]?.isActive == true) return
         pending[id] = meta
@@ -126,6 +134,12 @@ object DownloadCenter {
 
     private suspend fun runDownload(meta: MediaMetadata) {
         val id = meta.id
+        // DESKTOP: same guard as enqueue(), right before the "<id>.<ext>.part" file names are built.
+        if (!VideoId.isValid(id)) {
+            timber.log.Timber.w("download: refusing invalid id (length %d)", id.length)
+            setState(id, Download(id, Download.STATE_FAILED, 0f))
+            return
+        }
         val engine = engine ?: run {
             timber.log.Timber.w("download: engine not ready, cannot download %s", id)
             setState(id, Download(id, Download.STATE_FAILED, 0f))

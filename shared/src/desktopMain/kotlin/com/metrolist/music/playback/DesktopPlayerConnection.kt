@@ -21,6 +21,7 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.utils.InnerTubeXPlayer
+import com.metrolist.music.utils.VideoId
 import com.sun.jna.NativeLibrary
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
@@ -1052,7 +1053,8 @@ class DesktopPlayerConnection(
         private fun handleStreamRequest(exchange: HttpExchange) {
             try {
                 val videoId = exchange.requestURI.path.substringAfterLast("/").trim()
-                if (videoId.isBlank()) {
+                // DESKTOP: only real video ids may hit the resolver behind the local proxy.
+                if (!VideoId.isValid(videoId)) {
                     exchange.sendResponseHeaders(404, -1)
                     exchange.close()
                     return
