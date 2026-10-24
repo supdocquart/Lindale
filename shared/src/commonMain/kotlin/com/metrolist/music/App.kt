@@ -9,6 +9,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+// DESKTOP: link clicks are routed through the scheme-checking handler below.
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +26,7 @@ import com.metrolist.music.ui.component.DesktopSearchPanel
 import com.metrolist.music.ui.component.GlobalSearch
 import com.metrolist.music.ui.component.rememberSearchSubmit
 import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.SafeUriHandler
 
 import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.DisposableEffect
@@ -225,6 +228,8 @@ fun MetrolistApp(
                 LocalChangelogState provides showChangelog,
                 LocalMenuState provides menuState,
                 LocalBottomSheetPageState provides bottomSheetPageState,
+                // DESKTOP: Compose's desktop default opens any scheme; this one is restricted to http/https/mailto.
+                LocalUriHandler provides SafeUriHandler,
             ) {
                 Scaffold(
                     snackbarHost = { SnackbarHost(snackbarHostState) },

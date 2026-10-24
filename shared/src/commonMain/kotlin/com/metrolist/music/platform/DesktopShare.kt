@@ -43,15 +43,37 @@ object DesktopShare {
     fun shareFile(uri: Any?, suggestedName: String? = null): File? =
         shareFile(DesktopFiles.toFile(uri), suggestedName)
 
+    /** DESKTOP: only web and mail links may be opened; anything else (file:, UNC paths, custom schemes) is refused. */
+    fun isSafeExternalUrl(url: String?): Boolean {
+        val trimmed = url?.trim().orEmpty()
+        if (trimmed.isEmpty()) return false
+        return runCatching {
+            val uri = URI(trimmed)
+            when (uri.scheme?.lowercase()) {
+                "http", "https" -> !uri.host.isNullOrBlank()
+                "mailto" -> true
+                else -> false
+            }
+        }.getOrDefault(false)
+    }
+
+    private fun schemeOf(url: String): String? = runCatching { URI(url.trim()).scheme }.getOrNull()
+
     fun openUrl(url: String?) {
         if (url.isNullOrBlank()) return
+        // DESKTOP: never hand a file path, UNC share or custom scheme to the shell protocol handler.
+        if (!isSafeExternalUrl(url)) {
+            Timber.w("openUrl: refused non-web link (scheme=%s)", schemeOf(url))
+            return
+        }
+        val scheme = schemeOf(url)
         runCatching {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 Desktop.getDesktop().browse(URI(url))
             } else {
                 ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url).start()
             }
-        }.onFailure { Timber.w(it, "openUrl failed: %s", url) }
+        }.onFailure { Timber.w(it, "openUrl failed (scheme=%s)", scheme) }
     }
 
     fun webSearch(query: String) =
