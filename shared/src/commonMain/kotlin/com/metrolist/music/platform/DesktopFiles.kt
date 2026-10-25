@@ -10,6 +10,10 @@ import java.io.FilenameFilter
 object DesktopFiles {
     private val home: String get() = System.getProperty("user.home")
 
+    // DESKTOP: native dialogs remember their last folder in the shared key/value store.
+    private const val DIALOG_PREFS = "file_dialogs"
+    private const val LAST_DIRECTORY_KEY = "last_directory"
+
     /** Roaming app data (settings, database, tokens). */
     val dataDir: File
         get() = File(System.getenv("APPDATA") ?: home, "Metrolist").apply { mkdirs() }
@@ -21,6 +25,28 @@ object DesktopFiles {
     private fun ownerFrame(): Frame? {
         val focused = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
         return (focused as? Frame) ?: Frame.getFrames().firstOrNull { it.isVisible }
+    }
+
+    /** Last folder used by a native dialog, else Documents, else the home folder. */
+    private fun startDirectory(): File {
+        // DESKTOP: a broken store must never block a dialog.
+        runCatching {
+            val saved = KeyValueStore.get(DIALOG_PREFS).getString(LAST_DIRECTORY_KEY, null)
+            if (!saved.isNullOrBlank()) {
+                val dir = File(saved)
+                if (dir.isDirectory) return dir
+            }
+        }
+        val documents = File(home, "Documents")
+        return if (documents.isDirectory) documents else File(home)
+    }
+
+    // DESKTOP: best effort only; failing to persist must never block a dialog.
+    private fun rememberDirectory(directory: String?) {
+        if (directory.isNullOrBlank()) return
+        runCatching {
+            KeyValueStore.get(DIALOG_PREFS).edit { putString(LAST_DIRECTORY_KEY, directory) }
+        }
     }
 
     /** Maps MIME types to a Windows wildcard filter, or null for all files. */
@@ -46,6 +72,8 @@ object DesktopFiles {
     private fun dialog(title: String, mode: Int, extensions: List<String>?): FileDialog {
         val owner = ownerFrame()
         val dialog = if (owner != null) FileDialog(owner, title, mode) else FileDialog(null as Frame?, title, mode)
+        // DESKTOP: start in the last used folder instead of the process working directory.
+        dialog.directory = startDirectory().absolutePath
         if (extensions != null && mode == FileDialog.LOAD) {
             dialog.file = extensions.joinToString(";") { "*.$it" }
             dialog.filenameFilter = FilenameFilter { _, name ->
@@ -59,6 +87,8 @@ object DesktopFiles {
         val d = dialog(title, FileDialog.LOAD, extensions)
         d.isVisible = true
         val name = d.file ?: return null
+        // DESKTOP: remember the folder the user actually picked from.
+        rememberDirectory(d.directory)
         return File(d.directory, name).takeIf { it.isFile }
     }
 
@@ -66,7 +96,10 @@ object DesktopFiles {
         val d = dialog(title, FileDialog.LOAD, extensions)
         d.isMultipleMode = true
         d.isVisible = true
-        return d.files.orEmpty().filter { it.isFile }
+        val files = d.files.orEmpty().filter { it.isFile }
+        // DESKTOP: remember the folder the user actually picked from.
+        if (files.isNotEmpty()) rememberDirectory(d.directory)
+        return files
     }
 
     fun saveFile(title: String = "Kaydet", suggestedName: String? = null): File? {
@@ -74,6 +107,8 @@ object DesktopFiles {
         if (!suggestedName.isNullOrBlank()) d.file = suggestedName
         d.isVisible = true
         val name = d.file ?: return null
+        // DESKTOP: remember the folder the user actually picked from.
+        rememberDirectory(d.directory)
         return File(d.directory, name)
     }
 
