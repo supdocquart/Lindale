@@ -15,6 +15,8 @@ import com.metrolist.music.constants.AutoRadioQueueKey
 import com.metrolist.music.constants.AutoSkipNextOnErrorKey
 import com.metrolist.music.constants.AutoplayKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
+import com.metrolist.music.constants.HideExplicitKey
+import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.LoudnessLevel
 import com.metrolist.music.constants.LoudnessLevelKey
 import com.metrolist.music.constants.PersistentQueueKey
@@ -34,9 +36,12 @@ import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.Queue
 import com.metrolist.music.playback.queues.YouTubeQueue
+import com.metrolist.music.playback.queues.filterExplicit
+import com.metrolist.music.playback.queues.filterVideoSongs
 import com.metrolist.music.utils.InnerTubeXPlayer
 import com.metrolist.music.utils.VideoId
 import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
 import com.metrolist.music.utils.normalizationGainMb
 import com.sun.jna.NativeLibrary
 import com.sun.net.httpserver.HttpExchange
@@ -588,7 +593,7 @@ class DesktopPlayerConnection(
         val radioQueue = YouTubeQueue(WatchEndpoint(videoId = currentMediaId))
 
         var newQueue: Queue? = radioQueue
-        val radioItems: List<MediaItem> = try {
+        val rawRadioItems: List<MediaItem> = try {
             val status = radioQueue.getInitialStatus()
             status.title?.let { queueTitle.value = it }
             status.items.filter { it.mediaId != currentMediaId }
@@ -606,6 +611,13 @@ class DesktopPlayerConnection(
                 return false
             }
         }
+
+        // DESKTOP: the radio used to ignore the content filters; apply the same ones the lists use.
+        val hideExplicit = AppContext.Default.dataStore.get(HideExplicitKey, false)
+        val hideVideoSongs = AppContext.Default.dataStore.get(HideVideoSongsKey, false)
+        val radioItems = rawRadioItems
+            .filterExplicit(hideExplicit)
+            .filterVideoSongs(hideVideoSongs)
 
         if (radioItems.isEmpty()) return false
 

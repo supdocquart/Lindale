@@ -1,5 +1,7 @@
 package com.metrolist.innertube.pages
 
+import com.metrolist.innertube.models.ExplicitDuplicates
+
 import com.metrolist.innertube.models.YTItem
 import com.metrolist.innertube.models.filterExplicit
 import com.metrolist.innertube.models.filterVideoSongs
@@ -15,14 +17,15 @@ data class BrowseResult(
     )
 
     fun filterExplicit(enabled: Boolean = true) =
-        if (enabled) {
+        // DESKTOP: also run when only "hide explicit duplicates" is on.
+        if (enabled || ExplicitDuplicates.enabled) {
             copy(
                 items =
                     items.mapNotNull {
                         it.copy(
                             items =
                                 it.items
-                                    .filterExplicit()
+                                    .filterExplicit(enabled)
                                     .ifEmpty { return@mapNotNull null },
                         )
                     },

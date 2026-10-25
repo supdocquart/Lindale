@@ -1,5 +1,7 @@
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.ExplicitDuplicates
 import com.metrolist.innertube.models.SongItem
+import com.metrolist.innertube.models.dropExplicitDuplicates
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertubex.extraction.ContentHints
@@ -124,6 +126,7 @@ private class SmokeRun(private val deadline: Long) {
         checkSettingsEncryption()
         checkQueuePersistence()
         checkBackup()
+        checkExplicitDuplicates()
 
         println("SMOKE summary: $passed passed, $failed failed, $skipped skipped")
         return if (failed == 0) 0 else 1
@@ -670,6 +673,52 @@ private class SmokeRun(private val deadline: Long) {
                 throw IllegalStateException("${MusicDatabase.DB_NAME} missing from backup entries=$entries")
             }
             return "zip=${target.length()} bytes, entries=$entries"
+        }
+    }
+
+    // 7. Explicit duplicates --------------------------------------------------------------------
+
+    private suspend fun checkExplicitDuplicates() {
+        val started = System.currentTimeMillis()
+        val outcome = attempt {
+            data class Entry(val label: String, val explicit: Boolean, val key: String?)
+
+            val clean = Entry("clean", explicit = false, key = "song|artist")
+            val explicitTwin = Entry("explicit-twin", explicit = true, key = "song|artist")
+            val explicitOnly = Entry("explicit-only", explicit = true, key = "other|artist")
+            val normal = Entry("normal", explicit = false, key = "normal|artist")
+            val all = listOf(clean, explicitTwin, explicitOnly, normal)
+
+            fun labels(): List<String> = all
+                .dropExplicitDuplicates(isExplicit = { it.explicit }, key = { it.key })
+                .map { it.label }
+
+            val previous = ExplicitDuplicates.enabled
+            try {
+                ExplicitDuplicates.enabled = false
+                val unchanged = labels()
+                if (unchanged != listOf("clean", "explicit-twin", "explicit-only", "normal")) {
+                    throw IllegalStateException("disabled changed the list to $unchanged")
+                }
+
+                ExplicitDuplicates.enabled = true
+                val deduplicated = labels()
+                if (deduplicated != listOf("clean", "explicit-only", "normal")) {
+                    throw IllegalStateException("enabled kept $deduplicated")
+                }
+                "disabled=$unchanged, enabled=$deduplicated"
+            } finally {
+                ExplicitDuplicates.enabled = previous
+            }
+        }
+
+        when {
+            outcome.isFailure -> fail(
+                "explicit-duplicates",
+                started,
+                "${outcome.exceptionOrNull()!!.describe()}; code: ExplicitDuplicates.dropExplicitDuplicates()",
+            )
+            else -> pass("explicit-duplicates", started, outcome.getOrThrow())
         }
     }
 

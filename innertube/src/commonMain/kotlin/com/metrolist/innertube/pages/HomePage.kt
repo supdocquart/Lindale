@@ -1,5 +1,7 @@
 package com.metrolist.innertube.pages
 
+import com.metrolist.innertube.models.ExplicitDuplicates
+
 import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
@@ -363,9 +365,10 @@ data class HomePage(
     }
 
     fun filterExplicit(enabled: Boolean = true) =
-        if (enabled) {
+        // DESKTOP: also run when only "hide explicit duplicates" is on.
+        if (enabled || ExplicitDuplicates.enabled) {
             copy(sections = sections.map {
-                it.copy(items = it.items.filterExplicit())
+                it.copy(items = it.items.filterExplicit(enabled))
             })
         } else this
 

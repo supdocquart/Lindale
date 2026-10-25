@@ -160,12 +160,22 @@ data class EpisodeItem(
     )
 }
 
-fun <T : YTItem> List<T>.filterExplicit(enabled: Boolean = true) =
-    if (enabled) {
-        filter { !it.explicit }
-    } else {
-        this
-    }
+fun <T : YTItem> List<T>.filterExplicit(enabled: Boolean = true): List<T> {
+    // DESKTOP: "enabled" keeps its old meaning. The duplicate rule is a second, independent pass,
+    // so it only makes a difference while "Hide explicit" is off.
+    val visible = if (enabled) filter { !it.explicit } else this
+    return visible.dropExplicitDuplicates(
+        isExplicit = { it.explicit },
+        key = { item ->
+            when (item) {
+                // DESKTOP: title + artists only; clean and explicit cuts can differ by a few seconds.
+                is SongItem -> normalizeTitleKey(item.title, item.artists.map { it.name })
+                is AlbumItem -> normalizeTitleKey(item.title, item.artists.orEmpty().map { it.name })
+                else -> null
+            }
+        },
+    )
+}
 
 fun <T : YTItem> List<T>.filterVideoSongs(disableVideos: Boolean = false) =
     if (disableVideos) {

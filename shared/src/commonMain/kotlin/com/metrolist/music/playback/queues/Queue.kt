@@ -9,6 +9,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
+import com.metrolist.innertube.models.dropExplicitDuplicates
+import com.metrolist.innertube.models.normalizeTitleKey
 import com.metrolist.music.playback.MediaItem
 import com.metrolist.music.extensions.metadata
 import com.metrolist.music.models.MediaMetadata
@@ -28,10 +30,11 @@ interface Queue {
         val mediaItemIndex: Int,
         val position: Long = 0L,
     ) {
+        // DESKTOP: also run when only "hide explicit duplicates" is on.
         fun filterExplicit(enabled: Boolean = true) =
-            if (enabled) {
+            if (enabled || com.metrolist.innertube.models.ExplicitDuplicates.enabled) {
                 copy(
-                    items = items.filterExplicit(),
+                    items = items.filterExplicit(enabled),
                 )
             } else {
                 this
@@ -49,13 +52,22 @@ interface Queue {
 }
 
 fun List<MediaItem>.filterExplicit(enabled: Boolean = true) =
-    if (enabled) {
+    // DESKTOP: hide explicit twins when a clean release of the same song is in the list.
+    (if (enabled) {
         filterNot {
             it.metadata?.explicit == true
         }
     } else {
         this
-    }
+    }).dropExplicitDuplicates(
+        isExplicit = { it.metadata?.explicit == true },
+        key = { item ->
+            item.metadata?.let { meta ->
+                val base = normalizeTitleKey(meta.title, meta.artists.map { it.name })
+                if (meta.duration > 0) "$base|${meta.duration / 3}" else base
+            }
+        },
+    )
 
 fun List<MediaItem>.filterVideoSongs(disableVideos: Boolean = false) =
     if (disableVideos) {

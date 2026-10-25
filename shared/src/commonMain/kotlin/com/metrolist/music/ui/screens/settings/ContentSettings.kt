@@ -65,6 +65,7 @@ import com.metrolist.music.constants.EnableLrcLibKey
 import com.metrolist.music.constants.EnablePaxsenixKey
 import com.metrolist.music.constants.EnableLyricsPlus
 import com.metrolist.music.constants.EnableZemerKey
+import com.metrolist.music.constants.HideExplicitDuplicatesKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.HideYoutubeShortsKey
@@ -109,6 +110,8 @@ fun ContentSettings(
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
+    val (hideExplicitDuplicates, onHideExplicitDuplicatesChange) =
+        rememberPreference(key = HideExplicitDuplicatesKey, defaultValue = false)
     val (hideVideoSongs, onHideVideoSongsChange) = rememberPreference(key = HideVideoSongsKey, defaultValue = false)
     val (hideYoutubeShorts, onHideYoutubeShortsChange) = rememberPreference(key = HideYoutubeShortsKey, defaultValue = false)
     val (showArtistDescription, onShowArtistDescriptionChange) = rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
@@ -774,6 +777,29 @@ fun ContentSettings(
                         )
                     },
                     onClick = { onHideExplicitChange(!hideExplicit) }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(Res.drawable.explicit),
+                    title = { Text(stringResource(Res.string.hide_explicit_duplicates)) },
+                    description = { Text(stringResource(Res.string.hide_explicit_duplicates_desc)) },
+                    // DESKTOP: "Hide explicit" already removes every explicit item, so this would be redundant.
+                    enabled = !hideExplicit,
+                    trailingContent = {
+                        Switch(
+                            checked = hideExplicitDuplicates,
+                            onCheckedChange = onHideExplicitDuplicatesChange,
+                            enabled = !hideExplicit,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(if (hideExplicitDuplicates) Res.drawable.check else Res.drawable.close
+                                    ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { if (!hideExplicit) onHideExplicitDuplicatesChange(!hideExplicitDuplicates) }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(Res.drawable.slow_motion_video),

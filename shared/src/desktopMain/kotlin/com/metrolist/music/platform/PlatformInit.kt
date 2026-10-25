@@ -1,6 +1,7 @@
 package com.metrolist.music.platform
 
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.models.ExplicitDuplicates
 import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.lastfm.LastFM
 import com.metrolist.music.constants.AppLanguageKey
@@ -8,6 +9,7 @@ import com.metrolist.music.constants.ContentCountryKey
 import com.metrolist.music.constants.ContentLanguageKey
 import com.metrolist.music.constants.CountryCodeToName
 import com.metrolist.music.constants.DataSyncIdKey
+import com.metrolist.music.constants.HideExplicitDuplicatesKey
 import com.metrolist.music.constants.InnerTubeAuthUserKey
 import com.metrolist.music.constants.InnerTubeCookieKey
 import com.metrolist.music.constants.LanguageCodeToName
@@ -131,6 +133,9 @@ fun initDesktopPlatform() {
 
 private suspend fun initializeDesktopSettings(context: AppContext) {
     val settings = context.dataStore.data.first()
+    // DESKTOP: the duplicate filter ignores its ~30 call sites; seed the global flag from the
+    // startup snapshot before the first list is built.
+    ExplicitDuplicates.enabled = settings[HideExplicitDuplicatesKey] ?: false
     val locale = Locale.getDefault()
     val languageTag = locale.language
 
@@ -248,5 +253,12 @@ private fun observeDesktopSettingsChanges(context: AppContext) {
                         ?: "en",
                 )
             }
+    }
+
+    platformScope.launch(Dispatchers.IO) {
+        context.dataStore.data
+            .map { it[HideExplicitDuplicatesKey] ?: false }
+            .distinctUntilChanged()
+            .collect { enabled -> ExplicitDuplicates.enabled = enabled }
     }
 }
