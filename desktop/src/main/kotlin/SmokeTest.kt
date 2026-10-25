@@ -648,6 +648,14 @@ private class SmokeRun(private val deadline: Long) {
         val backup = viewModelClass.getMethod("backup", AppContext::class.java, Any::class.java)
         backup.invoke(viewModel, AppContext.Default, target)
 
+        // backup() now runs on Dispatchers.IO (task 022): wait until isBackingUp goes back to false.
+        @Suppress("UNCHECKED_CAST")
+        val busy = viewModelClass.getMethod("isBackingUp").invoke(viewModel)
+            as kotlinx.coroutines.flow.StateFlow<Boolean>
+        val deadline = System.currentTimeMillis() + 30_000
+        Thread.sleep(100)
+        while (busy.value && System.currentTimeMillis() < deadline) Thread.sleep(50)
+
         if (!target.isFile || target.length() == 0L) {
             throw IllegalStateException(
                 "backup zip was not created at ${target.absolutePath} (BackupRestoreViewModel logs the cause)",
