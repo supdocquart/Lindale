@@ -17,6 +17,7 @@ import com.metrolist.music.constants.AutoplayKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.LoudnessLevel
 import com.metrolist.music.constants.LoudnessLevelKey
+import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -28,6 +29,7 @@ import com.metrolist.music.extensions.nowLocalDateTime
 import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.extensions.toMediaItem
 import com.metrolist.music.models.MediaMetadata
+import com.metrolist.music.models.PersistPlayerState
 import com.metrolist.music.models.toMediaMetadata
 import com.metrolist.music.playback.queues.ListQueue
 import com.metrolist.music.playback.queues.Queue
@@ -64,7 +66,13 @@ import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import java.io.File
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 import java.net.InetSocketAddress
+import java.nio.file.AtomicMoveNotSupportedException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
@@ -109,6 +117,13 @@ class DesktopPlayerConnection(
 
     @Volatile
     private var autoRadioQueueCached: Boolean = true
+
+    // DESKTOP: mirrors upstream's cachedPersistentQueue so the queue can be saved and restored across restarts.
+    @Volatile
+    private var persistentQueueCached: Boolean = true
+
+    // DESKTOP: serializes the file writes; the periodic save, track changes and release() may overlap.
+    private val queueSaveLock = Any()
 
     // DESKTOP: guards the auto load more request so the same page is not fetched twice.
     @Volatile
@@ -268,6 +283,33 @@ class DesktopPlayerConnection(
                     // DESKTOP: mirrors the auto radio queue preference Android reads when building queues.
                     Timber.d("Auto radio queue preference: %s", it)
                 }
+        }
+
+        // DESKTOP: restore the persisted queue on startup, like upstream MusicService does.
+        scope.launch {
+            var restoreAttempted = false
+            AppContext.Default.dataStore.data
+                .map { it[PersistentQueueKey] ?: true }
+                .distinctUntilChanged()
+                .collect { enabled ->
+                    persistentQueueCached = enabled
+                    if (!enabled) {
+                        deletePersistedQueue()
+                    } else if (!restoreAttempted) {
+                        restoreAttempted = true
+                        restoreQueueFromDisk()
+                    }
+                }
+        }
+
+        // DESKTOP: save every 15 s while playing, matching the upstream MusicService interval.
+        scope.launch {
+            while (isActive) {
+                delay(15_000L)
+                if (persistentQueueCached && isPlaying.value) {
+                    ioScope.launch { saveQueueToDisk() }
+                }
+            }
         }
 
         // Position & duration polling loop while active
@@ -641,6 +683,11 @@ class DesktopPlayerConnection(
         player.internalDuration = ((meta?.duration?.takeIf { it > 0 } ?: 0) * 1000L)
         playbackState.value = Player.STATE_BUFFERING
         player.notifyMediaItemTransition(item, 2) // MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED / SEEK
+
+        // DESKTOP: upstream saves the queue on every media item transition.
+        if (persistentQueueCached) {
+            ioScope.launch { saveQueueToDisk() }
+        }
 
         if (meta != null) {
             ioScope.launch {
@@ -1045,7 +1092,199 @@ class DesktopPlayerConnection(
         }
     }
 
+    /**
+     * DESKTOP: mirrors upstream MusicService.saveQueueToDisk(). Both files are written through a temp
+     * file and renamed so an interrupted write can never leave a half-written queue behind.
+     */
+    private fun saveQueueToDisk() {
+        if (!persistentQueueCached) {
+            deletePersistedQueue()
+            return
+        }
+
+        synchronized(queueSaveLock) {
+            try {
+                val items = player.itemsList
+                if (items.isEmpty()) {
+                    // DESKTOP: upstream keeps the previous file here, which would resurrect a queue the
+                    // user cleared. An empty queue means there is nothing left to restore.
+                    Timber.d("Skipping queue save - no media items")
+                    deletePersistedQueue()
+                    return
+                }
+
+                val metadata = items.mapNotNull { it.metadata }
+                if (metadata.isEmpty()) {
+                    Timber.d("Skipping queue save - no metadata")
+                    return
+                }
+
+                val index = currentMediaItemIndex.value.coerceIn(0, metadata.lastIndex)
+                val persistQueue = PersistedQueueSnapshot(
+                    title = queueTitle.value,
+                    items = metadata.map { it.toPersistedMetadata() },
+                    mediaItemIndex = index,
+                    position = player.currentPosition.coerceAtLeast(0L),
+                )
+                val persistPlayerState = PersistPlayerState(
+                    playWhenReady = player.playWhenReady,
+                    repeatMode = repeatMode.value,
+                    shuffleModeEnabled = shuffleModeEnabled.value,
+                    volume = service.playerVolume.value,
+                    currentPosition = player.currentPosition.coerceAtLeast(0L),
+                    currentMediaItemIndex = currentMediaItemIndex.value,
+                    playbackState = playbackState.value,
+                )
+
+                val filesDir = AppContext.Default.filesDir
+                writeObjectAtomically(filesDir.resolve(PlaybackConstants.PERSISTENT_QUEUE_FILE), persistQueue)
+                writeObjectAtomically(filesDir.resolve(PlaybackConstants.PERSISTENT_PLAYER_STATE_FILE), persistPlayerState)
+                Timber.d(
+                    "Persisted queue: %d items, index=%d, position=%d ms",
+                    persistQueue.items.size,
+                    index,
+                    persistQueue.position,
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to persist the queue")
+            }
+        }
+    }
+
+    /**
+     * DESKTOP: restores the queue in a paused state. Nothing is resolved or played until the user
+     * presses play, which then goes through the normal playIndex() stream resolution.
+     */
+    private fun restoreQueueFromDisk() {
+        if (player.mediaItemCount > 0) return
+
+        val filesDir = AppContext.Default.filesDir
+        val queueFile = filesDir.resolve(PlaybackConstants.PERSISTENT_QUEUE_FILE)
+        if (!queueFile.exists()) return
+
+        val persistQueue = runCatching {
+            queueObjectInput(queueFile).use { it.readObject() as PersistedQueueSnapshot }
+        }.getOrElse { e ->
+            Timber.w(e, "Failed to read the persisted queue; clearing it")
+            deletePersistedQueue()
+            return
+        }
+
+        val items = persistQueue.items.map { it.toMediaMetadata().toMediaItem() }
+        if (items.isEmpty()) {
+            Timber.w("Persisted queue had no items; clearing it")
+            deletePersistedQueue()
+            return
+        }
+
+        val index = persistQueue.mediaItemIndex.coerceIn(0, items.lastIndex)
+        val position = persistQueue.position.coerceAtLeast(0L)
+        player.setItemsInternal(items, index)
+        activeQueue = ListQueue(
+            title = persistQueue.title,
+            items = items,
+            startIndex = index,
+            position = position,
+        )
+        queueTitle.value = persistQueue.title
+
+        val item = items[index]
+        mediaMetadata.value = item.metadata
+        // DESKTOP: the restored stream is unknown until play, so normalization starts neutral.
+        lastLoudnessDb = null
+        lastPerceptualLoudnessDb = null
+        updateNormalizationFactor()
+        player.internalPosition = position
+        player.internalDuration = ((item.metadata?.duration?.takeIf { it > 0 } ?: 0) * 1000L)
+        playbackState.value = Player.STATE_READY
+        isPlaying.value = false
+        player.playWhenReady = false
+        player.notifyPlaybackState(Player.STATE_READY)
+        player.notifyIsPlaying(false)
+        Timber.d("Restored persisted queue: %d items, index=%d, position=%d ms", items.size, index, position)
+
+        restorePlayerStateFromDisk(index)
+    }
+
+    // DESKTOP: upstream restores volume and position from the state file; see the note about repeat/shuffle.
+    private fun restorePlayerStateFromDisk(queueIndex: Int) {
+        val stateFile = AppContext.Default.filesDir.resolve(PlaybackConstants.PERSISTENT_PLAYER_STATE_FILE)
+        if (!stateFile.exists()) return
+
+        val state = runCatching {
+            queueObjectInput(stateFile).use { it.readObject() as PersistPlayerState }
+        }.getOrElse { e ->
+            Timber.w(e, "Failed to read the persisted player state; clearing it")
+            runCatching { stateFile.delete() }
+            return
+        }
+
+        service.playerVolume.value = state.volume.coerceIn(0f, 1f)
+        // DESKTOP: upstream keeps repeat/shuffle in DataStore and skips them here; the desktop port
+        // has no such startup source, so the persisted values are restored instead.
+        player.setRepeatMode(state.repeatMode)
+        player.shuffleModeEnabled = state.shuffleModeEnabled
+        if (state.currentMediaItemIndex == queueIndex) {
+            player.internalPosition = state.currentPosition.coerceAtLeast(0L)
+        }
+        Timber.d(
+            "Restored persisted player state: volume=%.2f repeat=%d shuffle=%s index=%d position=%d ms",
+            state.volume,
+            state.repeatMode,
+            state.shuffleModeEnabled,
+            state.currentMediaItemIndex,
+            state.currentPosition,
+        )
+    }
+
+    private fun deletePersistedQueue() {
+        synchronized(queueSaveLock) {
+            val filesDir = AppContext.Default.filesDir
+            val queueDeleted = runCatching {
+                filesDir.resolve(PlaybackConstants.PERSISTENT_QUEUE_FILE).delete()
+            }.getOrDefault(false)
+            val stateDeleted = runCatching {
+                filesDir.resolve(PlaybackConstants.PERSISTENT_PLAYER_STATE_FILE).delete()
+            }.getOrDefault(false)
+            if (queueDeleted || stateDeleted) {
+                Timber.d("Deleted persisted queue files")
+            }
+        }
+    }
+
+    // DESKTOP: temp file + atomic rename keeps the previous save intact if the process dies mid-write.
+    // DESKTOP: only our own snapshot classes and basic JDK/Kotlin types may be deserialized from disk.
+    private fun queueObjectInput(file: File): ObjectInputStream =
+        ObjectInputStream(file.inputStream().buffered()).apply {
+            objectInputFilter = java.io.ObjectInputFilter.Config.createFilter(
+                "maxdepth=20;maxrefs=200000;maxbytes=67108864;com.metrolist.music.**;java.lang.*;java.util.*;kotlin.**;!*",
+            )
+        }
+
+    private fun writeObjectAtomically(target: File, value: Any) {
+        val directory = target.parentFile ?: AppContext.Default.filesDir
+        directory.mkdirs()
+        val temp = File(directory, "${target.name}.tmp")
+        try {
+            ObjectOutputStream(temp.outputStream().buffered()).use { it.writeObject(value) }
+            try {
+                Files.move(
+                    temp.toPath(),
+                    target.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.ATOMIC_MOVE,
+                )
+            } catch (_: AtomicMoveNotSupportedException) {
+                Files.move(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            }
+        } finally {
+            runCatching { temp.delete() }
+        }
+    }
+
     fun release() {
+        // DESKTOP: runs on app close, so the last queue and position are written synchronously.
+        saveQueueToDisk()
         playJob?.cancel()
         runCatching { vlcPlayer?.controls()?.stop() }
         runCatching { vlcPlayer?.release() }
@@ -1412,3 +1651,78 @@ class DesktopPlayerConnection(
         }
     }
 }
+
+/**
+ * DESKTOP: the shared [com.metrolist.music.models.MediaMetadata] model is not java.io.Serializable in
+ * this port, so upstream's [com.metrolist.music.models.PersistQueue] cannot be written with
+ * ObjectOutputStream. The queue is stored in this equivalent serializable snapshot (same file name and
+ * fields) and rebuilt into media items on load.
+ */
+private data class PersistedQueueSnapshot(
+    val title: String?,
+    val items: List<PersistedMetadata>,
+    val mediaItemIndex: Int,
+    val position: Long,
+) : Serializable
+
+private data class PersistedMetadata(
+    val id: String,
+    val title: String,
+    val artists: List<PersistedArtist>,
+    val duration: Int,
+    val thumbnailUrl: String?,
+    val albumId: String?,
+    val albumTitle: String?,
+    val setVideoId: String?,
+    val musicVideoType: String?,
+    val explicit: Boolean,
+    val liked: Boolean,
+    val libraryAddToken: String?,
+    val libraryRemoveToken: String?,
+    val suggestedBy: String?,
+    val isEpisode: Boolean,
+    val uploadEntityId: String?,
+) : Serializable {
+
+    fun toMediaMetadata() = MediaMetadata(
+        id = id,
+        title = title,
+        artists = artists.map { MediaMetadata.Artist(id = it.id, name = it.name) },
+        duration = duration,
+        thumbnailUrl = thumbnailUrl,
+        album = albumId?.let { MediaMetadata.Album(id = it, title = albumTitle.orEmpty()) },
+        setVideoId = setVideoId,
+        musicVideoType = musicVideoType,
+        explicit = explicit,
+        liked = liked,
+        libraryAddToken = libraryAddToken,
+        libraryRemoveToken = libraryRemoveToken,
+        suggestedBy = suggestedBy,
+        isEpisode = isEpisode,
+        uploadEntityId = uploadEntityId,
+    )
+}
+
+private data class PersistedArtist(
+    val id: String?,
+    val name: String,
+) : Serializable
+
+private fun MediaMetadata.toPersistedMetadata() = PersistedMetadata(
+    id = id,
+    title = title,
+    artists = artists.map { PersistedArtist(id = it.id, name = it.name) },
+    duration = duration,
+    thumbnailUrl = thumbnailUrl,
+    albumId = album?.id,
+    albumTitle = album?.title,
+    setVideoId = setVideoId,
+    musicVideoType = musicVideoType,
+    explicit = explicit,
+    liked = liked,
+    libraryAddToken = libraryAddToken,
+    libraryRemoveToken = libraryRemoveToken,
+    suggestedBy = suggestedBy,
+    isEpisode = isEpisode,
+    uploadEntityId = uploadEntityId,
+)
