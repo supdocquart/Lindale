@@ -62,11 +62,17 @@ private fun runApp() = application {
             }
         },
     ) {
-        // Title bar follows the app theme (see WindowChrome / WindowsTitleBar).
+        // Title bar follows the app theme (see WindowChrome / WindowsTitleBar / JbrTitleBar).
         DisposableEffect(window) {
+            val customTitleBar = JbrTitleBar.install(window)
             com.metrolist.music.platform.WindowChrome.applier = { argb, dark ->
-                java.awt.EventQueue.invokeLater {
-                    com.metrolist.music.platform.WindowsTitleBar.apply(window, argb, dark)
+                if (customTitleBar) {
+                    // DESKTOP: the native caption is gone; only its buttons need light/dark icons.
+                    JbrTitleBar.setDark(dark)
+                } else {
+                    java.awt.EventQueue.invokeLater {
+                        com.metrolist.music.platform.WindowsTitleBar.apply(window, argb, dark)
+                    }
                 }
             }
             com.metrolist.music.platform.WindowChrome.reapply()
@@ -77,9 +83,28 @@ private fun runApp() = application {
                 }
             }
             window.addWindowListener(opened)
+            // Native button widths follow the window DPI, e.g. after moving to another monitor.
+            val resized = object : java.awt.event.ComponentAdapter() {
+                override fun componentResized(e: java.awt.event.ComponentEvent?) {
+                    JbrTitleBar.refreshInsets()
+                }
+            }
+            window.addComponentListener(resized)
             onDispose {
                 window.removeWindowListener(opened)
+                window.removeComponentListener(resized)
+                JbrTitleBar.dispose()
                 com.metrolist.music.platform.WindowChrome.applier = null
+            }
+        }
+        val jbrTitleBar = com.metrolist.music.platform.WindowChrome.customTitleBar
+        LaunchedEffect(window, jbrTitleBar) {
+            if (!jbrTitleBar) return@LaunchedEffect
+            // JBR applies the custom title bar asynchronously, so the native button insets can
+            // still read 0 on the first frames. Retry briefly instead of polling forever.
+            repeat(10) {
+                JbrTitleBar.refreshInsets()
+                delay(100)
             }
         }
         LaunchedEffect(windowState.isMinimized) {

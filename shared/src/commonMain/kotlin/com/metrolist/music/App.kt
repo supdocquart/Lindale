@@ -1,6 +1,16 @@
 package com.metrolist.music
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import com.metrolist.music.platform.TitleBarInteraction
+import com.metrolist.music.platform.WindowChrome
+import com.metrolist.music.platform.titleBarInteractive
 import com.metrolist.music.ui.player.DesktopPlayerBarHeight
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -98,6 +108,9 @@ fun MetrolistApp(
     val pureBlackPref by rememberPreference(PureBlackKey, defaultValue = false)
     val pureBlack = pureBlackPref && isDark
 
+    // DESKTOP: with JBR the native caption is replaced by our own single-row title bar.
+    val customTitleBar = WindowChrome.customTitleBar
+
     // DESKTOP: theme seed = chosen palette color, or the playing song's cover when "Dynamic" is
     // selected (same rules as upstream MainActivity).
     val enableDynamicTheme by rememberPreference(com.metrolist.music.constants.DynamicThemeKey, defaultValue = true)
@@ -165,11 +178,25 @@ fun MetrolistApp(
         val isLargeScreen = maxWidth >= 600.dp
         val showRail = isLargeScreen || isLandscape
 
+        // DESKTOP: the player sheet lives inside the content area, which starts below the title row.
+        val titleBarHeight = if (customTitleBar) 48.dp else 0.dp
         val playerBottomSheetState = rememberBottomSheetState(
             dismissedBound = 0.dp,
             collapsedBound = if (showRail) DesktopPlayerBarHeight else (DesktopPlayerBarHeight + NavigationBarHeight),
-            expandedBound = maxHeight,
+            expandedBound = maxHeight - titleBarHeight,
         )
+
+        // DESKTOP: the Home action is shared by the rail, the bottom bar and the title bar.
+        val navigateHome: () -> Unit = {
+            if (playerBottomSheetState.isExpanded) {
+                playerBottomSheetState.collapseSoft()
+            }
+            // Home is the start destination; restoring its saved state would bring back the page
+            // we just left (Settings/Stats), so just pop to it.
+            if (!navController.popBackStack(Screens.Home.route, inclusive = false)) {
+                navController.navigate(Screens.Home.route) { launchSingleTop = true }
+            }
+        }
 
         val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
         LaunchedEffect(mediaMetadata) {
@@ -199,10 +226,12 @@ fun MetrolistApp(
             }
         }
 
-        val playerAwareWindowInsets = remember(showRail, playerBottomSheetState.isDismissed) {
+        // DESKTOP: Home/Library used to get their 64 dp bar from App.kt; the title bar replaces it.
+        val appBarTopInset = if (customTitleBar && currentTitleRes != null) 0.dp else AppBarHeight
+        val playerAwareWindowInsets = remember(showRail, playerBottomSheetState.isDismissed, appBarTopInset) {
             WindowInsets(
                 left = 0.dp,
-                top = AppBarHeight,
+                top = appBarTopInset,
                 right = 0.dp,
                 bottom = if (!playerBottomSheetState.isDismissed) DesktopPlayerBarHeight else 0.dp,
             )
@@ -233,28 +262,45 @@ fun MetrolistApp(
             ) {
                 Scaffold(
                     snackbarHost = { SnackbarHost(snackbarHostState) },
+                    topBar = {
+                        if (customTitleBar) {
+                            DesktopTitleBar(
+                                pureBlack = pureBlack,
+                                showSearch = currentTitleRes != null,
+                                searchText = searchText,
+                                onSearchTextChange = {
+                                    searchText = it
+                                    searchOpen = true
+                                },
+                                onSearchSubmit = onSearchSubmit,
+                                onSearchFocus = { searchOpen = true },
+                                searchFocusRequester = searchFocusRequester,
+                                onBack = { BackDispatcher.dispatch() },
+                                onHome = navigateHome,
+                                onAccount = { showAccountDialog = true },
+                            )
+                        }
+                    },
                     bottomBar = {
                         if (!showRail && currentRoute != "wrapped") {
                             AppNavigationBar(
                                 navigationItems = navigationItems,
                                 currentRoute = currentRoute,
                                 onItemClick = { screen, isSelected ->
-                                    if (playerBottomSheetState.isExpanded) {
-                                        playerBottomSheetState.collapseSoft()
-                                    }
-                                    // DESKTOP: Home is the start destination; restoring its saved state would
-                                    // bring back the page we just left (Settings/Stats), so just pop to it.
                                     if (screen.route == Screens.Home.route) {
-                                        if (!navController.popBackStack(Screens.Home.route, inclusive = false)) {
-                                            navController.navigate(Screens.Home.route) { launchSingleTop = true }
+                                        navigateHome()
+                                    } else {
+                                        if (playerBottomSheetState.isExpanded) {
+                                            playerBottomSheetState.collapseSoft()
                                         }
-                                    } else if (!isSelected) {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
+                                        if (!isSelected) {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
                                         }
                                     }
                                 },
@@ -269,6 +315,7 @@ fun MetrolistApp(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(
+                                top = if (customTitleBar) innerPadding.calculateTopPadding() else 0.dp,
                                 bottom = if (!showRail) innerPadding.calculateBottomPadding() else 0.dp
                             )
                     ) {
@@ -277,22 +324,20 @@ fun MetrolistApp(
                                 navigationItems = navigationItems,
                                 currentRoute = currentRoute,
                                 onItemClick = { screen, isSelected ->
-                                    if (playerBottomSheetState.isExpanded) {
-                                        playerBottomSheetState.collapseSoft()
-                                    }
-                                    // DESKTOP: Home is the start destination; restoring its saved state would
-                                    // bring back the page we just left (Settings/Stats), so just pop to it.
                                     if (screen.route == Screens.Home.route) {
-                                        if (!navController.popBackStack(Screens.Home.route, inclusive = false)) {
-                                            navController.navigate(Screens.Home.route) { launchSingleTop = true }
+                                        navigateHome()
+                                    } else {
+                                        if (playerBottomSheetState.isExpanded) {
+                                            playerBottomSheetState.collapseSoft()
                                         }
-                                    } else if (!isSelected) {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
+                                        if (!isSelected) {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
                                         }
                                     }
                                 },
@@ -336,7 +381,7 @@ fun MetrolistApp(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .padding(top = 64.dp)
+                                            .padding(top = if (customTitleBar) 0.dp else 64.dp)
                                             .clickable(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = null,
@@ -352,27 +397,29 @@ fun MetrolistApp(
                                         )
                                     }
                                 }
-                                TopAppBar(
-                                    title = {
-                                        Box(Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.Center) {
-                                            DesktopSearchField(
-                                                value = searchText,
-                                                onValueChange = {
-                                                    searchText = it
-                                                    searchOpen = true
-                                                },
-                                                onSubmit = onSearchSubmit,
-                                                onFocused = { searchOpen = true },
-                                                focusRequester = searchFocusRequester,
-                                            )
-                                        }
-                                    },
-                                    scrollBehavior = topAppBarScrollBehavior,
-                                    colors = TopAppBarDefaults.topAppBarColors(
-                                        containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
-                                        scrolledContainerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                if (!customTitleBar) {
+                                    TopAppBar(
+                                        title = {
+                                            Box(Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.Center) {
+                                                DesktopSearchField(
+                                                    value = searchText,
+                                                    onValueChange = {
+                                                        searchText = it
+                                                        searchOpen = true
+                                                    },
+                                                    onSubmit = onSearchSubmit,
+                                                    onFocused = { searchOpen = true },
+                                                    focusRequester = searchFocusRequester,
+                                                )
+                                            }
+                                        },
+                                        scrollBehavior = topAppBarScrollBehavior,
+                                        colors = TopAppBarDefaults.topAppBarColors(
+                                            containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                            scrolledContainerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer,
+                                        )
                                     )
-                                )
+                                }
                             }
 
                             // Bottom sheet player
@@ -422,6 +469,110 @@ fun MetrolistApp(
 
                 ToastOverlay(
                     bottomPadding = if (playerBottomSheetState.isDismissed) 32.dp else DesktopPlayerBarHeight + 24.dp,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * DESKTOP: the one-row JBR title bar. Empty space keeps native drag/double-click/snap behaviour;
+ * interactive children register themselves so JBR hands their mouse input to Compose instead.
+ */
+@Composable
+private fun DesktopTitleBar(
+    pureBlack: Boolean,
+    showSearch: Boolean,
+    searchText: TextFieldValue,
+    onSearchTextChange: (TextFieldValue) -> Unit,
+    onSearchSubmit: (String) -> Unit,
+    onSearchFocus: () -> Unit,
+    searchFocusRequester: FocusRequester,
+    onBack: () -> Unit,
+    onHome: () -> Unit,
+    onAccount: () -> Unit,
+) {
+    val interaction = remember { TitleBarInteraction() }
+    DisposableEffect(interaction) {
+        onDispose { interaction.reset() }
+    }
+    var rowOrigin by remember { mutableStateOf(Offset.Zero) }
+    val background = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+    val leftInset = WindowChrome.titleBarLeftInset
+    val rightInset = WindowChrome.titleBarRightInset
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .background(background)
+            .onGloballyPositioned { rowOrigin = it.positionInRoot() }
+            .pointerInput(interaction) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val change = event.changes.firstOrNull() ?: continue
+                        interaction.onPointer(event.type, rowOrigin + change.position, change.pressed)
+                    }
+                }
+            },
+    ) {
+        Row(
+            modifier = Modifier.align(Alignment.CenterStart).padding(start = leftInset + 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.app_logo),
+                contentDescription = null,
+                modifier = Modifier.size(22.dp),
+            )
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.titleBarInteractive(interaction),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.arrow_back),
+                    contentDescription = stringResource(Res.string.back),
+                )
+            }
+            IconButton(
+                onClick = onHome,
+                modifier = Modifier.titleBarInteractive(interaction),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.home_outlined),
+                    contentDescription = stringResource(Res.string.home),
+                )
+            }
+        }
+
+        if (showSearch) {
+            val sideReserve = maxOf(leftInset + 136.dp, rightInset + 64.dp)
+            val searchWidth = (maxWidth - sideReserve * 2f).coerceIn(160.dp, 480.dp)
+            DesktopSearchField(
+                value = searchText,
+                onValueChange = onSearchTextChange,
+                onSubmit = onSearchSubmit,
+                onFocused = onSearchFocus,
+                focusRequester = searchFocusRequester,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .width(searchWidth)
+                    .titleBarInteractive(interaction),
+            )
+        }
+
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = rightInset + 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                onClick = onAccount,
+                modifier = Modifier.titleBarInteractive(interaction),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.account),
+                    contentDescription = stringResource(Res.string.account),
                 )
             }
         }
