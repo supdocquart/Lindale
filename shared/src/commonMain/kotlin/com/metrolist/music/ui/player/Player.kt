@@ -301,16 +301,9 @@ fun BottomSheetPlayer(
 
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(state.isExpanded) {
-        if (state.isExpanded) {
-            delay(100)
-            try {
-                focusRequester.requestFocus()
-            } catch (e: Exception) {
-                // Ignore if focus request fails
-            }
-        }
-    }
+    // DESKTOP: focus is requested from the composable that owns the `.focusRequester(...)` node
+    // (see the play/pause buttons below) instead of a fixed delay here, which fired before the
+    // expanded layout existed and printed "FocusRequester is not initialized".
 
     // Use Cast state when casting, otherwise local player
     val effectiveIsPlaying = if (isCasting) castIsPlaying else isPlaying
@@ -1563,6 +1556,14 @@ fun BottomSheetPlayer(
                                         .weight(playPauseWeight)
                                         .focusRequester(focusRequester),
                             ) {
+                                // DESKTOP: run only after this exact node is attached; the previous
+                                // fixed delay in BottomSheetPlayer could fire before the expanded
+                                // layout was composed and left the sheet without programmatic focus.
+                                LaunchedEffect(state.isExpanded) {
+                                    if (state.isExpanded) {
+                                        runCatching { focusRequester.requestFocus() }
+                                    }
+                                }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center,
@@ -1695,6 +1696,13 @@ fun BottomSheetPlayer(
                                         }
                                         .focusRequester(focusRequester),
                             ) {
+                                // DESKTOP: same as the new player layout above - focus is requested
+                                // only once this node exists, not from a fixed delay in the sheet.
+                                LaunchedEffect(state.isExpanded) {
+                                    if (state.isExpanded) {
+                                        runCatching { focusRequester.requestFocus() }
+                                    }
+                                }
                                 Image(
                                     painter =
                                         painterResource(

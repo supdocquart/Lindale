@@ -46,28 +46,44 @@ internal object MemoryMonitor {
 
     private const val MB = 1024L * 1024L
 
+    // DESKTOP: only the first NMT summary is logged raw, it is meant to document the format once.
+    @Volatile
+    private var rawNmtSummaryLogged = false
+
     fun start(intervalMs: Long = 60_000L) {
         thread(name = "memory-monitor", isDaemon = true) {
             Thread.sleep(15_000L)
             var tick = 0
             while (true) {
                 runCatching { Timber.i(snapshot()) }
-                if (tick++ % 5 == 0) runCatching { jvmNativeBreakdown()?.let { Timber.i(it) } }
+                if (tick++ % 5 == 0) runCatching { Timber.i(jvmNativeBreakdown()) }
                 Thread.sleep(intervalMs)
             }
         }
     }
 
     /** Per-category committed memory from NativeMemoryTracking, e.g. "[NMT] GC=12MB Compiler=3MB ...". */
-    private fun jvmNativeBreakdown(): String? {
-        val out = nmtSummary() ?: return null
-        val parts = Regex("""-\s+([A-Za-z][A-Za-z ]*?) \(reserved=\d+KB, committed=(\d+)KB""")
+    private fun jvmNativeBreakdown(): String {
+        val out = nmtSummary()
+        if (out == null) return "[NMT] unavailable"
+        if (!rawNmtSummaryLogged) {
+            rawNmtSummaryLogged = true
+            // DESKTOP: log the raw summary once so the real NMT output format can be verified.
+            Timber.d("[NMT] raw=${out.take(300)}")
+        }
+        // DESKTOP: tolerant of thousand separators and extra spaces in the categories/values.
+        val parts = Regex("""-\s+([A-Za-z][A-Za-z0-9 _/]*?)\s*\(\s*reserved=\s*[\d,]+KB\s*,\s*committed=\s*([\d,]+)KB""")
             .findAll(out)
-            .map { it.groupValues[1].trim().replace(' ', '_') to it.groupValues[2].toLong() / 1024 }
+            .mapNotNull {
+                val name = it.groupValues[1].trim().replace(Regex("""\s+"""), "_")
+                val kb = it.groupValues[2].replace(",", "").toLongOrNull() ?: return@mapNotNull null
+                name to kb / 1024
+            }
             .filter { it.second > 0 }
             .sortedByDescending { it.second }
             .joinToString(" ") { "${it.first}=${it.second}MB" }
-        return "[NMT] $parts"
+        // DESKTOP: print an explicit marker instead of a blank line when there is nothing to report.
+        return if (parts.isEmpty()) "[NMT] unavailable" else "[NMT] $parts"
     }
 
     private fun nmtSummary(): String? = runCatching {
@@ -115,6 +131,8 @@ internal object MemoryMonitor {
     /** Total memory the JVM itself has committed (heap, classes, threads, code, GC); needs NativeMemoryTracking. */
     private fun jvmNativeCommittedMb(): Long? = runCatching {
         val out = nmtSummary() ?: return null
-        Regex("""Total: reserved=\d+KB, committed=(\d+)KB""").find(out)?.groupValues?.get(1)?.toLong()?.div(1024)
+        // DESKTOP: same tolerance as jvmNativeBreakdown (thousand separators and extra spaces).
+        Regex("""Total:\s*reserved=\s*[\d,]+KB\s*,\s*committed=\s*([\d,]+)KB""")
+            .find(out)?.groupValues?.get(1)?.replace(",", "")?.toLong()?.div(1024)
     }.getOrNull()
 }
