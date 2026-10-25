@@ -47,7 +47,7 @@ object DebugLog {
             }
             file = PrintStream(FileOutputStream(latest, false), true, Charsets.UTF_8)
 
-            write("START", "time=${LocalDateTime.now()} java=${System.getProperty("java.version")} os=${System.getProperty("os.name")} log=${latest.absolutePath}")
+            write("START", "time=${LocalDateTime.now()} java=${System.getProperty("java.version")} vendor=${System.getProperty("java.vendor")} vm=${System.getProperty("java.vm.name")} os=${System.getProperty("os.name")} log=${latest.absolutePath}")
 
             val outCs = runCatching { System.out.charset() }.getOrDefault(Charset.defaultCharset())
             val errCs = runCatching { System.err.charset() }.getOrDefault(Charset.defaultCharset())

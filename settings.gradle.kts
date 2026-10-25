@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-val useMavenLocalInnerTubeX = providers.gradleProperty("useMavenLocalInnerTubeX").isPresent
-
 pluginManagement {
     repositories {
         mavenLocal()
@@ -10,6 +8,12 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+val useMavenLocalInnerTubeX = providers.gradleProperty("useMavenLocalInnerTubeX").isPresent
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

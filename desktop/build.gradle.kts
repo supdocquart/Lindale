@@ -1,3 +1,5 @@
+import org.gradle.jvm.toolchain.JvmVendorSpec
+
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
@@ -8,8 +10,18 @@ plugins {
 group = "com.metrolist.desktop"
 version = "1.0-SNAPSHOT"
 
-kotlin {
-    jvmToolchain(21)
+// DESKTOP: the custom title bar needs the JBR-only com.jetbrains.JBR API, so the desktop
+// module compiles, runs and packages against JetBrains Runtime 21 instead of Temurin.
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+        vendor.set(JvmVendorSpec.JETBRAINS)
+    }
+}
+
+val jbrLauncher = javaToolchains.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(21))
+    vendor.set(JvmVendorSpec.JETBRAINS)
 }
 
 dependencies {
@@ -18,7 +30,10 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("org.jetbrains.compose.material3:material3:1.12.0-alpha03")
     implementation(compose.foundation)
-    
+
+    // DESKTOP: thin interface jar for com.jetbrains.JBR; the implementation ships inside the JBR.
+    implementation(libs.jbr.api)
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
@@ -32,6 +47,9 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        // DESKTOP: Compose uses the Gradle JVM for run/package by default, so point it at the
+        // JBR toolchain explicitly or the app would still start on Temurin.
+        javaHome = jbrLauncher.get().metadata.installationPath.asFile.absolutePath
         // Keep the heap small and hand unused memory back to Windows instead of holding on to it.
         // Serial GC and the C1-only JIT carry far less native overhead than G1 + C2 for a UI-sized heap.
         jvmArgs(
@@ -64,6 +82,12 @@ compose.desktop {
 }
 
 
+// DESKTOP: jlink only writes JAVA_VERSION/MODULES to runtime/release, so record the toolchain
+// vendor there as well; without this the packaged runtime is indistinguishable from Temurin.
+tasks.withType<org.jetbrains.compose.desktop.application.tasks.AbstractJLinkTask>().configureEach {
+    freeArgs.addAll("--release-info", "add:IMPLEMENTOR=${jbrLauncher.get().metadata.vendor}")
+}
+
 // Dev runs (Metrolist.bat): logs in the repo + native memory tracking for MemoryMonitor. Not in packaged builds.
 tasks.withType<JavaExec>().configureEach {
     if (name == "run") {
@@ -80,6 +104,7 @@ tasks.register<JavaExec>("smokeTest") {
     dependsOn(tasks.named("classes"))
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("SmokeTestKt")
+    javaLauncher.set(jbrLauncher)
     workingDir = projectDir
     jvmArgs("-Djava.awt.headless=true", "-Xmx512m")
 

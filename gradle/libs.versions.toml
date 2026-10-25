@@ -14,6 +14,7 @@ kuromojiIpadic = "0.9.0"
 innertubex = "v0.7.0"
 tinypinyin = "2.0.3"
 protobuf = "4.36.2"
+jbrApi = "1.12.0"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -49,6 +50,9 @@ tinypinyin = { module = "com.github.promeG:tinypinyin", version.ref = "tinypinyi
 
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobuf" }
+
+# DESKTOP: JBR-specific APIs (custom title bar); on Maven Central as org.jetbrains.runtime:jbr-api.
+jbr-api = { module = "org.jetbrains.runtime:jbr-api", version.ref = "jbrApi" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
