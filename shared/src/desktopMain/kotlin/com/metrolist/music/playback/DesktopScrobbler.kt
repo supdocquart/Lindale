@@ -1,5 +1,6 @@
 package com.metrolist.music.playback
 import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.DesktopFeatures
 
 import com.metrolist.lastfm.LastFM
 import com.metrolist.music.constants.EnableLastFMScrobblingKey
@@ -37,6 +38,12 @@ class DesktopScrobbler(
     )
 
     fun start() {
+        // DESKTOP: without our own Last.fm API key there is nothing to scrobble, so skip collecting entirely.
+        if (!DesktopFeatures.LASTFM) {
+            Timber.d("scrobbler: Last.fm unavailable (no API key), not starting")
+            return
+        }
+
         scope.launch {
             context.dataStore.data
                 .map {

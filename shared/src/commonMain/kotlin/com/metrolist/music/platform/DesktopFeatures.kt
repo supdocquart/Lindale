@@ -10,4 +10,6 @@ object DesktopFeatures {
     const val ANDROID_AUDIO_OUTPUT = false // audio offload / AudioTrack params are Android-only
     const val BLUETOOTH_RESUME = false   // Android-only
     const val TASK_CLEAR_STOP = false    // Android-only (no "recent apps" on desktop)
+    // DESKTOP: not const so it follows BuildConfig; Last.fm stays hidden until the fork has its own API key.
+    val LASTFM: Boolean get() = com.metrolist.music.BuildConfig.LASTFM_API_KEY.isNotBlank() // needs our own key
 }

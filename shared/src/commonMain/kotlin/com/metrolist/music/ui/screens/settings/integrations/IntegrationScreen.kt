@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.metrolist.music.LocalPlayerAwareWindowInsets
+import com.metrolist.music.platform.DesktopFeatures
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.IntegrationCard
 import com.metrolist.music.ui.component.IntegrationCardItem
@@ -41,20 +42,27 @@ fun IntegrationScreen(
     ) {
         IntegrationCard(
             title = stringResource(Res.string.general),
-            items = listOf(
-                IntegrationCardItem(
-                    icon = painterResource(Res.drawable.discord),
-                    title = { Text(stringResource(Res.string.discord_integration)) },
-                    onClick = { navController.navigate("settings/integrations/discord") }
-                ),
-                IntegrationCardItem(
-                    icon = painterResource(Res.drawable.music_note),
-                    title = { Text(stringResource(Res.string.lastfm_integration)) },
-                    onClick = {
-                        navController.navigate("settings/integrations/lastfm")
-                    }
+            items = buildList {
+                add(
+                    IntegrationCardItem(
+                        icon = painterResource(Res.drawable.discord),
+                        title = { Text(stringResource(Res.string.discord_integration)) },
+                        onClick = { navController.navigate("settings/integrations/discord") }
+                    )
                 )
-            )
+                // DESKTOP: Last.fm login/scrobbling cannot work without our own API key, so the entry is hidden.
+                if (DesktopFeatures.LASTFM) {
+                    add(
+                        IntegrationCardItem(
+                            icon = painterResource(Res.drawable.music_note),
+                            title = { Text(stringResource(Res.string.lastfm_integration)) },
+                            onClick = {
+                                navController.navigate("settings/integrations/lastfm")
+                            }
+                        )
+                    )
+                }
+            }
         )
     }
 
