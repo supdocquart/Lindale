@@ -76,6 +76,21 @@ class DiscordGateway(
     @Volatile
     private var reconnectAttempts: Int = 0
 
+    // DESKTOP: terminal state after the retry loop gave up, so callers stop starting new connections.
+    @Volatile
+    private var _isPermanentlyFailed: Boolean = false
+    val isPermanentlyFailed: Boolean get() = _isPermanentlyFailed
+
+    // DESKTOP: timestamp of the give-up, used by callers to schedule the next external attempt.
+    @Volatile
+    private var _permanentlyFailedAtMs: Long = 0L
+    val permanentlyFailedAtMs: Long get() = _permanentlyFailedAtMs
+
+    // DESKTOP: true while this gateway owns the reconnect loop; callers must not open a competing socket.
+    @Volatile
+    private var _isRetrying: Boolean = false
+    val isRetrying: Boolean get() = _isRetrying
+
     @Volatile
     private var heartbeatJob: Job? = null
 
@@ -88,6 +103,15 @@ class DiscordGateway(
         .build()
 
     suspend fun connect() {
+        // DESKTOP: a connect from outside the retry loop starts a fresh cycle and clears the give-up state.
+        reconnectAttempts = 0
+        _isPermanentlyFailed = false
+        _permanentlyFailedAtMs = 0L
+        _isRetrying = false
+        openSocket()
+    }
+
+    private suspend fun openSocket() {
         val myId = webSocketIdCounter.incrementAndGet()
         activeWebSocketId = myId
         val openDeferred = CompletableDeferred<Unit>()
@@ -99,7 +123,7 @@ class DiscordGateway(
             openDeferred.await()
             Timber.tag(TAG).i("connect: WS opened (id=%d), gatewayUrl=%s", myId, gatewayUrl)
         } catch (e: Throwable) {
-            Timber.tag(TAG).e(e, "connect: failed to open WS (id=%d)", myId)
+            Timber.tag(TAG).w("connect: failed to open WS (id=%d): %s", myId, describeGatewayError(e))
             runCatching { ws.cancel() }
             webSocket = null
             throw e
@@ -210,7 +234,7 @@ class DiscordGateway(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 if (wsId != activeWebSocketId) return
-                Timber.tag(TAG).e(t, "onFailure: response=%s, wsId=%d", response?.code, wsId)
+                Timber.tag(TAG).w("onFailure: response=%s, wsId=%d, error=%s", response?.code, wsId, describeGatewayError(t))
                 if (!openDeferred.isCompleted) {
                     openDeferred.completeExceptionally(t)
                 }
@@ -273,10 +297,16 @@ class DiscordGateway(
                         )
                         if (resumeUrl != null) setGatewayUrl(resumeUrl)
                         reconnectAttempts = 0
+                        _isPermanentlyFailed = false
+                        _permanentlyFailedAtMs = 0L
+                        _isRetrying = false
                         _events.emit(GatewayEvent.Ready(sessionId, resumeUrl))
                     }
                     "RESUMED" -> {
                         reconnectAttempts = 0
+                        _isPermanentlyFailed = false
+                        _permanentlyFailedAtMs = 0L
+                        _isRetrying = false
                         Timber.tag(TAG).d("handleFrame: RESUMED parsed (sessionId prefix=%s)", _sessionId?.take(8))
                         _events.emit(GatewayEvent.Resumed(_sessionId.orEmpty()))
                     }
@@ -329,6 +359,7 @@ class DiscordGateway(
             Timber.tag(TAG).d("handleClose: clean remote close (code=1000), resetting session")
             _sessionId = null
             _currentSeq = 0
+            _isRetrying = false
             return
         }
 
@@ -345,21 +376,27 @@ class DiscordGateway(
                 Timber.tag(TAG).w("SurfaceFatal for closeCode=%d, giving up", code)
                 _sessionId = null
                 _currentSeq = 0
+                _isRetrying = false
             }
             is ReconnectAction.RefreshAndReIdentify -> {
                 Timber.tag(TAG).w("RefreshAndReIdentify for closeCode=%d, delegating to manager", code)
+                _isRetrying = false
                 _events.emit(GatewayEvent.RefreshToken)
             }
             is ReconnectAction.Resume,
             is ReconnectAction.ReIdentify -> {
                 if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
                     Timber.tag(TAG).w("max reconnect attempts reached (%d), giving up", MAX_RECONNECT_ATTEMPTS)
+                    _isRetrying = false
+                    _isPermanentlyFailed = true
+                    _permanentlyFailedAtMs = System.currentTimeMillis()
                     _events.emit(
                         GatewayEvent.Disconnected(4000, "max reconnect attempts", remote = false),
                     )
                     return
                 }
                 reconnectAttempts++
+                _isRetrying = true
                 val delay = if (code == 429) {
                     val retryAfter = parseRetryAfter(reason)
                     retryAfter.coerceAtLeast(60_000L)
@@ -375,9 +412,14 @@ class DiscordGateway(
 
     private suspend fun performReconnect(action: ReconnectAction) {
         try {
-            connect()
+            // DESKTOP: stay inside the retry loop, so keep the attempt counter and give-up state untouched.
+            openSocket()
         } catch (e: Throwable) {
-            Timber.tag(TAG).e(e, "performReconnect: connect failed")
+            if (isExpectedGatewayNetworkError(e)) {
+                Timber.tag(TAG).w("performReconnect: connect failed: %s", describeGatewayError(e))
+            } else {
+                Timber.tag(TAG).e(e, "performReconnect: connect failed")
+            }
             return
         }
 
@@ -513,3 +555,13 @@ class DiscordGateway(
         private const val HEARTBEAT_ACK = 11
     }
 }
+
+// DESKTOP: a blocked network / DNS / TLS failure is expected here; log it as one line, not a stack.
+internal fun isExpectedGatewayNetworkError(t: Throwable): Boolean =
+    t is java.net.SocketException ||
+        t is javax.net.ssl.SSLException ||
+        t is java.net.UnknownHostException ||
+        t is java.io.InterruptedIOException
+
+internal fun describeGatewayError(t: Throwable): String =
+    "${t.javaClass.simpleName}: ${t.message ?: "no message"}"

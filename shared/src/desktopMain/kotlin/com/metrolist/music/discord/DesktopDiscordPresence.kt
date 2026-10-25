@@ -45,8 +45,15 @@ class DesktopDiscordPresence(
     @Volatile
     private var enabled = true
 
+    // DESKTOP: exponential backoff for gateway reconnects (1 minute -> 30 minutes), reset on READY.
     @Volatile
-    private var lastReconnectAttemptAtMs = 0L
+    private var reconnectBackoffMs = MIN_RECONNECT_BACKOFF_MS
+
+    @Volatile
+    private var nextReconnectAttemptAtMs = 0L
+
+    @Volatile
+    private var giveUpCooldownArmed = false
 
     fun start() {
         if (!DiscordRpcManager.isInitialized()) {
@@ -60,7 +67,15 @@ class DesktopDiscordPresence(
                 .collect { value ->
                     enabled = value
                     Timber.tag(TAG).i("desktopPresence: enabled=%s", value)
-                    if (value) sync() else clearAll()
+                    if (value) {
+                        // DESKTOP: the user re-enabled the integration, start a fresh retry cycle.
+                        reconnectBackoffMs = MIN_RECONNECT_BACKOFF_MS
+                        nextReconnectAttemptAtMs = 0L
+                        giveUpCooldownArmed = false
+                        sync()
+                    } else {
+                        clearAll()
+                    }
                 }
         }
 
@@ -75,7 +90,13 @@ class DesktopDiscordPresence(
 
         scope.launch {
             DiscordRpcManager.connectionStatus.collect { status ->
-                if (status == DiscordRpcManager.Status.Connected) sync()
+                if (status == DiscordRpcManager.Status.Connected) {
+                    // DESKTOP: a successful READY resets the reconnect backoff.
+                    reconnectBackoffMs = MIN_RECONNECT_BACKOFF_MS
+                    nextReconnectAttemptAtMs = 0L
+                    giveUpCooldownArmed = false
+                    sync()
+                }
             }
         }
 
@@ -84,9 +105,16 @@ class DesktopDiscordPresence(
         }
 
         // Picks up the Discord app being started or closed while music is playing.
+        // DESKTOP: gateway reconnects use an exponential backoff instead of a fixed 20 s poll.
         scope.launch {
             while (true) {
-                delay(20_000)
+                val untilRetryMs = nextReconnectAttemptAtMs - System.currentTimeMillis()
+                val waitMs = when {
+                    !enabled || DiscordRpcManager.isReady() -> MIN_RECONNECT_BACKOFF_MS
+                    untilRetryMs > 0L -> untilRetryMs.coerceAtMost(reconnectBackoffMs)
+                    else -> MIN_RECONNECT_BACKOFF_MS
+                }
+                delay(waitMs)
                 if (enabled && !ipc.isConnected) sync()
             }
         }
@@ -95,6 +123,24 @@ class DesktopDiscordPresence(
     private fun clearAll() {
         ipc.clear()
         if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
+    }
+
+    private fun scheduleGatewayReconnectIfDue(token: String) {
+        // DESKTOP: the gateway owns its retry loop; only start a new connect when it is idle.
+        if (DiscordRpcManager.isReconnecting()) return
+        val now = System.currentTimeMillis()
+        if (DiscordRpcManager.isPermanentlyFailed() && !giveUpCooldownArmed) {
+            // DESKTOP: after a give-up wait 1, 2, 4 ... up to 30 minutes before the next attempt.
+            giveUpCooldownArmed = true
+            val failedAt = DiscordRpcManager.permanentlyFailedAtMs().takeIf { it > 0L } ?: now
+            nextReconnectAttemptAtMs = failedAt + reconnectBackoffMs
+            reconnectBackoffMs = (reconnectBackoffMs * 2).coerceAtMost(MAX_RECONNECT_BACKOFF_MS)
+        }
+        if (now < nextReconnectAttemptAtMs) return
+        giveUpCooldownArmed = false
+        nextReconnectAttemptAtMs = now + reconnectBackoffMs
+        Timber.tag(TAG).i("desktopPresence: not ready, reconnecting (backoff=%dms)", reconnectBackoffMs)
+        DiscordRpcManager.reconnectWithToken(token)
     }
 
     private suspend fun sync() = syncMutex.withLock {
@@ -116,12 +162,7 @@ class DesktopDiscordPresence(
             if (DiscordRpcManager.isReady()) DiscordRpcManager.clear()
         } else if (!DiscordRpcManager.isReady()) {
             val token = DiscordRpcManager.getAccessToken()
-            val now = System.currentTimeMillis()
-            if (token != null && now - lastReconnectAttemptAtMs > 30_000L) {
-                lastReconnectAttemptAtMs = now
-                Timber.tag(TAG).i("desktopPresence: not ready, reconnecting")
-                DiscordRpcManager.reconnectWithToken(token)
-            }
+            if (token != null) scheduleGatewayReconnectIfDue(token)
             return
         }
 
@@ -180,5 +221,9 @@ class DesktopDiscordPresence(
 
     private companion object {
         const val TAG = "DiscordSvc"
+
+        // DESKTOP: gateway reconnect backoff after a give-up (1 minute, doubling, capped at 30 minutes).
+        const val MIN_RECONNECT_BACKOFF_MS = 60_000L
+        const val MAX_RECONNECT_BACKOFF_MS = 30 * 60_000L
     }
 }

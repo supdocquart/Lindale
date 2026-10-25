@@ -92,6 +92,14 @@ object DiscordRpcManager {
 
     fun isReady(): Boolean = _ready
 
+    // DESKTOP: exposes the gateway's terminal give-up state so the desktop presence can stop retrying.
+    fun isPermanentlyFailed(): Boolean = gateway.isPermanentlyFailed
+
+    fun permanentlyFailedAtMs(): Long = gateway.permanentlyFailedAtMs
+
+    // DESKTOP: true while the gateway runs its own retry loop; callers must not start a competing connect.
+    fun isReconnecting(): Boolean = gateway.isRetrying
+
     fun isShowingSong(songId: String, isPlaying: Boolean): Boolean {
         if (currentSongId != songId || currentIsPlaying != isPlaying) {
             return false
@@ -520,7 +528,12 @@ object DiscordRpcManager {
                     gateway.connect()
                     gateway.identify("Bearer ${accessToken ?: token}")
                 } catch (e: Throwable) {
-                    Timber.tag(TAG).e(e, "reconnectWithToken: connect/identify failed")
+                    // DESKTOP: this is the outermost layer, so log once (expected network failures without a stack).
+                    if (isExpectedGatewayNetworkError(e)) {
+                        Timber.tag(TAG).w("reconnectWithToken: connect/identify failed: %s", describeGatewayError(e))
+                    } else {
+                        Timber.tag(TAG).e(e, "reconnectWithToken: connect/identify failed")
+                    }
                     _lastError.value = "discord_error_loopback_timeout"
                     _connectionStatus.value = Status.Disconnected
                 }
@@ -646,6 +659,9 @@ object DiscordRpcManager {
                         4001 -> "discord_error_invalid_scope"
                         else -> _lastError.value
                     }
+                } else if (event.code == 4000 && event.reason.contains("max reconnect", ignoreCase = true)) {
+                    // DESKTOP: the synthetic 4000 give-up never reached the UI before; surface a real reason.
+                    _lastError.value = "discord_error_loopback_timeout"
                 }
             }
             is GatewayEvent.InvalidSession -> {
