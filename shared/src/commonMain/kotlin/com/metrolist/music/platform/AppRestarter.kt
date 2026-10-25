@@ -14,6 +14,7 @@ import timber.log.Timber
 object AppRestarter {
     private const val TAG = "AppRestarter"
     private const val JPACKAGE_APP_PATH = "jpackage.app-path"
+    private const val CHILD_STARTUP_GRACE_MS = 1_500L
 
     fun restart(): Nothing {
         try {
@@ -21,7 +22,9 @@ object AppRestarter {
                 ?.takeIf { it.isNotBlank() }
                 ?.let(::File)
 
-            if (launcher != null && launcher.isFile) {
+            val child = if (launcher != null && launcher.isFile) {
+                // DESKTOP: log the executable path only; the arguments may contain tokens or user data.
+                Timber.tag(TAG).i("Relaunching via jpackage launcher: %s", launcher.absolutePath)
                 ProcessBuilder(launcher.absolutePath).start()
             } else {
                 // DESKTOP: dev builds are started by Gradle, so replay the running java command.
@@ -29,6 +32,7 @@ object AppRestarter {
                 val command = info.command().orElse(null)
                 val arguments = info.arguments().orElse(null)
                 if (command != null && arguments != null) {
+                    Timber.tag(TAG).i("Relaunching via replayed java command: %s", command)
                     ProcessBuilder(listOf(command) + arguments).start()
                 } else {
                     Timber.tag(TAG).w(
@@ -36,8 +40,13 @@ object AppRestarter {
                         command,
                         arguments?.size,
                     )
+                    null
                 }
             }
+
+            // DESKTOP: a child that dies immediately (locked files, bad working directory) would
+            // otherwise exit silently; wait briefly and log the outcome before exiting ourselves.
+            child?.let(::logChildStartup)
         } catch (e: Throwable) {
             // A relaunch failure must never prevent the process from exiting.
             Timber.tag(TAG).e(e, "Failed to relaunch the app")
@@ -46,5 +55,25 @@ object AppRestarter {
         Runtime.getRuntime().exit(0)
         // Runtime.exit never returns, but it is not typed as Nothing.
         throw IllegalStateException("Runtime.exit returned unexpectedly")
+    }
+
+    private fun logChildStartup(child: Process) {
+        val deadline = System.nanoTime() + CHILD_STARTUP_GRACE_MS * 1_000_000
+        while (child.isAlive && System.nanoTime() < deadline) {
+            Thread.sleep(50)
+        }
+        if (child.isAlive) {
+            Timber.tag(TAG).i(
+                "Relaunched process is still alive after %d ms (pid=%d)",
+                CHILD_STARTUP_GRACE_MS,
+                child.pid(),
+            )
+        } else {
+            Timber.tag(TAG).i(
+                "Relaunched process exited during startup (pid=%d, exitCode=%d)",
+                child.pid(),
+                child.exitValue(),
+            )
+        }
     }
 }

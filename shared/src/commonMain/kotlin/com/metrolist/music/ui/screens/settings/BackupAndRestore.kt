@@ -39,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -111,6 +112,7 @@ fun BackupAndRestore(
 
     val context = LocalAppContext.current
     val coroutineScope = rememberCoroutineScope()
+    val isBackingUp by viewModel.isBackingUp.collectAsState()
 
     val backupLauncher =
         rememberSaveFileLauncher { uri ->
@@ -183,20 +185,42 @@ fun BackupAndRestore(
                     Material3SettingsItem(
                         title = { Text(stringResource(Res.string.action_backup)) },
                         icon = painterResource(Res.drawable.backup),
+                        enabled = !isBackingUp,
+                        trailingContent = if (isBackingUp) {
+                            {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                )
+                            }
+                        } else null,
                         onClick = {
-                            val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-                            backupLauncher.launch(
-                                "${appName}_${
-                                    LocalDateTime.now().format(formatter)
-                                }.backup",
-                            )
+                            if (!isBackingUp) {
+                                val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+                                backupLauncher.launch(
+                                    "${appName}_${
+                                        LocalDateTime.now().format(formatter)
+                                    }.backup",
+                                )
+                            }
                         },
                     ),
                     Material3SettingsItem(
                         title = { Text(stringResource(Res.string.action_restore)) },
                         icon = painterResource(Res.drawable.restore),
+                        enabled = !isBackingUp,
+                        trailingContent = if (isBackingUp) {
+                            {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                )
+                            }
+                        } else null,
                         onClick = {
-                            restoreLauncher.launch(arrayOf("application/octet-stream"))
+                            if (!isBackingUp) {
+                                restoreLauncher.launch(arrayOf("application/octet-stream"))
+                            }
                         },
                     ),
                     Material3SettingsItem(

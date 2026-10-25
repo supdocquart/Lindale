@@ -43,6 +43,9 @@ import com.metrolist.music.utils.reportException
 import com.metrolist.music.utils.ArtistNameAliases
 import com.metrolist.music.utils.EncryptedPreferencesSerializer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.File
@@ -74,50 +77,63 @@ data class ConvertedSongLog(
 class BackupRestoreViewModel constructor(
     val database: MusicDatabase,
 ) : ViewModel() {
+    private val _isBackingUp = MutableStateFlow(false)
+    val isBackingUp: StateFlow<Boolean> = _isBackingUp.asStateFlow()
+
+    // DESKTOP: the zip copy used to run on the Compose main thread and froze the window on large libraries.
     fun backup(context: AppContext, uri: Any) {
-        runCatching {
-            context.openOutputStream(uri)?.use {
-                it.buffered().zipOutputStream().use { outputStream ->
-                    // DESKTOP: the settings file may be DPAPI-encrypted; backups must stay portable.
-                    val settingsBytes = EncryptedPreferencesSerializer.plainBytes(
-                        (context.filesDir / "datastore" / SETTINGS_FILENAME).readBytes()
-                    )
-                    outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
-                    outputStream.write(settingsBytes)
-                    outputStream.putNextEntry(ZipEntry(ArtistNameAliases.BACKUP_FILENAME))
-                    outputStream.write(ArtistNameAliases.serialize().encodeToByteArray())
-                    runBlocking(Dispatchers.IO) {
-                        database.checkpoint()
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!_isBackingUp.compareAndSet(false, true)) return@launch
+            try {
+                runCatching {
+                    context.openOutputStream(uri)?.use {
+                        it.buffered().zipOutputStream().use { outputStream ->
+                            // DESKTOP: the settings file may be DPAPI-encrypted; backups must stay portable.
+                            val settingsBytes = EncryptedPreferencesSerializer.plainBytes(
+                                (context.filesDir / "datastore" / SETTINGS_FILENAME).readBytes()
+                            )
+                            outputStream.putNextEntry(ZipEntry(SETTINGS_FILENAME))
+                            outputStream.write(settingsBytes)
+                            outputStream.putNextEntry(ZipEntry(ArtistNameAliases.BACKUP_FILENAME))
+                            outputStream.write(ArtistNameAliases.serialize().encodeToByteArray())
+                            database.checkpoint()
+                            val dbPath = context.getDatabasePath(MusicDatabase.DB_NAME).absolutePath
+                            val dbFile = File(dbPath)
+                            if (dbFile.exists()) {
+                                FileInputStream(dbFile).use { inputStream ->
+                                    outputStream.putNextEntry(ZipEntry(MusicDatabase.DB_NAME))
+                                    inputStream.copyTo(outputStream)
+                                }
+                                val walFile = File("$dbPath-wal")
+                                if (walFile.exists()) {
+                                    FileInputStream(walFile).use { inputStream ->
+                                        outputStream.putNextEntry(ZipEntry("${MusicDatabase.DB_NAME}-wal"))
+                                        inputStream.copyTo(outputStream)
+                                    }
+                                }
+                                val shmFile = File("$dbPath-shm")
+                                if (shmFile.exists()) {
+                                    FileInputStream(shmFile).use { inputStream ->
+                                        outputStream.putNextEntry(ZipEntry("${MusicDatabase.DB_NAME}-shm"))
+                                        inputStream.copyTo(outputStream)
+                                    }
+                                }
+                            }
+                        }
                     }
-                    val dbPath = context.getDatabasePath(MusicDatabase.DB_NAME).absolutePath
-                    val dbFile = File(dbPath)
-                    if (dbFile.exists()) {
-                        FileInputStream(dbFile).use { inputStream ->
-                            outputStream.putNextEntry(ZipEntry(MusicDatabase.DB_NAME))
-                            inputStream.copyTo(outputStream)
-                        }
-                        val walFile = File("$dbPath-wal")
-                        if (walFile.exists()) {
-                            FileInputStream(walFile).use { inputStream ->
-                                outputStream.putNextEntry(ZipEntry("${MusicDatabase.DB_NAME}-wal"))
-                                inputStream.copyTo(outputStream)
-                            }
-                        }
-                        val shmFile = File("$dbPath-shm")
-                        if (shmFile.exists()) {
-                            FileInputStream(shmFile).use { inputStream ->
-                                outputStream.putNextEntry(ZipEntry("${MusicDatabase.DB_NAME}-shm"))
-                                inputStream.copyTo(outputStream)
-                            }
-                        }
+                }.onSuccess {
+                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                        Toast.makeText(context, Res.string.backup_create_success, Toast.LENGTH_SHORT).show()
+                    }
+                }.onFailure {
+                    reportException(it)
+                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                        Toast.makeText(context, Res.string.backup_create_failed, Toast.LENGTH_SHORT).show()
                     }
                 }
+            } finally {
+                _isBackingUp.value = false
             }
-        }.onSuccess {
-            Toast.makeText(context, Res.string.backup_create_success, Toast.LENGTH_SHORT).show()
-        }.onFailure {
-            reportException(it)
-            Toast.makeText(context, Res.string.backup_create_failed, Toast.LENGTH_SHORT).show()
         }
     }
 
