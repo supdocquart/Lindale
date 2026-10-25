@@ -5,6 +5,7 @@
 
 package com.metrolist.music.viewmodels
 import com.metrolist.music.platform.AppContext
+import com.metrolist.music.platform.AppRestarter
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
@@ -314,7 +315,8 @@ class BackupRestoreViewModel constructor(
 
                     // 4. Restart — Room will open the swapped DB and run migrations if needed
                     // restart app
-                    Runtime.getRuntime().exit(0)
+                    // DESKTOP: relaunch through AppRestarter so the restored library is visible again.
+                    AppRestarter.restart()
                 } else {
                     kotlinx.coroutines.withContext(Dispatchers.Main) {
                         Toast.makeText(context, Res.string.restore_failed, Toast.LENGTH_SHORT).show()
