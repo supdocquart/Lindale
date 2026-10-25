@@ -35,12 +35,16 @@ import com.metrolist.innertubex.extraction.strategy.PlaybackClientCatalogView
 import com.metrolist.innertubex.extraction.strategy.PlaybackClientManifest
 import com.metrolist.innertubex.extraction.strategy.PoTokenProviderKind
 import com.metrolist.music.constants.AudioQuality
+import com.metrolist.music.platform.DesktopFiles
 import com.metrolist.music.utils.potoken.PoTokenGenerator
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.time.Clock
+import java.io.File
 
 /** The sole stream extraction entry point for the app. */
 object InnerTubeXPlayer {
@@ -216,6 +220,14 @@ object InnerTubeXPlayer {
 
             val remoteStore = RemotePlayerConfigStore(latestTransport.httpClient, configRepository, logger)
             val cipherService = YouTubeCipherService(latestTransport.httpClient, remoteStore, logger)
+            // DESKTOP: innertubex only keeps the player JS in memory, so every cold start evaluates
+            // the ~2.6 MB script again (3-4 s CPU, see B7). The library exposes a cache hook for the
+            // EJS-preprocessed player; back it with a small on-disk cache under
+            // DesktopFiles.cacheDir/player-js so a warm start skips that evaluation.
+            cipherService.setPreprocessedPlayerCache(
+                read = { key -> PlayerJsDiskCache.read(key) },
+                write = { key, script -> PlayerJsDiskCache.write(key, script) },
+            )
             val extractor =
                 InnerTubeExtractor(
                     configParser =
@@ -430,6 +442,99 @@ object InnerTubeXPlayer {
             useRangeChunks = this.useRangeChunks,
         )
     }
+}
+
+/**
+ * DESKTOP: disk cache for the EJS-preprocessed player script (B7).
+ *
+ * innertubex keeps only the raw script in memory, so a cold start has to run the 2.6 MB player
+ * through the JS engine again. The library keys its preprocessed cache by
+ * `sha1("$playerUrl:$bundleHash")` and passes that key to the read/write hooks, so the file name is
+ * the key; a new player id changes the URL and therefore the key. At most [MAX_ENTRIES] versions are
+ * kept on disk, the oldest is deleted after every write.
+ */
+private object PlayerJsDiskCache {
+    private const val TAG = "PlayerJsCache"
+    private const val DIR_NAME = "player-js"
+    private const val MAX_ENTRIES = 3
+    private const val MIN_VALID_LENGTH = 32
+    private val NON_FILE_CHAR = Regex("[^A-Za-z0-9._-]")
+
+    private val mutex = Mutex()
+
+    private val directory: File
+        get() = File(DesktopFiles.cacheDir, DIR_NAME)
+
+    suspend fun read(key: String): String? = mutex.withLock {
+        withContext(Dispatchers.IO) {
+            val file = fileFor(key)
+            if (!file.isFile) {
+                Timber.tag(TAG).d("player JS cache miss key=%s", key)
+                return@withContext null
+            }
+            val startedAt = System.currentTimeMillis()
+            val script = runCatching { file.readText() }.getOrNull()
+            if (script == null || script.length < MIN_VALID_LENGTH) {
+                // A truncated or unreadable entry would make the JS engine fail, so drop it.
+                runCatching { file.delete() }
+                Timber.tag(TAG).w("player JS cache entry dropped key=%s", key)
+                return@withContext null
+            }
+            // Touch the file so the 3-entry LRU keeps the most recently used version.
+            runCatching { file.setLastModified(System.currentTimeMillis()) }
+            Timber.tag(TAG).d(
+                "player JS cache hit key=%s size=%d elapsed=%dms",
+                key,
+                script.length,
+                System.currentTimeMillis() - startedAt,
+            )
+            script
+        }
+    }
+
+    suspend fun write(key: String, script: String?) = mutex.withLock {
+        withContext(Dispatchers.IO) {
+            val file = fileFor(key)
+            if (script.isNullOrBlank()) {
+                // The library evicts an unusable entry by writing null.
+                runCatching { file.delete() }
+                return@withContext
+            }
+            val startedAt = System.currentTimeMillis()
+            runCatching {
+                directory.mkdirs()
+                val temp = File(directory, "${file.name}.tmp")
+                temp.writeText(script)
+                if (!temp.renameTo(file)) {
+                    file.writeText(script)
+                    temp.delete()
+                }
+            }.onFailure { Timber.tag(TAG).w(it, "player JS cache write failed key=%s", key) }
+            trim()
+            Timber.tag(TAG).d(
+                "player JS cache stored key=%s size=%d elapsed=%dms entries=%d",
+                key,
+                script.length,
+                System.currentTimeMillis() - startedAt,
+                entries().size,
+            )
+        }
+    }
+
+    private fun trim() {
+        entries().drop(MAX_ENTRIES).forEach { file ->
+            runCatching { file.delete() }
+            Timber.tag(TAG).d("player JS cache evicted key=%s", file.nameWithoutExtension)
+        }
+    }
+
+    private fun entries(): List<File> =
+        directory.listFiles { file -> file.isFile && file.name.endsWith(".js") }
+            ?.sortedByDescending { it.lastModified() }
+            .orEmpty()
+
+    private fun fileFor(key: String): File =
+        File(directory, key.replace(NON_FILE_CHAR, "_").take(80) + ".js")
 }
 
 

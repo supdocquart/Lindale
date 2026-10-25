@@ -24,6 +24,7 @@ import com.metrolist.music.extensions.toEnum
 import com.metrolist.music.extensions.toInetSocketAddress
 import com.metrolist.music.utils.ArtistNameAliases
 import com.metrolist.music.utils.InnerTubeXPlayer
+import com.metrolist.music.utils.UiTrace
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.safeDataStoreEdit
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +44,11 @@ import java.net.Proxy
 import java.util.Locale
 
 private val platformScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+// DESKTOP: B7 - the player JS prewarm costs 3-4 s of CPU, so it must not run while the first
+// screen is being drawn. These control how long we wait for the first [UI:NAV] signal.
+private const val FIRST_SCREEN_WAIT_MS = 20_000L
+private const val PREWARM_SETTLE_MS = 1_000L
 
 @Volatile
 private var initialized = false
@@ -83,14 +89,42 @@ fun initDesktopPlatform() {
 
         observeDesktopSettingsChanges(context)
 
+        // DESKTOP: B7 - the prewarm downloads the ~2.6 MB player script and evaluates it (3-4 s CPU).
+        // It used to start 1.5 s after init and competed with the Compose/DB/network work that draws
+        // the first screen. It now waits for the first navigation event (the first frame signal we
+        // have) and then runs on a low-priority IO thread. Playback does not depend on it: if the
+        // user presses play first, the normal extraction path loads exactly what it needs.
         launch(Dispatchers.IO) {
-            delay(1500)
+            val waitStartedAt = System.currentTimeMillis()
+            while (UiTrace.currentRoute == "?" &&
+                System.currentTimeMillis() - waitStartedAt < FIRST_SCREEN_WAIT_MS
+            ) {
+                delay(250)
+            }
+            Timber.d(
+                "prewarm: first screen %s after %dms",
+                if (UiTrace.currentRoute == "?") "not detected" else "shown",
+                System.currentTimeMillis() - waitStartedAt,
+            )
+            delay(PREWARM_SETTLE_MS)
+
             var waitedMs = 0
             while (YouTube.visitorData == null && waitedMs < 10_000) {
                 delay(500)
                 waitedMs += 500
             }
-            runCatching { InnerTubeXPlayer.prewarm() }
+
+            val startedAt = System.currentTimeMillis()
+            val thread = Thread.currentThread()
+            val previousPriority = thread.priority
+            runCatching { thread.priority = Thread.MIN_PRIORITY }
+            try {
+                runCatching { InnerTubeXPlayer.prewarm() }
+                    .onFailure { Timber.w(it, "prewarm failed") }
+            } finally {
+                runCatching { thread.priority = previousPriority }
+            }
+            Timber.d("prewarm: finished after first screen [elapsedMs=%d]", System.currentTimeMillis() - startedAt)
         }
     }
 }
