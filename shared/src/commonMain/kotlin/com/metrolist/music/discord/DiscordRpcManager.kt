@@ -534,7 +534,8 @@ object DiscordRpcManager {
                     } else {
                         Timber.tag(TAG).e(e, "reconnectWithToken: connect/identify failed")
                     }
-                    _lastError.value = "discord_error_loopback_timeout"
+                    // DESKTOP: network failure is not a loopback timeout; tell the user Discord may be blocked.
+                    _lastError.value = "discord_error_network_blocked"
                     _connectionStatus.value = Status.Disconnected
                 }
             }
@@ -660,8 +661,8 @@ object DiscordRpcManager {
                         else -> _lastError.value
                     }
                 } else if (event.code == 4000 && event.reason.contains("max reconnect", ignoreCase = true)) {
-                    // DESKTOP: the synthetic 4000 give-up never reached the UI before; surface a real reason.
-                    _lastError.value = "discord_error_loopback_timeout"
+                    // DESKTOP: the synthetic 4000 give-up never reached the UI before; this is a network block, not a loopback timeout.
+                    _lastError.value = "discord_error_network_blocked"
                 }
             }
             is GatewayEvent.InvalidSession -> {

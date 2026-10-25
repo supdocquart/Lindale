@@ -794,6 +794,7 @@
     <string name="discord_status_authorized">Authorized</string>
     <string name="discord_status_not_initialized">Not initialized</string>
     <string name="discord_error_loopback_timeout">Discord didn\'t respond in time. Please try again.</string>
+    <string name="discord_error_network_blocked">Could not reach Discord. Your network may be blocking it. If you have the Discord app open, Metrolist can also connect through it.</string>
     <string name="discord_error_loopback_unbound">Couldn\'t open a local callback port. Please free one and try again.</string>
     <string name="discord_error_no_browser">No browser was found to complete Discord authorization.</string>
     <string name="discord_error_token_refresh_failed">Discord session expired. Please reconnect.</string>
