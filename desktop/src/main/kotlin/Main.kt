@@ -13,10 +13,8 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
 import com.metrolist.music.MetrolistApp
 import com.metrolist.music.db.createDesktopDatabase
 import com.metrolist.music.playback.DesktopPlayerConnection
@@ -32,7 +30,8 @@ fun main() {
 private fun runApp() = application {
     initDesktopPlatform()
 
-    val windowState = rememberWindowState(width = 1280.dp, height = 800.dp)
+    // DESKTOP: Restore the last window size, position and maximized state.
+    val windowState = remember { WindowStateStore.load() }
     val database = remember { createDesktopDatabase() }
     val playerConnection = remember(database) { DesktopPlayerConnection(database) }
     remember(playerConnection) {
@@ -44,6 +43,8 @@ private fun runApp() = application {
 
     Window(
         onCloseRequest = {
+            // DESKTOP: Persist the window geometry before the player shuts down.
+            WindowStateStore.save(windowState)
             playerConnection.release()
             exitApplication()
         },
