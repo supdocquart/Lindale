@@ -14,13 +14,21 @@ object DesktopFiles {
     private const val DIALOG_PREFS = "file_dialogs"
     private const val LAST_DIRECTORY_KEY = "last_directory"
 
+    // DESKTOP: the headless smoke test redirects the whole app data root so it never touches the
+    // user's real %APPDATA%/Metrolist or %LOCALAPPDATA%/Metrolist folders.
+    private val dataRootOverride: File?
+        get() = System.getProperty("metrolist.dataDir")
+            ?.takeIf { it.isNotBlank() }
+            ?.let(::File)
+
     /** Roaming app data (settings, database, tokens). */
     val dataDir: File
-        get() = File(System.getenv("APPDATA") ?: home, "Metrolist").apply { mkdirs() }
+        get() = (dataRootOverride ?: File(System.getenv("APPDATA") ?: home, "Metrolist")).apply { mkdirs() }
 
     /** Local, disposable cache (images, shared files, downloads cache). */
     val cacheDir: File
-        get() = File(System.getenv("LOCALAPPDATA") ?: home, "Metrolist/cache").apply { mkdirs() }
+        get() = (dataRootOverride?.let { File(it, "cache") }
+            ?: File(System.getenv("LOCALAPPDATA") ?: home, "Metrolist/cache")).apply { mkdirs() }
 
     private fun ownerFrame(): Frame? {
         val focused = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow

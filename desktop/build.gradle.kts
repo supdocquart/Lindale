@@ -67,3 +67,26 @@ tasks.withType<JavaExec>().configureEach {
         jvmArgs("-XX:NativeMemoryTracking=summary")
     }
 }
+
+// DESKTOP: headless smoke test. The data dir is a throwaway build folder so the user's real
+// %APPDATA%/Metrolist and %LOCALAPPDATA%/Metrolist are never touched.
+tasks.register<JavaExec>("smokeTest") {
+    group = "verification"
+    description = "Runs the headless smoke test against the real network in an isolated data dir."
+    dependsOn(tasks.named("classes"))
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("SmokeTestKt")
+    workingDir = projectDir
+    jvmArgs("-Djava.awt.headless=true", "-Xmx512m")
+
+    val smokeData = layout.buildDirectory.dir("smoke-data").get().asFile
+    val smokeLogs = layout.buildDirectory.dir("smoke-logs").get().asFile
+    doFirst {
+        smokeData.deleteRecursively()
+        smokeData.mkdirs()
+        smokeLogs.deleteRecursively()
+        smokeLogs.mkdirs()
+    }
+    systemProperty("metrolist.dataDir", smokeData.absolutePath)
+    systemProperty("metrolist.logDir", smokeLogs.absolutePath)
+}
