@@ -1,9 +1,15 @@
 import com.metrolist.innertube.YouTube
-import com.metrolist.innertube.models.ExplicitDuplicates
+import com.metrolist.innertube.models.AlbumItem
+import com.metrolist.innertube.models.ArtistItem
+import com.metrolist.innertube.models.CleanDuplicates
 import com.metrolist.innertube.models.SongItem
-import com.metrolist.innertube.models.dropExplicitDuplicates
+import com.metrolist.innertube.models.YTItem
+import com.metrolist.innertube.models.cleanDuplicateKey
+import com.metrolist.innertube.models.dropCleanDuplicates
+import com.metrolist.innertube.models.normalizeTitleKey
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeLocale
+import com.metrolist.innertube.pages.SearchSummaryPage
 import com.metrolist.innertubex.extraction.ContentHints
 import com.metrolist.innertubex.extraction.strategy.PlaybackClientCatalog
 import com.metrolist.music.constants.AudioQuality
@@ -121,6 +127,7 @@ private class SmokeRun(private val deadline: Long) {
         }
 
         checkSearch()
+        checkExplicitTwinsLive()
         checkStream()
         checkLyrics()
         checkSettingsEncryption()
@@ -183,7 +190,210 @@ private class SmokeRun(private val deadline: Long) {
         }
     }
 
-    // 2. Stream ---------------------------------------------------------------------------------
+    // 2. Explicit twins (live, diagnostic) -------------------------------------------------------
+
+    private suspend fun checkExplicitTwinsLive() {
+        val started = System.currentTimeMillis()
+        val queries = listOf(
+            "Kendrick Lamar DAMN",
+            "Kendrick Lamar Not Like Us",
+            "Eminem Without Me",
+            "Eminem The Eminem Show",
+        )
+        val details = mutableListOf<String>()
+        val errors = mutableListOf<String>()
+        var totalItems = 0
+        var twinGroups = 0
+
+        suspend fun collect(source: String, request: suspend () -> List<YTItem>) {
+            val budget = minOf(20_000L, remaining())
+            if (budget <= 1000L) {
+                errors += "$source -> global time budget exhausted"
+                return
+            }
+            val outcome = withTimeoutOrNull(budget) { attempt { request() } }
+            when {
+                outcome == null -> errors += "$source -> timeout after $budget ms"
+                outcome.isFailure -> errors += "$source -> ${outcome.exceptionOrNull()!!.describe()}"
+                else -> {
+                    val items = outcome.getOrThrow()
+                    totalItems += items.size
+                    val twins = reportTwinItems(source, items)
+                    twinGroups += twins
+                    details += "$source -> ${items.size} items, $twins twin groups"
+                }
+            }
+        }
+
+        suspend fun collectSummary(source: String, request: suspend () -> SearchSummaryPage) {
+            val budget = minOf(20_000L, remaining())
+            if (budget <= 1000L) {
+                errors += "$source -> global time budget exhausted"
+                return
+            }
+            val outcome = withTimeoutOrNull(budget) { attempt { request() } }
+            when {
+                outcome == null -> errors += "$source -> timeout after $budget ms"
+                outcome.isFailure -> errors += "$source -> ${outcome.exceptionOrNull()!!.describe()}"
+                else -> {
+                    val (items, twins, pageTwins) = reportSummaryTwinItems(source, outcome.getOrThrow())
+                    totalItems += items
+                    twinGroups += twins + pageTwins
+                    details += "$source -> $items items, $twins in-section twins, $pageTwins cross-section twins"
+                }
+            }
+        }
+
+        for (query in queries) {
+            collect("search-songs q=\"$query\"") {
+                YouTube.search(query, YouTube.SearchFilter.FILTER_SONG).getOrThrow().items
+            }
+            collect("search-albums q=\"$query\"") {
+                YouTube.search(query, YouTube.SearchFilter.FILTER_ALBUM).getOrThrow().items
+            }
+            collectSummary("search-summary q=\"$query\"") {
+                YouTube.searchSummary(query).getOrThrow()
+            }
+        }
+
+        for (artistName in listOf("Kendrick Lamar", "Eminem")) {
+            val budget = minOf(25_000L, remaining())
+            if (budget <= 1000L) {
+                errors += "artist $artistName -> global time budget exhausted"
+                continue
+            }
+            val outcome = withTimeoutOrNull(budget) {
+                attempt {
+                    val artistSearch = YouTube.search(
+                        artistName,
+                        YouTube.SearchFilter.FILTER_ARTIST,
+                    ).getOrThrow()
+                    val artist = artistSearch.items.filterIsInstance<ArtistItem>()
+                        .firstOrNull { it.title.equals(artistName, ignoreCase = true) }
+                        ?: artistSearch.items.filterIsInstance<ArtistItem>().firstOrNull()
+                        ?: throw IllegalStateException("no artist result for $artistName")
+                    artist.title to YouTube.artist(artist.id).getOrThrow()
+                }
+            }
+            when {
+                outcome == null -> errors += "artist $artistName -> timeout after $budget ms"
+                outcome.isFailure -> errors += "artist $artistName -> ${outcome.exceptionOrNull()!!.describe()}"
+                else -> {
+                    val (title, page) = outcome.getOrThrow()
+                    for (section in page.sections) {
+                        totalItems += section.items.size
+                        val twins = reportTwinItems("artist:$title/${section.title}", section.items)
+                        twinGroups += twins
+                        details += "artist:$title/${section.title} -> ${section.items.size} items, $twins twin groups"
+                    }
+                }
+            }
+        }
+
+        when {
+            errors.isNotEmpty() && totalItems == 0 -> fail(
+                "explicit-twins-live",
+                started,
+                "${errors.joinToString("; ")}; code: innertube YouTube.search()/searchSummary()/artist()",
+            )
+            else -> pass(
+                "explicit-twins-live",
+                started,
+                "items=$totalItems, twinGroups=$twinGroups",
+                *details.toTypedArray(),
+                *errors.map { "warning: $it" }.toTypedArray(),
+            )
+        }
+    }
+
+    private fun reportSummaryTwinItems(source: String, page: SearchSummaryPage): Triple<Int, Int, Int> {
+        var items = 0
+        var sectionTwins = 0
+        for (summary in page.summaries) {
+            items += summary.items.size
+            sectionTwins += reportTwinItems("$source/${summary.title}", summary.items)
+        }
+
+        val allItems = page.summaries.flatMap { it.items }
+        var pageTwins = 0
+        val grouped = allItems
+            .mapNotNull { item -> item.cleanDuplicateKey()?.let { it to item } }
+            .groupBy({ it.first }, { it.second })
+        for ((key, group) in grouped) {
+            val explicitIds = group.filter { it.explicit }.map { it.id }.distinct()
+            val cleanIds = group.filterNot { it.explicit }.map { it.id }.distinct()
+            if (explicitIds.isNotEmpty() && cleanIds.isNotEmpty()) {
+                pageTwins++
+                println(
+                    "TWINS-LIVE PAGE-TWIN $source key=\"$key\" " +
+                        "explicit=${explicitIds.joinToString()} clean=${cleanIds.joinToString()}",
+                )
+            }
+        }
+
+        // Exercise the real page filter so this check proves the cross-section pass removes the twin.
+        val previous = CleanDuplicates.enabled
+        try {
+            CleanDuplicates.enabled = true
+            val filtered = page.filterExplicit(false)
+            val before = page.summaries.sumOf { it.items.size }
+            val after = filtered.summaries.sumOf { it.items.size }
+            println(
+                "TWINS-LIVE page-filter $source removed=${before - after} " +
+                    "sections=${page.summaries.size}->${filtered.summaries.size}",
+            )
+        } finally {
+            CleanDuplicates.enabled = previous
+        }
+        return Triple(items, sectionTwins, pageTwins)
+    }
+
+    private fun reportTwinItems(source: String, items: List<YTItem>): Int {
+        fun keyOf(item: YTItem): String? = item.cleanDuplicateKey()
+
+        fun describe(item: YTItem): String = when (item) {
+            is SongItem ->
+                "type=SongItem explicit=${item.explicit} id=${item.id} title=\"${item.title}\" " +
+                    "artists=\"${item.artists.joinToString { it.name }}\" album=\"${item.album?.name}\" " +
+                    "duration=${item.duration} musicVideoType=${item.musicVideoType} " +
+                    "isVideoSong=${item.isVideoSong} key=\"${keyOf(item)}\""
+            is AlbumItem ->
+                "type=AlbumItem explicit=${item.explicit} id=${item.id} title=\"${item.title}\" " +
+                    "artists=\"${item.artists.orEmpty().joinToString { it.name }}\" key=\"${keyOf(item)}\""
+            else -> "type=${item::class.simpleName} explicit=${item.explicit} title=\"${item.title}\""
+        }
+
+        println(
+            "TWINS-LIVE list $source items=${items.size} " +
+                "explicit=${items.count { it.explicit }} clean=${items.count { !it.explicit }}",
+        )
+        items.forEach { println("TWINS-LIVE item $source | ${describe(it)}") }
+
+        val grouped = items
+            .mapNotNull { item -> keyOf(item)?.let { it to item } }
+            .groupBy({ it.first }, { it.second })
+        var twins = 0
+        for ((key, group) in grouped) {
+            val explicitIds = group.filter { it.explicit }.map { it.id }.distinct()
+            val cleanIds = group.filterNot { it.explicit }.map { it.id }.distinct()
+            when {
+                explicitIds.isNotEmpty() && cleanIds.isNotEmpty() -> {
+                    twins++
+                    println(
+                        "TWINS-LIVE TWIN $source key=\"$key\" " +
+                            "explicit=${explicitIds.joinToString()} clean=${cleanIds.joinToString()}",
+                    )
+                }
+                group.size > 1 -> println(
+                    "TWINS-LIVE repeated-key $source key=\"$key\" " +
+                        "flags=${group.map { it.explicit }} ids=${group.map { it.id }}",
+                )
+            }
+        }
+        return twins
+    }
+
+    // 3. Stream ---------------------------------------------------------------------------------
 
     private suspend fun checkStream() {
         val started = System.currentTimeMillis()
@@ -676,7 +886,7 @@ private class SmokeRun(private val deadline: Long) {
         }
     }
 
-    // 7. Explicit duplicates --------------------------------------------------------------------
+    // 7. Clean duplicates -----------------------------------------------------------------------
 
     private suspend fun checkExplicitDuplicates() {
         val started = System.currentTimeMillis()
@@ -686,29 +896,57 @@ private class SmokeRun(private val deadline: Long) {
             val clean = Entry("clean", explicit = false, key = "song|artist")
             val explicitTwin = Entry("explicit-twin", explicit = true, key = "song|artist")
             val explicitOnly = Entry("explicit-only", explicit = true, key = "other|artist")
-            val normal = Entry("normal", explicit = false, key = "normal|artist")
-            val all = listOf(clean, explicitTwin, explicitOnly, normal)
+            val cleanOnly = Entry("clean-only", explicit = false, key = "clean-only|artist")
+            val all = listOf(clean, explicitTwin, explicitOnly, cleanOnly)
 
             fun labels(): List<String> = all
-                .dropExplicitDuplicates(isExplicit = { it.explicit }, key = { it.key })
+                .dropCleanDuplicates(isExplicit = { it.explicit }, key = { it.key })
                 .map { it.label }
 
-            val previous = ExplicitDuplicates.enabled
+            val cleanMarkerKey = normalizeTitleKey("Song (Clean)", listOf("Artist"))
+            val explicitMarkerKey = normalizeTitleKey("Song [Explicit]", listOf("Artist"))
+            if (cleanMarkerKey != explicitMarkerKey) {
+                throw IllegalStateException("clean/explicit marker keys differ: $cleanMarkerKey / $explicitMarkerKey")
+            }
+            val featKey = normalizeTitleKey("Song (feat. Guest)", listOf("Artist", "Guest"))
+            if (featKey != cleanMarkerKey) {
+                throw IllegalStateException("featured-guest key differs: $featKey / $cleanMarkerKey")
+            }
+            val embeddedMarkerKey = normalizeTitleKey(
+                "The Real Slim Shady (Official Video - Clean Version)",
+                listOf("Eminem"),
+            )
+            val plainTitleKey = normalizeTitleKey("The Real Slim Shady", listOf("Eminem"))
+            if (embeddedMarkerKey != plainTitleKey) {
+                throw IllegalStateException("embedded clean marker key differs: $embeddedMarkerKey / $plainTitleKey")
+            }
+            val emptyArtistAlbumKey = normalizeTitleKey("Album [Explicit]", emptyList())
+            val plainAlbumKey = normalizeTitleKey("Album", emptyList())
+            if (emptyArtistAlbumKey != plainAlbumKey) {
+                throw IllegalStateException("album keys differ without artists: $emptyArtistAlbumKey / $plainAlbumKey")
+            }
+            if (normalizeTitleKey("Album (Deluxe)", listOf("Artist")) ==
+                normalizeTitleKey("Album", listOf("Artist"))
+            ) {
+                throw IllegalStateException("edition suffix was stripped from a genuinely different release")
+            }
+
+            val previous = CleanDuplicates.enabled
             try {
-                ExplicitDuplicates.enabled = false
+                CleanDuplicates.enabled = false
                 val unchanged = labels()
-                if (unchanged != listOf("clean", "explicit-twin", "explicit-only", "normal")) {
+                if (unchanged != listOf("clean", "explicit-twin", "explicit-only", "clean-only")) {
                     throw IllegalStateException("disabled changed the list to $unchanged")
                 }
 
-                ExplicitDuplicates.enabled = true
+                CleanDuplicates.enabled = true
                 val deduplicated = labels()
-                if (deduplicated != listOf("clean", "explicit-only", "normal")) {
+                if (deduplicated != listOf("explicit-twin", "explicit-only", "clean-only")) {
                     throw IllegalStateException("enabled kept $deduplicated")
                 }
-                "disabled=$unchanged, enabled=$deduplicated"
+                "disabled=$unchanged, enabled=$deduplicated, keys ok"
             } finally {
-                ExplicitDuplicates.enabled = previous
+                CleanDuplicates.enabled = previous
             }
         }
 
@@ -716,7 +954,7 @@ private class SmokeRun(private val deadline: Long) {
             outcome.isFailure -> fail(
                 "explicit-duplicates",
                 started,
-                "${outcome.exceptionOrNull()!!.describe()}; code: ExplicitDuplicates.dropExplicitDuplicates()",
+                "${outcome.exceptionOrNull()!!.describe()}; code: CleanDuplicates.dropCleanDuplicates()",
             )
             else -> pass("explicit-duplicates", started, outcome.getOrThrow())
         }

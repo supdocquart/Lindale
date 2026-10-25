@@ -1,6 +1,8 @@
 package com.metrolist.innertube.pages
 
-import com.metrolist.innertube.models.ExplicitDuplicates
+import com.metrolist.innertube.models.CleanDuplicates
+import com.metrolist.innertube.models.cleanDuplicateKey
+import com.metrolist.innertube.models.dropCleanDuplicates
 
 import com.metrolist.innertube.models.Album
 import com.metrolist.innertube.models.AlbumItem
@@ -24,17 +26,35 @@ data class SearchSummary(
 data class SearchSummaryPage(
     val summaries: List<SearchSummary>,
 ) {
-    fun filterExplicit(enabled: Boolean) =
-        // DESKTOP: also run when only "hide explicit duplicates" is on.
-        if (enabled || ExplicitDuplicates.enabled) {
+    fun filterExplicit(enabled: Boolean = true) =
+        // DESKTOP: also run when only "hide clean duplicates" is on.
+        if (enabled || CleanDuplicates.enabled) {
+            val filtered = summaries.mapNotNull { s ->
+                SearchSummary(
+                    title = s.title,
+                    items =
+                        s.items.filterExplicit(enabled).ifEmpty {
+                            return@mapNotNull null
+                        },
+                )
+            }
+            // DESKTOP: the same song is often returned as a clean video and an explicit song, and
+            // grouping puts them in different summaries ("Videos" vs "Songs"). The per-section pass
+            // above cannot see that twin, so compare the whole page before rebuilding the sections.
+            val keptIds = filtered
+                .flatMap { it.items }
+                .dropCleanDuplicates(
+                    isExplicit = { it.explicit },
+                    key = { it.cleanDuplicateKey() },
+                )
+                .mapTo(mutableSetOf()) { it.id }
             SearchSummaryPage(
-                summaries.mapNotNull { s ->
+                filtered.mapNotNull { s ->
                     SearchSummary(
                         title = s.title,
-                        items =
-                            s.items.filterExplicit(enabled).ifEmpty {
-                                return@mapNotNull null
-                            },
+                        items = s.items.filter { it.id in keptIds }.ifEmpty {
+                            return@mapNotNull null
+                        },
                     )
                 },
             )

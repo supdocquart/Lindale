@@ -996,8 +996,8 @@
     <string name="ok">OK</string>
 
     <!-- Content filters -->
-    <string name="hide_explicit_duplicates">Hide explicit versions when a clean one exists</string>
-    <string name="hide_explicit_duplicates_desc">If a song or album appears in both versions, only the clean one is shown.</string>
+    <string name="hide_clean_duplicates">Hide clean versions when an explicit one exists</string>
+    <string name="hide_clean_duplicates_desc">If a song or album appears in both versions, only the explicit one is shown.</string>
 </resources>
 
 

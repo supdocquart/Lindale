@@ -9,7 +9,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.innertube.models.dropExplicitDuplicates
+import com.metrolist.innertube.models.dropCleanDuplicates
 import com.metrolist.innertube.models.normalizeTitleKey
 import com.metrolist.music.db.entities.Album
 import com.metrolist.music.db.entities.Playlist
@@ -27,9 +27,9 @@ fun <T> MutableList<T>.move(
 
 // Extension function to filter explicit content for local Song entities
 fun List<Song>.filterExplicit(enabled: Boolean = true) =
-    // DESKTOP: hide explicit twins when a clean release of the same song is in the list.
+    // DESKTOP: hide clean twins when an explicit release of the same song is in the list.
     (if (enabled) filter { !it.song.explicit } else this)
-        .dropExplicitDuplicates(
+        .dropCleanDuplicates(
             isExplicit = { it.song.explicit },
             key = { song ->
                 val base = normalizeTitleKey(song.song.title, song.artists.map { it.name })
@@ -47,9 +47,9 @@ fun List<Song>.filterVideoSongs(enabled: Boolean = true) =
 
 // Extension function to filter explicit content for local Album entities
 fun List<Album>.filterExplicitAlbums(enabled: Boolean = true) =
-    // DESKTOP: hide explicit twins when a clean release of the same album is in the list.
+    // DESKTOP: hide clean twins when an explicit release of the same album is in the list.
     (if (enabled) filter { !it.album.explicit } else this)
-        .dropExplicitDuplicates(
+        .dropCleanDuplicates(
             isExplicit = { it.album.explicit },
             key = { album -> normalizeTitleKey(album.album.title, album.artists.map { it.name }) },
         )

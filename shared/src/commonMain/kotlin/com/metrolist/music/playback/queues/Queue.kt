@@ -9,7 +9,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
-import com.metrolist.innertube.models.dropExplicitDuplicates
+import com.metrolist.innertube.models.dropCleanDuplicates
 import com.metrolist.innertube.models.normalizeTitleKey
 import com.metrolist.music.playback.MediaItem
 import com.metrolist.music.extensions.metadata
@@ -30,9 +30,9 @@ interface Queue {
         val mediaItemIndex: Int,
         val position: Long = 0L,
     ) {
-        // DESKTOP: also run when only "hide explicit duplicates" is on.
+        // DESKTOP: also run when only "hide clean duplicates" is on.
         fun filterExplicit(enabled: Boolean = true) =
-            if (enabled || com.metrolist.innertube.models.ExplicitDuplicates.enabled) {
+            if (enabled || com.metrolist.innertube.models.CleanDuplicates.enabled) {
                 copy(
                     items = items.filterExplicit(enabled),
                 )
@@ -52,14 +52,14 @@ interface Queue {
 }
 
 fun List<MediaItem>.filterExplicit(enabled: Boolean = true) =
-    // DESKTOP: hide explicit twins when a clean release of the same song is in the list.
+    // DESKTOP: hide clean twins when an explicit release of the same song is in the list.
     (if (enabled) {
         filterNot {
             it.metadata?.explicit == true
         }
     } else {
         this
-    }).dropExplicitDuplicates(
+    }).dropCleanDuplicates(
         isExplicit = { it.metadata?.explicit == true },
         key = { item ->
             item.metadata?.let { meta ->

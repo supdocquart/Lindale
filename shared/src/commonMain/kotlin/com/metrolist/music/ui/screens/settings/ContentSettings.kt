@@ -65,7 +65,7 @@ import com.metrolist.music.constants.EnableLrcLibKey
 import com.metrolist.music.constants.EnablePaxsenixKey
 import com.metrolist.music.constants.EnableLyricsPlus
 import com.metrolist.music.constants.EnableZemerKey
-import com.metrolist.music.constants.HideExplicitDuplicatesKey
+import com.metrolist.music.constants.HideCleanDuplicatesKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.HideYoutubeShortsKey
@@ -110,8 +110,8 @@ fun ContentSettings(
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
     val (hideExplicit, onHideExplicitChange) = rememberPreference(key = HideExplicitKey, defaultValue = false)
-    val (hideExplicitDuplicates, onHideExplicitDuplicatesChange) =
-        rememberPreference(key = HideExplicitDuplicatesKey, defaultValue = false)
+    val (hideCleanDuplicates, onHideCleanDuplicatesChange) =
+        rememberPreference(key = HideCleanDuplicatesKey, defaultValue = false)
     val (hideVideoSongs, onHideVideoSongsChange) = rememberPreference(key = HideVideoSongsKey, defaultValue = false)
     val (hideYoutubeShorts, onHideYoutubeShortsChange) = rememberPreference(key = HideYoutubeShortsKey, defaultValue = false)
     val (showArtistDescription, onShowArtistDescriptionChange) = rememberPreference(key = ShowArtistDescriptionKey, defaultValue = true)
@@ -765,7 +765,11 @@ fun ContentSettings(
                     trailingContent = {
                         Switch(
                             checked = hideExplicit,
-                            onCheckedChange = onHideExplicitChange,
+                            onCheckedChange = { checked ->
+                                onHideExplicitChange(checked)
+                                // DESKTOP: the two filters conflict, so the last one switched on wins.
+                                if (checked) onHideCleanDuplicatesChange(false)
+                            },
                             thumbContent = {
                                 Icon(
                                     painter = painterResource(if (hideExplicit) Res.drawable.check else Res.drawable.close
@@ -776,22 +780,27 @@ fun ContentSettings(
                             }
                         )
                     },
-                    onClick = { onHideExplicitChange(!hideExplicit) }
+                    onClick = {
+                        val checked = !hideExplicit
+                        onHideExplicitChange(checked)
+                        if (checked) onHideCleanDuplicatesChange(false)
+                    }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(Res.drawable.explicit),
-                    title = { Text(stringResource(Res.string.hide_explicit_duplicates)) },
-                    description = { Text(stringResource(Res.string.hide_explicit_duplicates_desc)) },
-                    // DESKTOP: "Hide explicit" already removes every explicit item, so this would be redundant.
-                    enabled = !hideExplicit,
+                    title = { Text(stringResource(Res.string.hide_clean_duplicates)) },
+                    description = { Text(stringResource(Res.string.hide_clean_duplicates_desc)) },
                     trailingContent = {
                         Switch(
-                            checked = hideExplicitDuplicates,
-                            onCheckedChange = onHideExplicitDuplicatesChange,
-                            enabled = !hideExplicit,
+                            checked = hideCleanDuplicates,
+                            onCheckedChange = { checked ->
+                                onHideCleanDuplicatesChange(checked)
+                                // DESKTOP: turning this on switches the blunt "Hide explicit" off.
+                                if (checked) onHideExplicitChange(false)
+                            },
                             thumbContent = {
                                 Icon(
-                                    painter = painterResource(if (hideExplicitDuplicates) Res.drawable.check else Res.drawable.close
+                                    painter = painterResource(if (hideCleanDuplicates) Res.drawable.check else Res.drawable.close
                                     ),
                                     contentDescription = null,
                                     modifier = Modifier.size(SwitchDefaults.IconSize)
@@ -799,7 +808,11 @@ fun ContentSettings(
                             }
                         )
                     },
-                    onClick = { if (!hideExplicit) onHideExplicitDuplicatesChange(!hideExplicitDuplicates) }
+                    onClick = {
+                        val checked = !hideCleanDuplicates
+                        onHideCleanDuplicatesChange(checked)
+                        if (checked) onHideExplicitChange(false)
+                    }
                 ),
                 Material3SettingsItem(
                     icon = painterResource(Res.drawable.slow_motion_video),
