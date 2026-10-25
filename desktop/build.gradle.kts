@@ -22,6 +22,10 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
+
+    // DESKTOP: SLF4J reaches us transitively (Ktor/coroutines); without a provider it prints a
+    // 3-line warning on every start. Match the slf4j-api version already on runtimeClasspath.
+    runtimeOnly("org.slf4j:slf4j-nop:2.0.19")
 }
 
 
