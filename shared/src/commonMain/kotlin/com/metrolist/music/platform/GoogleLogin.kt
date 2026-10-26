@@ -1,5 +1,9 @@
 package com.metrolist.music.platform
 
+import metrolist.shared.generated.resources.Res
+import metrolist.shared.generated.resources.sign_in_with_google
+import org.jetbrains.compose.resources.getString
+
 /**
  * DESKTOP: hook for the embedded "Sign in with Google" window. Upstream logs in through an Android
  * WebView; on desktop the window is implemented with JetBrains Runtime's JCEF in the desktop module
@@ -30,7 +34,7 @@ object GoogleLogin {
 
     /** Localised title for the sign-in window (Res is internal to this module). */
     suspend fun windowTitle(): String =
-        org.jetbrains.compose.resources.getString(metrolist.shared.generated.resources.Res.string.sign_in_with_google)
+        getString(Res.string.sign_in_with_google)
 
     fun open(onResult: (Result) -> Unit) {
         val open = opener
