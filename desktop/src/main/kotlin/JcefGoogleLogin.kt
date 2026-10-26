@@ -60,13 +60,30 @@ object JcefGoogleLogin {
         GoogleLogin.opener = { onResult -> Thread({ runInChildProcess(onResult) }, "google-login").start() }
     }
 
-    /** Same executable and arguments as this process plus [HELPER_FLAG] (jpackage launcher or dev java). */
+    /**
+     * Command for the sign-in child: the installed jpackage launcher when there is one, otherwise this
+     * JVM rebuilt from its system properties. ProcessHandle.Info.arguments() is empty on Windows, so the
+     * current command line cannot simply be replayed.
+     */
     private fun childCommand(): List<String>? {
-        val info = ProcessHandle.current().info()
-        val command = info.command().orElse(null) ?: return null
-        val arguments = info.arguments().orElse(emptyArray()).toList()
-        // DESKTOP: pass the UI language; the child does not read the app settings.
-        return listOf(command) + arguments + HELPER_FLAG + (LANG_PREFIX + java.util.Locale.getDefault().toLanguageTag())
+        val extra = listOf(HELPER_FLAG, LANG_PREFIX + java.util.Locale.getDefault().toLanguageTag())
+        System.getProperty("jpackage.app-path")?.takeIf { it.isNotBlank() }?.let { path ->
+            if (java.io.File(path).isFile) return listOf(path) + extra
+        }
+        val javaHome = System.getProperty("java.home") ?: return null
+        val exe = listOf("bin/java.exe", "bin/java").map { java.io.File(javaHome, it) }.firstOrNull { it.isFile }
+            ?: return null
+        val classPath = System.getProperty("java.class.path")?.takeIf { it.isNotBlank() } ?: return null
+        val mainClass = System.getProperty("sun.java.command")?.substringBefore(' ')?.takeIf { it.isNotBlank() }
+            ?: "MainKt"
+        // DESKTOP: keep the JVM options except CDS (the child must not rewrite the app's archive) and agents.
+        val jvmOptions = runCatching { java.lang.management.ManagementFactory.getRuntimeMXBean().inputArguments }
+            .getOrDefault(emptyList())
+            .filterNot {
+                it.startsWith("-XX:SharedArchiveFile") || it.contains("AutoCreateSharedArchive") ||
+                    it.startsWith("-agentlib") || it.startsWith("-javaagent")
+            }
+        return listOf(exe.absolutePath) + jvmOptions + listOf("-cp", classPath, mainClass) + extra
     }
 
     private fun runInChildProcess(onResult: (GoogleLogin.Result) -> Unit) {
@@ -84,19 +101,22 @@ object JcefGoogleLogin {
             return
         }
         var result: GoogleLogin.Result? = null
+        var lastLine = ""
         process.inputStream.bufferedReader().useLines { lines ->
             for (line in lines) {
                 if (line.startsWith(RESULT_PREFIX)) {
                     result = decode(line.removePrefix(RESULT_PREFIX))
                 } else if (line.isNotBlank()) {
                     // The child never prints cookies outside the result line.
-                    Timber.tag(TAG).d("child: %s", line.take(300))
+                    Timber.tag(TAG).i("child: %s", line.take(300))
+                    lastLine = line.trim().take(160)
                 }
             }
         }
         val exit = runCatching { process.waitFor() }.getOrDefault(-1)
         Timber.tag(TAG).i("sign-in process exited with %d", exit)
-        onResult(result ?: GoogleLogin.Result.Failed("sign-in window closed unexpectedly (exit $exit)"))
+        val detail = if (lastLine.isNotEmpty()) ": $lastLine" else ""
+        onResult(result ?: GoogleLogin.Result.Failed("sign-in window closed unexpectedly (exit $exit)$detail"))
     }
 
     /** Entry point of the child process started with [HELPER_FLAG]. */
