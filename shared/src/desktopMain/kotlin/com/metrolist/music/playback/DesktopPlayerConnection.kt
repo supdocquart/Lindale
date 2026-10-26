@@ -199,9 +199,24 @@ class DesktopPlayerConnection(
 
     override val player: DesktopPlayer = DesktopPlayer()
 
+    // DESKTOP: completed once libVLC is ready; playback waits for it instead of the whole UI.
+    private val vlcReady = kotlinx.coroutines.CompletableDeferred<Unit>()
+
     init {
         InnerTubeXPlayer.initialize(AppContext.Default)
-        initVlcEngine()
+        // DESKTOP: downloads do not need libVLC, so make them available before it finishes starting.
+        com.metrolist.music.ui.component.DownloadCenter.engine = createDownloadEngine()
+        // DESKTOP: libVLC start-up can take seconds (plugin loading, antivirus scans after an update).
+        // It used to run here on the UI thread before the window existed (measured 10.7 s once), so it
+        // now runs on its own thread; every property above is already initialised at this point.
+        Thread({
+            try {
+                com.metrolist.music.platform.StartupTrace.span("player:vlc_init") { initVlcEngine() }
+            } finally {
+                vlcReady.complete(Unit)
+            }
+            applyVolume()
+        }, "vlc-init").apply { isDaemon = true }.start()
 
         // Volume synchronization
         scope.launch {
@@ -740,6 +755,9 @@ class DesktopPlayerConnection(
             val videoId = item.mediaId.ifBlank { meta?.id.orEmpty() }
             if (videoId.isBlank()) return@launch
 
+            // DESKTOP: libVLC is initialised in the background; wait for it before touching the player.
+            vlcReady.await()
+
             val localFile = com.metrolist.music.ui.component.DownloadCenter.localFile(videoId)
             if (localFile != null) {
                 val mp = vlcPlayer
@@ -964,7 +982,11 @@ class DesktopPlayerConnection(
     }
 
     override fun play() {
-        val mp = vlcPlayer ?: return
+        // DESKTOP: play pressed while libVLC is still starting: playIndex waits for it.
+        val mp = vlcPlayer ?: run {
+            if (player.mediaItemCount > 0) playIndex(currentMediaItemIndex.value, player.currentPosition)
+            return
+        }
         // A fresh VLC player (app start, or rebuilt after a pitch change) has no media loaded yet.
         val hasMedia = runCatching { mp.media().isValid }.getOrDefault(false)
         if (!hasMedia || playbackState.value == Player.STATE_IDLE || playbackState.value == Player.STATE_ENDED) {

@@ -28,6 +28,7 @@ fun main() {
     // DESKTOP: stop AWT from erasing the window to white before Skia paints (white flash on start/resize).
     System.setProperty("sun.awt.noerasebackground", "true")
     DebugLog.install()
+    com.metrolist.music.platform.StartupTrace.mark("main_debuglog_ready")
     runApp()
 }
 
@@ -41,13 +42,19 @@ private fun runApp() = application {
     // DESKTOP: keep the window hidden until the custom title bar is installed, so it does not appear
     // small/white first and then jump to its final layout.
     var windowReady by remember { androidx.compose.runtime.mutableStateOf(false) }
-    val database = remember { createDesktopDatabase() }
-    val playerConnection = remember(database) { DesktopPlayerConnection(database) }
-    remember(playerConnection) {
-        com.metrolist.music.discord.DesktopDiscordPresence(playerConnection, database).also { it.start() }
+    val database = remember { com.metrolist.music.platform.StartupTrace.span("database_open") { createDesktopDatabase() } }
+    val playerConnection = remember(database) {
+        com.metrolist.music.platform.StartupTrace.span("player_create") { DesktopPlayerConnection(database) }
     }
     remember(playerConnection) {
-        com.metrolist.music.playback.DesktopScrobbler(playerConnection).also { it.start() }
+        com.metrolist.music.platform.StartupTrace.span("discord_start") {
+            com.metrolist.music.discord.DesktopDiscordPresence(playerConnection, database).also { it.start() }
+        }
+    }
+    remember(playerConnection) {
+        com.metrolist.music.platform.StartupTrace.span("scrobbler_start") {
+            com.metrolist.music.playback.DesktopScrobbler(playerConnection).also { it.start() }
+        }
     }
 
     Window(
@@ -79,6 +86,7 @@ private fun runApp() = application {
             window.contentPane.background = java.awt.Color(0x12, 0x12, 0x12)
             val customTitleBar = JbrTitleBar.install(window)
             windowReady = true
+            com.metrolist.music.platform.StartupTrace.mark("window_ready")
             com.metrolist.music.platform.WindowChrome.applier = { argb, dark ->
                 if (customTitleBar) {
                     // DESKTOP: the native caption is gone; only its buttons need light/dark icons.
@@ -110,6 +118,10 @@ private fun runApp() = application {
                 JbrTitleBar.dispose()
                 com.metrolist.music.platform.WindowChrome.applier = null
             }
+        }
+        LaunchedEffect(Unit) {
+            androidx.compose.runtime.withFrameNanos { }
+            com.metrolist.music.platform.StartupTrace.mark("first_frame")
         }
         val jbrTitleBar = com.metrolist.music.platform.WindowChrome.customTitleBar
         LaunchedEffect(window, jbrTitleBar) {

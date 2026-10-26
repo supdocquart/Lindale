@@ -65,13 +65,14 @@ fun trimDesktopMemory() {
 fun initDesktopPlatform() {
     if (initialized) return
     initialized = true
+    StartupTrace.mark("platform_init_start")
 
-    WindowsDpapi.install()
-    ImageLoaderSetup.install()
-    MemoryMonitor.start()
-    com.metrolist.music.discord.DiscordDesktopOAuth.install()
-    com.metrolist.music.ui.theme.DesktopPaletteReader.install()
-    WindowsScreenWake.install()
+    StartupTrace.span("init:WindowsDpapi") { WindowsDpapi.install() }
+    StartupTrace.span("init:ImageLoaderSetup") { ImageLoaderSetup.install() }
+    MemoryMonitor.start() // DESKTOP: its thread sleeps 15 s before the first sample
+    StartupTrace.span("init:DiscordDesktopOAuth") { com.metrolist.music.discord.DiscordDesktopOAuth.install() }
+    StartupTrace.span("init:DesktopPaletteReader") { com.metrolist.music.ui.theme.DesktopPaletteReader.install() }
+    StartupTrace.span("init:WindowsScreenWake") { WindowsScreenWake.install() }
 
     try {
         startKoin {
@@ -81,10 +82,12 @@ fun initDesktopPlatform() {
         // Ignored if already initialized
     }
 
+    StartupTrace.mark("koin_ready")
     val context = AppContext()
     runCatching { ArtistNameAliases.initialize() }
-    InnerTubeXPlayer.initialize(context)
+    StartupTrace.span("init:InnerTubeXPlayer") { InnerTubeXPlayer.initialize(context) }
 
+    StartupTrace.mark("platform_init_done")
     platformScope.launch {
         runCatching { initializeDesktopSettings(context) }
             .onFailure { Timber.e(it, "Failed to initialize desktop settings") }

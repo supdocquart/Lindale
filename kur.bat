@@ -29,8 +29,14 @@ if not %ERRORLEVEL%==0 (
 echo [3/4] Kopyalaniyor: %DEST% >> %LOG%
 taskkill /IM Metrolist.exe /F >nul 2>&1
 timeout /t 1 /nobreak >nul
-robocopy "%SRC%" "%DEST%" /MIR /NFL /NDL /NJH /NJS /NP >> %LOG%
-if %ERRORLEVEL% GEQ 8 (
+rem VLC eklentileri her derlemede yeni tarihle uretiliyor; hepsini yeniden kopyalamak Windows Defender
+rem taramasina yol aciyor ve ilk acilisi ~12 sn yavaslatiyordu. VLC klasorunde sadece eksik dosyalar kopyalanir
+rem (VLC surumu degisirse kurulu app\resources\vlc klasorunu silip tekrar kurun).
+robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" /NFL /NDL /NJH /NJS /NP >> %LOG%
+set RC=%ERRORLEVEL%
+robocopy "%SRC%\app\resources\vlc" "%DEST%\app\resources\vlc" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
+if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%
+if %RC% GEQ 8 (
     echo INSTALL FAILED >> %LOG%
     echo Kopyalama HATALI - Metrolist acik olabilir, kapatip tekrar deneyin.
     pause & exit /b 1

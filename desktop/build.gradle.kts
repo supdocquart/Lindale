@@ -61,6 +61,11 @@ compose.desktop {
             "-XX:MaxHeapFreeRatio=25",
             "-XX:+UseStringDeduplication",
             "-XX:ReservedCodeCacheSize=64m",
+            // DESKTOP: AppCDS. The first run writes a class-data archive next to the app on exit, later
+            // starts map it instead of loading/verifying thousands of classes again. A missing or stale
+            // archive is ignored by the JVM. jpackage expands APPDIR; dev runs rewrite it below.
+            "-XX:+AutoCreateSharedArchive",
+            "-XX:SharedArchiveFile=${'$'}APPDIR/metrolist.jsa",
         )
         nativeDistributions {
             targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe)
@@ -93,6 +98,14 @@ tasks.withType<JavaExec>().configureEach {
     if (name == "run") {
         systemProperty("metrolist.logDir", rootProject.file("logs").absolutePath)
         jvmArgs("-XX:NativeMemoryTracking=summary")
+        // DESKTOP: there is no APPDIR in dev runs; keep the CDS archive in the build folder.
+        val cdsFile = layout.buildDirectory.file("cds/run.jsa").get().asFile
+        doFirst {
+            cdsFile.parentFile.mkdirs()
+            jvmArgs = jvmArgs.orEmpty().map {
+                if (it.startsWith("-XX:SharedArchiveFile=")) "-XX:SharedArchiveFile=${cdsFile.absolutePath}" else it
+            }
+        }
     }
 }
 
