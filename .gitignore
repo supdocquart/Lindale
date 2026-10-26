@@ -125,3 +125,6 @@ dist/
 
 yedek/
 
+
+# DESKTOP: local backups (git history bundle etc.); never commit
+_yedek/
