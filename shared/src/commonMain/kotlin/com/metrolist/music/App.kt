@@ -228,6 +228,11 @@ fun MetrolistApp(
 
         // DESKTOP: Home/Library used to get their 64 dp bar from App.kt; the title bar replaces it.
         val appBarTopInset = if (customTitleBar && currentTitleRes != null) 0.dp else AppBarHeight
+        // DESKTOP: shared by the title bar and (without the custom title bar) the rail.
+        val openSettings: () -> Unit = {
+            if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+            navController.navigate("settings") { launchSingleTop = true }
+        }
         val playerAwareWindowInsets = remember(showRail, playerBottomSheetState.isDismissed, appBarTopInset) {
             WindowInsets(
                 left = 0.dp,
@@ -278,6 +283,7 @@ fun MetrolistApp(
                                 onBack = { BackDispatcher.dispatch() },
                                 onHome = navigateHome,
                                 onAccount = { showAccountDialog = true },
+                                onSettings = openSettings,
                             )
                         }
                     },
@@ -342,15 +348,9 @@ fun MetrolistApp(
                                     }
                                 },
                                 pureBlack = pureBlack,
-                                onAccountClick = { showAccountDialog = true },
-                                onSettingsClick = {
-                                    if (playerBottomSheetState.isExpanded) {
-                                        playerBottomSheetState.collapseSoft()
-                                    }
-                                    navController.navigate("settings") {
-                                        launchSingleTop = true
-                                    }
-                                },
+                                // DESKTOP: with the custom title bar, Settings and Account live in the title row.
+                                onAccountClick = if (customTitleBar) null else ({ showAccountDialog = true }),
+                                onSettingsClick = if (customTitleBar) null else openSettings,
                                 onHistoryClick = {
                                     if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
                                     navController.navigate("history") { launchSingleTop = true }
@@ -491,6 +491,7 @@ private fun DesktopTitleBar(
     onBack: () -> Unit,
     onHome: () -> Unit,
     onAccount: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     val interaction = remember { TitleBarInteraction() }
     DisposableEffect(interaction) {
@@ -566,6 +567,15 @@ private fun DesktopTitleBar(
             modifier = Modifier.align(Alignment.CenterEnd).padding(end = rightInset + 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            IconButton(
+                onClick = onSettings,
+                modifier = Modifier.titleBarInteractive(interaction),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.settings),
+                    contentDescription = stringResource(Res.string.settings),
+                )
+            }
             IconButton(
                 onClick = onAccount,
                 modifier = Modifier.titleBarInteractive(interaction),

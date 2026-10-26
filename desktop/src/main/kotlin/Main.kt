@@ -13,6 +13,8 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.metrolist.music.MetrolistApp
@@ -23,6 +25,8 @@ import com.metrolist.music.platform.initDesktopPlatform
 fun main() {
     // Lets a launcher pick Skia's backend (e.g. OPENGL, SOFTWARE) for memory comparisons.
     System.getenv("METROLIST_RENDER_API")?.takeIf { it.isNotBlank() }?.let { System.setProperty("skiko.renderApi", it) }
+    // DESKTOP: stop AWT from erasing the window to white before Skia paints (white flash on start/resize).
+    System.setProperty("sun.awt.noerasebackground", "true")
     DebugLog.install()
     runApp()
 }
@@ -32,6 +36,9 @@ private fun runApp() = application {
 
     // DESKTOP: Restore the last window size, position and maximized state.
     val windowState = remember { WindowStateStore.load() }
+    // DESKTOP: keep the window hidden until the custom title bar is installed, so it does not appear
+    // small/white first and then jump to its final layout.
+    var windowReady by remember { androidx.compose.runtime.mutableStateOf(false) }
     val database = remember { createDesktopDatabase() }
     val playerConnection = remember(database) { DesktopPlayerConnection(database) }
     remember(playerConnection) {
@@ -50,6 +57,7 @@ private fun runApp() = application {
         },
         title = "Metrolist",
         state = windowState,
+        visible = windowReady,
         onKeyEvent = { event ->
             when {
                 event.type != KeyEventType.KeyDown -> false
@@ -64,7 +72,11 @@ private fun runApp() = application {
     ) {
         // Title bar follows the app theme (see WindowChrome / WindowsTitleBar / JbrTitleBar).
         DisposableEffect(window) {
+            // DESKTOP: dark fill behind Compose until the first frame (instead of white).
+            window.background = java.awt.Color(0x12, 0x12, 0x12)
+            window.contentPane.background = java.awt.Color(0x12, 0x12, 0x12)
             val customTitleBar = JbrTitleBar.install(window)
+            windowReady = true
             com.metrolist.music.platform.WindowChrome.applier = { argb, dark ->
                 if (customTitleBar) {
                     // DESKTOP: the native caption is gone; only its buttons need light/dark icons.
