@@ -202,10 +202,13 @@ fun MetrolistApp(
         // DESKTOP: Library button of the title bar (the side rail is hidden with the custom title bar).
         val navigateLibrary: () -> Unit = {
             if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
-            navController.navigate(Screens.Library.route) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
+            // DESKTOP: always land on the Library page itself. Restoring the tab's saved state brought
+            // back the playlist/album opened from it, so the button seemed to do nothing.
+            if (!navController.popBackStack(Screens.Library.route, inclusive = false)) {
+                navController.navigate(Screens.Library.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
             }
         }
 
