@@ -35,17 +35,23 @@ fun LibraryScreen() {
 
     val filterContent = @Composable {
         Row {
-            ChipsRow(
+            // DESKTOP: History and Stats moved here from the removed side rail; they open their own pages.
+            ChipsRow<Any>(
                 chips = listOf(
                     LibraryFilter.PLAYLISTS to stringResource(Res.string.filter_playlists),
                     LibraryFilter.SONGS to stringResource(Res.string.filter_songs),
                     LibraryFilter.ALBUMS to stringResource(Res.string.filter_albums),
                     LibraryFilter.ARTISTS to stringResource(Res.string.filter_artists),
                     LibraryFilter.PODCASTS to stringResource(Res.string.filter_podcasts),
+                    "history" to stringResource(Res.string.history),
+                    "stats" to stringResource(Res.string.stats),
                 ),
                 currentValue = filterType,
-                onValueUpdate = {
-                    filterType = if (filterType == it) LibraryFilter.LIBRARY else it
+                onValueUpdate = { value ->
+                    when (value) {
+                        is LibraryFilter -> filterType = if (filterType == value) LibraryFilter.LIBRARY else value
+                        is String -> navController.navigate(value) { launchSingleTop = true }
+                    }
                 },
                 modifier = Modifier.weight(1f),
             )

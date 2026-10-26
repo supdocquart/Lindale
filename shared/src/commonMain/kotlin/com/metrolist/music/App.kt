@@ -1,5 +1,7 @@
 package com.metrolist.music
 
+import androidx.compose.material3.LocalContentColor
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.ui.geometry.Offset
@@ -197,6 +199,15 @@ fun MetrolistApp(
                 navController.navigate(Screens.Home.route) { launchSingleTop = true }
             }
         }
+        // DESKTOP: Library button of the title bar (the side rail is hidden with the custom title bar).
+        val navigateLibrary: () -> Unit = {
+            if (playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+            navController.navigate(Screens.Library.route) {
+                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
 
         val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
         LaunchedEffect(mediaMetadata) {
@@ -282,6 +293,8 @@ fun MetrolistApp(
                                 searchFocusRequester = searchFocusRequester,
                                 onBack = { BackDispatcher.dispatch() },
                                 onHome = navigateHome,
+                                onLibrary = navigateLibrary,
+                                currentRoute = currentRoute,
                                 onAccount = { showAccountDialog = true },
                                 onSettings = openSettings,
                             )
@@ -325,7 +338,8 @@ fun MetrolistApp(
                                 bottom = if (!showRail) innerPadding.calculateBottomPadding() else 0.dp
                             )
                     ) {
-                        if (showRail && currentRoute != "wrapped") {
+                        // DESKTOP: the custom title bar carries Home/Library/Settings/Account, so no rail.
+                        if (showRail && !customTitleBar && currentRoute != "wrapped") {
                             AppNavigationRail(
                                 navigationItems = navigationItems,
                                 currentRoute = currentRoute,
@@ -492,6 +506,8 @@ private fun DesktopTitleBar(
     onHome: () -> Unit,
     onAccount: () -> Unit,
     onSettings: () -> Unit,
+    onLibrary: () -> Unit,
+    currentRoute: String?,
 ) {
     val interaction = remember { TitleBarInteraction() }
     DisposableEffect(interaction) {
@@ -536,19 +552,35 @@ private fun DesktopTitleBar(
                     contentDescription = stringResource(Res.string.back),
                 )
             }
+            val onHomeRoute = currentRoute == Screens.Home.route
             IconButton(
                 onClick = onHome,
                 modifier = Modifier.titleBarInteractive(interaction),
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.home_outlined),
+                    painter = painterResource(if (onHomeRoute) Res.drawable.home_filled else Res.drawable.home_outlined),
                     contentDescription = stringResource(Res.string.home),
+                    tint = if (onHomeRoute) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                )
+            }
+            // DESKTOP: Library moved here from the removed side rail; History and Stats are Library chips.
+            val onLibraryRoute = currentRoute == Screens.Library.route
+            IconButton(
+                onClick = onLibrary,
+                modifier = Modifier.titleBarInteractive(interaction),
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if (onLibraryRoute) Res.drawable.library_music_filled else Res.drawable.library_music_outlined,
+                    ),
+                    contentDescription = stringResource(Res.string.filter_library),
+                    tint = if (onLibraryRoute) MaterialTheme.colorScheme.primary else LocalContentColor.current,
                 )
             }
         }
 
         if (showSearch) {
-            val sideReserve = maxOf(leftInset + 136.dp, rightInset + 64.dp)
+            val sideReserve = maxOf(leftInset + 184.dp, rightInset + 112.dp)
             val searchWidth = (maxWidth - sideReserve * 2f).coerceIn(160.dp, 480.dp)
             DesktopSearchField(
                 value = searchText,
