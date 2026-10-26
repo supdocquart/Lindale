@@ -93,6 +93,43 @@ tasks.withType<org.jetbrains.compose.desktop.application.tasks.AbstractJLinkTask
     freeArgs.addAll("--release-info", "add:IMPLEMENTOR=${jbrLauncher.get().metadata.vendor}")
 }
 
+// DESKTOP: jlink copies only the JCEF DLLs into the app runtime, not Chromium's data files (icudtl.dat,
+// *.pak, v8 snapshots, locales/) or its helper. Without them the embedded "Sign in with Google" browser
+// dies at start-up. Copy every missing JCEF/Chromium file from the JBR into the runtime image.
+val jcefFilePattern = Regex(
+    "(?i).*(cef|helper|locales/|swiftshader|vulkan|chrome_elf|libegl|libglesv2|d3dcompiler|dxcompiler|dxil)" +
+        ".*|.*\\.(pak|dat|bin)",
+)
+
+fun copyJcefFiles(runtimeDir: File, log: org.gradle.api.logging.Logger) {
+    val jbrHome = jbrLauncher.get().metadata.installationPath.asFile
+    var copied = 0
+    for (top in listOf("bin", "lib")) {
+        val src = File(jbrHome, top)
+        if (!src.isDirectory) continue
+        src.walkTopDown().filter { it.isFile }.forEach { file ->
+            val rel = file.relativeTo(jbrHome).invariantSeparatorsPath
+            if (rel.startsWith("lib/modules") || rel.contains("/jmods/") || !jcefFilePattern.matches(rel)) return@forEach
+            val target = File(runtimeDir, rel)
+            if (!target.exists()) {
+                file.copyTo(target)
+                copied++
+            }
+        }
+    }
+    log.lifecycle("JCEF: copied $copied missing file(s) into ${runtimeDir.name}")
+}
+
+tasks.withType<org.jetbrains.compose.desktop.application.tasks.AbstractJLinkTask>().configureEach {
+    doLast {
+        val out = destinationDir.get().asFile
+        // The runtime root is the folder whose bin/ holds jcef.dll (the output dir itself or one level down).
+        val root = sequenceOf(out).plus(out.listFiles().orEmpty().asSequence())
+            .firstOrNull { File(it, "bin/jcef.dll").isFile || File(it, "lib/libjcef.so").isFile }
+        if (root != null) copyJcefFiles(root, logger) else logger.warn("JCEF: no jcef library in ${out}")
+    }
+}
+
 // Dev runs (Metrolist.bat): logs in the repo + native memory tracking for MemoryMonitor. Not in packaged builds.
 tasks.withType<JavaExec>().configureEach {
     if (name == "run") {
