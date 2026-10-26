@@ -783,6 +783,9 @@ fun ExperimentalLyrics(
                                                     if (selectedIndices.isEmpty()) isSelectionModeActive = false
                                                 } else if (selectedIndices.size < maxSelectionLimit) selectedIndices.add(index)
                                                 else showMaxSelectionToast = true
+                                            } else if (isSynced && LyricsSync.active.value) {
+                                                // DESKTOP: sync mode - this line is being sung right now.
+                                                LyricsSync.syncLineToNow(database, currentSong?.song, item.time, playerConnection.player.currentPosition)
                                             } else if (changeLyrics && !isGuest) {
                                                 if (item.time < playerConnection.player.duration + 30000L) {
                                                     playerConnection.seekTo((item.time - (currentSong?.song?.lyricsOffset ?: 0)).coerceAtLeast(0))

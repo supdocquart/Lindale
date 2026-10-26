@@ -43,6 +43,10 @@ object JcefGoogleLogin {
 
     private var cefApp: CefApp? = null
 
+    const val HELPER_FLAG = "--google-login-helper"
+    private const val LANG_PREFIX = "--ui-lang="
+    private const val RESULT_PREFIX = "ML_LOGIN_RESULT|"
+
     fun install() {
         val available = runCatching {
             Class.forName("org.cef.CefApp")
@@ -52,22 +56,114 @@ object JcefGoogleLogin {
             Timber.tag(TAG).i("JCEF not available; only cookie paste login")
             return
         }
-        GoogleLogin.opener = { onResult -> EventQueue.invokeLater { open(onResult) } }
+        // DESKTOP: JCEF runs in a child process; a native browser crash then only ends that process.
+        GoogleLogin.opener = { onResult -> Thread({ runInChildProcess(onResult) }, "google-login").start() }
     }
+
+    /** Same executable and arguments as this process plus [HELPER_FLAG] (jpackage launcher or dev java). */
+    private fun childCommand(): List<String>? {
+        val info = ProcessHandle.current().info()
+        val command = info.command().orElse(null) ?: return null
+        val arguments = info.arguments().orElse(emptyArray()).toList()
+        // DESKTOP: pass the UI language; the child does not read the app settings.
+        return listOf(command) + arguments + HELPER_FLAG + (LANG_PREFIX + java.util.Locale.getDefault().toLanguageTag())
+    }
+
+    private fun runInChildProcess(onResult: (GoogleLogin.Result) -> Unit) {
+        val command = childCommand()
+        if (command == null) {
+            onResult(GoogleLogin.Result.Failed("cannot start the sign-in window"))
+            return
+        }
+        Timber.tag(TAG).i("starting sign-in process: %s", command.first())
+        val process = try {
+            ProcessBuilder(command).redirectErrorStream(true).start()
+        } catch (t: Throwable) {
+            Timber.tag(TAG).e(t, "sign-in process could not start")
+            onResult(GoogleLogin.Result.Failed("cannot start the sign-in window"))
+            return
+        }
+        var result: GoogleLogin.Result? = null
+        process.inputStream.bufferedReader().useLines { lines ->
+            for (line in lines) {
+                if (line.startsWith(RESULT_PREFIX)) {
+                    result = decode(line.removePrefix(RESULT_PREFIX))
+                } else if (line.isNotBlank()) {
+                    // The child never prints cookies outside the result line.
+                    Timber.tag(TAG).d("child: %s", line.take(300))
+                }
+            }
+        }
+        val exit = runCatching { process.waitFor() }.getOrDefault(-1)
+        Timber.tag(TAG).i("sign-in process exited with %d", exit)
+        onResult(result ?: GoogleLogin.Result.Failed("sign-in window closed unexpectedly (exit $exit)"))
+    }
+
+    /** Entry point of the child process started with [HELPER_FLAG]. */
+    fun runHelperProcess(args: Array<String>) {
+        System.setProperty("sun.awt.noerasebackground", "true")
+        args.firstOrNull { it.startsWith(LANG_PREFIX) }?.removePrefix(LANG_PREFIX)?.takeIf { it.isNotBlank() }
+            ?.let { java.util.Locale.setDefault(java.util.Locale.forLanguageTag(it)) }
+        EventQueue.invokeLater {
+            open { result ->
+                println(RESULT_PREFIX + encode(result))
+                System.out.flush()
+                // CEF shutdown can hang; the result is already delivered, so leave immediately.
+                Runtime.getRuntime().halt(0)
+            }
+        }
+    }
+
+    private fun b64(text: String) = java.util.Base64.getEncoder().encodeToString(text.toByteArray())
+    private fun unb64(text: String) = String(java.util.Base64.getDecoder().decode(text))
+
+    private fun encode(result: GoogleLogin.Result): String = when (result) {
+        is GoogleLogin.Result.Success ->
+            listOf("SUCCESS", b64(result.cookie), b64(result.visitorData), b64(result.dataSyncId), b64(result.authUser))
+                .joinToString("|")
+        GoogleLogin.Result.Blocked -> "BLOCKED"
+        GoogleLogin.Result.Cancelled -> "CANCELLED"
+        is GoogleLogin.Result.Failed -> "FAILED|" + b64(result.reason)
+    }
+
+    private fun decode(text: String): GoogleLogin.Result = runCatching {
+        val parts = text.split("|")
+        when (parts[0]) {
+            "SUCCESS" -> GoogleLogin.Result.Success(unb64(parts[1]), unb64(parts[2]), unb64(parts[3]), unb64(parts[4]))
+            "BLOCKED" -> GoogleLogin.Result.Blocked
+            "CANCELLED" -> GoogleLogin.Result.Cancelled
+            else -> GoogleLogin.Result.Failed(parts.getOrNull(1)?.let(::unb64) ?: "unknown")
+        }
+    }.getOrDefault(GoogleLogin.Result.Failed("bad result from the sign-in window"))
 
     private fun app(): CefApp {
         cefApp?.let { return it }
         val config = JCefAppConfig.getInstance()
         val args = config.appArgs
         val settings = config.cefSettings
+        // DESKTOP: a normal (windowed) browser inside a JFrame; JBR may default to off-screen rendering.
+        settings.windowless_rendering_enabled = false
         // DESKTOP: in-memory profile; cookies vanish when the app exits.
         settings.cache_path = ""
         settings.persist_session_cookies = false
+        Timber.tag(TAG).d("CefApp.startup")
         CefApp.startup(args)
-        return CefApp.getInstance(args, settings).also { cefApp = it }
+        return CefApp.getInstance(args, settings).also {
+            cefApp = it
+            Timber.tag(TAG).d("CefApp ready")
+        }
     }
 
     private fun open(onResult: (GoogleLogin.Result) -> Unit) {
+        try {
+            openUnsafe(onResult)
+        } catch (t: Throwable) {
+            Timber.tag(TAG).e(t, "sign-in window failed")
+            onResult(GoogleLogin.Result.Failed(t.javaClass.simpleName))
+        }
+    }
+
+    private fun openUnsafe(onResult: (GoogleLogin.Result) -> Unit) {
         val app = try {
             app()
         } catch (t: Throwable) {
@@ -80,7 +176,10 @@ object JcefGoogleLogin {
 
         val client = app.createClient()
         val browser = client.createBrowser(LOGIN_URL, false, false)
-        val frame = JFrame("Sign in with Google")
+        val title = runCatching {
+            kotlinx.coroutines.runBlocking { GoogleLogin.windowTitle() }
+        }.getOrDefault("Google")
+        val frame = JFrame(title)
         val finished = AtomicBoolean(false)
 
         fun finish(result: GoogleLogin.Result) {

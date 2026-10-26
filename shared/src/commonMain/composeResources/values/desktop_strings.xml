@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Force bottom navigation bar</string>
+    <string name="discord_error_network_blocked">Could not reach Discord. Your network may be blocking it. If you have the Discord app open, Metrolist can also connect through it.</string>
+    <string name="restore_database_too_old">This backup is from an older Metrolist version. Update Metrolist on your phone, create a new backup and restore that one.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Hide clean versions when an explicit one exists</string>
+    <string name="hide_clean_duplicates_desc">If a song or album appears in both versions, only the explicit one is shown.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="google_login_cookie_fallback">Or sign in with a cookie</string>
+    <string name="google_login_blocked">Google blocked sign-in inside the app window. You can still sign in with the cookie method below.</string>
+    <string name="google_login_failed">The sign-in window could not be opened</string>
+    <string name="login_desktop_instructions">To sign in with your YouTube Music account on desktop:\n1. Open music.youtube.com in your browser with the button below and sign in.\n2. Press F12 and open Developer Tools → Network.\n3. Reload the page and click a \'browse\' or \'music.youtube.com\' request.\n4. Under Request Headers, copy the \'Cookie\' value and paste it below.</string>
+    <string name="open_youtube_music_in_browser">Open YouTube Music in the browser</string>
+    <string name="youtube_music_cookie_label">YouTube Music cookie (must contain SAPISID)</string>
+    <string name="paste_from_clipboard">Paste from clipboard</string>
+    <string name="invalid_cookie_no_sapisid">Invalid cookie: \'SAPISID\' was not found. Make sure you are signed in on music.youtube.com and copied the whole Cookie header.</string>
+    <string name="login_save_failed">Saving the sign-in failed</string>
+    <string name="file_dialog_open">Choose a file</string>
+    <string name="file_dialog_save">Save</string>
+    <string name="lyrics_source_title">Change lyrics source</string>
+    <string name="lyrics_source_synced">Synced</string>
+    <string name="lyrics_source_plain">Plain text</string>
+    <string name="lyrics_source_none">Not found</string>
+    <string name="lyrics_source_current">In use</string>
+    <string name="lyrics_sync_title">Sync lyrics</string>
+    <string name="lyrics_sync_hint">Click the line that is being sung right now. Fine-tune with the buttons if needed.</string>
+    <string name="lyrics_sync_reset">Reset</string>
+    <string name="lyrics_sync_done">Done</string>
+</resources>

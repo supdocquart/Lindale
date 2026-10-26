@@ -902,6 +902,9 @@ fun OriginalLyrics(
                                                     showMaxSelectionToast = true
                                                 }
                                             }
+                                        } else if (isSynced && LyricsSync.active.value) {
+                                            // DESKTOP: sync mode - this line is being sung right now.
+                                            LyricsSync.syncLineToNow(database, currentSong?.song, item.time, playerConnection.player.currentPosition)
                                         } else if (isSynced && changeLyrics && !isGuest) {
                                             // Professional seek action with smooth animation
                                             val lyricsOffset = currentSong?.song?.lyricsOffset ?: 0

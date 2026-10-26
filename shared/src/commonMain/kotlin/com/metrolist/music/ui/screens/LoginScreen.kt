@@ -111,6 +111,7 @@ fun LoginScreen(
     var visitorDataInput by remember { mutableStateOf(YouTube.visitorData.orEmpty()) }
     var dataSyncIdInput by remember { mutableStateOf(YouTube.dataSyncId.orEmpty()) }
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    val invalidCookieText = stringResource(Res.string.invalid_cookie_no_sapisid)
 
     fun parsePastedCookieInput(raw: String): AuthData {
         val trimmed = raw.trim()
@@ -184,7 +185,7 @@ fun LoginScreen(
         } catch (throwable: Exception) {
             Timber.e(throwable, "Login: Failed to validate or save the selected YouTube channel")
             reportException(throwable)
-            errorMessage = throwable.message ?: "Giriş kaydedilirken hata oluştu"
+            errorMessage = throwable.message ?: getString(Res.string.login_save_failed)
             loginStage = LoginStage.Authenticating
         }
     }
@@ -304,11 +305,7 @@ fun LoginScreen(
                     }
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Masaüstü sürümünde YouTube Music hesabınızla oturum açmak için:\n" +
-                            "1. Aşağıdaki butonla tarayıcınızda music.youtube.com adresini açın ve giriş yapın.\n" +
-                            "2. Tarayıcıda F12 tuşuna basıp Geliştirici Araçları -> Network (Ağ) sekmesini açın.\n" +
-                            "3. Sayfayı yenileyip 'browse' veya 'music.youtube.com' isteğine tıklayın.\n" +
-                            "4. Request Headers (İstek Başlıkları) altındaki 'Cookie' değerini kopyalayıp aşağıya yapıştırın.",
+                        text = stringResource(Res.string.login_desktop_instructions),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -323,7 +320,7 @@ fun LoginScreen(
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text("Tarayıcıda YouTube Music'i Aç")
+                            Text(stringResource(Res.string.open_youtube_music_in_browser))
                         }
                     }
                 }
@@ -334,7 +331,7 @@ fun LoginScreen(
             androidx.compose.material3.OutlinedTextField(
                 value = cookieInput,
                 onValueChange = { cookieInput = it },
-                label = { Text("YouTube Music Cookie (SAPISID içermelidir)") },
+                label = { Text(stringResource(Res.string.youtube_music_cookie_label)) },
                 placeholder = { Text("VISITOR_INFO1_LIVE=...; SAPISID=...; __Secure-3PAPISID=...") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -358,7 +355,7 @@ fun LoginScreen(
                         }
                     }
                 ) {
-                    Text("Panodan Yapıştır")
+                    Text(stringResource(Res.string.paste_from_clipboard))
                 }
 
                 Spacer(Modifier.width(12.dp))
@@ -371,7 +368,7 @@ fun LoginScreen(
                         val parsed = parsePastedCookieInput(cookieInput)
                         val cookieMap = runCatching { parseCookieString(parsed.cookie) }.getOrDefault(emptyMap())
                         if ("SAPISID" !in cookieMap) {
-                            errorMessage = "Geçersiz Cookie: Kopyaladığınız Cookie içerisinde 'SAPISID' bulunamadı. Lütfen music.youtube.com üzerinde oturum açtığınızdan ve tam Cookie başlığını kopyaladığınızdan emin olun."
+                            errorMessage = invalidCookieText
                             return@Button
                         }
                         coroutineScope.launch {

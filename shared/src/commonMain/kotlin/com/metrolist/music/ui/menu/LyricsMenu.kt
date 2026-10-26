@@ -142,6 +142,23 @@ fun LyricsMenu(
         )
     }
 
+    // DESKTOP: "Change lyrics source" dialog (all providers searched at once).
+    var showSourceDialog by remember { mutableStateOf(false) }
+    if (showSourceDialog) {
+        com.metrolist.music.ui.component.LyricsSourceDialog(
+            mediaMetadata = mediaMetadataProvider(),
+            currentProvider = lyricsProvider()?.provider,
+            onDismiss = { showSourceDialog = false },
+            onPick = { providerName, lyrics ->
+                database.query {
+                    upsert(LyricsEntity(id = mediaMetadataProvider().id, lyrics = lyrics, provider = providerName))
+                }
+                showSourceDialog = false
+                onDismiss()
+            },
+        )
+    }
+
     var showSearchDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -596,6 +613,37 @@ fun LyricsMenu(
                         )
                     )
                     
+                    // DESKTOP: pick a lyrics source with a live per-provider result list.
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(stringResource(Res.string.lyrics_source_title)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.lyrics),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = { showSourceDialog = true },
+                        )
+                    )
+
+                    // DESKTOP: tap-the-line-being-sung sync mode (see ui/component/LyricsSync.kt).
+                    add(
+                        Material3MenuItemData(
+                            title = { Text(stringResource(Res.string.lyrics_sync_title)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.sync),
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                com.metrolist.music.ui.component.LyricsSync.active.value = true
+                                onDismiss()
+                            },
+                        )
+                    )
+
                     add(
                         Material3MenuItemData(
                             title = { Text(stringResource(Res.string.lyrics_offset)) },

@@ -1,5 +1,7 @@
 package com.metrolist.music.platform
 
+import metrolist.shared.generated.resources.*
+
 import java.awt.FileDialog
 import java.awt.Frame
 import java.awt.KeyboardFocusManager
@@ -8,6 +10,10 @@ import java.io.FilenameFilter
 
 /** Native open/save dialogs plus helpers that map URIs used by the UI layer to files. */
 object DesktopFiles {
+    // DESKTOP: dialog titles follow the UI language (these functions are not composables).
+    private fun localized(res: org.jetbrains.compose.resources.StringResource): String =
+        runCatching { kotlinx.coroutines.runBlocking { org.jetbrains.compose.resources.getString(res) } }.getOrDefault("")
+
     private val home: String get() = System.getProperty("user.home")
 
     // DESKTOP: native dialogs remember their last folder in the shared key/value store.
@@ -91,7 +97,7 @@ object DesktopFiles {
         return dialog
     }
 
-    fun openFile(title: String = "Dosya seç", extensions: List<String>? = null): File? {
+    fun openFile(title: String = localized(Res.string.file_dialog_open), extensions: List<String>? = null): File? {
         val d = dialog(title, FileDialog.LOAD, extensions)
         d.isVisible = true
         val name = d.file ?: return null
@@ -100,7 +106,7 @@ object DesktopFiles {
         return File(d.directory, name).takeIf { it.isFile }
     }
 
-    fun openFiles(title: String = "Dosya seç", extensions: List<String>? = null): List<File> {
+    fun openFiles(title: String = localized(Res.string.file_dialog_open), extensions: List<String>? = null): List<File> {
         val d = dialog(title, FileDialog.LOAD, extensions)
         d.isMultipleMode = true
         d.isVisible = true
@@ -110,7 +116,7 @@ object DesktopFiles {
         return files
     }
 
-    fun saveFile(title: String = "Kaydet", suggestedName: String? = null): File? {
+    fun saveFile(title: String = localized(Res.string.file_dialog_save), suggestedName: String? = null): File? {
         val d = dialog(title, FileDialog.SAVE, null)
         if (!suggestedName.isNullOrBlank()) d.file = suggestedName
         d.isVisible = true

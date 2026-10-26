@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Alt gezinme çubuğunu zorla</string>
+    <string name="discord_error_network_blocked">Discord\'a ulaşılamadı. Ağınız Discord\'u engelliyor olabilir. Discord uygulaması açıksa Metrolist onun üzerinden de bağlanabilir.</string>
+    <string name="restore_database_too_old">Bu yedek eski bir Metrolist sürümüne ait. Telefonunuzda Metrolist\'i güncelleyin, yeni bir yedek oluşturun ve onu geri yükleyin.</string>
+    <string name="ok">Tamam</string>
+    <string name="hide_clean_duplicates">Explicit sürümü varsa temiz sürümleri gizle</string>
+    <string name="hide_clean_duplicates_desc">Bir şarkı ya da albümün iki sürümü de varsa sadece explicit olanı gösterilir.</string>
+    <string name="sign_in_with_google">Google ile giriş yap</string>
+    <string name="google_login_cookie_fallback">Ya da çerez ile giriş yap</string>
+    <string name="google_login_blocked">Google, uygulama penceresi içinde girişi engelledi. Aşağıdaki çerez yöntemiyle yine giriş yapabilirsiniz.</string>
+    <string name="google_login_failed">Giriş penceresi açılamadı</string>
+    <string name="login_desktop_instructions">Masaüstünde YouTube Music hesabınızla giriş yapmak için:\n1. Aşağıdaki düğmeyle tarayıcınızda music.youtube.com adresini açın ve giriş yapın.\n2. F12 tuşuna basıp Geliştirici Araçları → Network (Ağ) sekmesini açın.\n3. Sayfayı yenileyip \'browse\' veya \'music.youtube.com\' isteğine tıklayın.\n4. Request Headers (İstek Başlıkları) altındaki \'Cookie\' değerini kopyalayıp aşağıya yapıştırın.</string>
+    <string name="open_youtube_music_in_browser">YouTube Music\'i tarayıcıda aç</string>
+    <string name="youtube_music_cookie_label">YouTube Music çerezi (SAPISID içermelidir)</string>
+    <string name="paste_from_clipboard">Panodan yapıştır</string>
+    <string name="invalid_cookie_no_sapisid">Geçersiz çerez: \'SAPISID\' bulunamadı. music.youtube.com\'da giriş yaptığınızdan ve Cookie başlığının tamamını kopyaladığınızdan emin olun.</string>
+    <string name="login_save_failed">Giriş kaydedilemedi</string>
+    <string name="file_dialog_open">Dosya seç</string>
+    <string name="file_dialog_save">Kaydet</string>
+    <string name="lyrics_source_title">Söz kaynağını değiştir</string>
+    <string name="lyrics_source_synced">Zamanlı</string>
+    <string name="lyrics_source_plain">Düz metin</string>
+    <string name="lyrics_source_none">Bulunamadı</string>
+    <string name="lyrics_source_current">Kullanılıyor</string>
+    <string name="lyrics_sync_title">Sözleri senkronla</string>
+    <string name="lyrics_sync_hint">Şu an söylenen satıra tıklayın. Gerekirse düğmelerle ince ayar yapın.</string>
+    <string name="lyrics_sync_reset">Sıfırla</string>
+    <string name="lyrics_sync_done">Bitti</string>
+    <!-- Upstream has no Turkish for these yet. -->
+    <string name="enable_zemer">Zemer\'i etkinleştir</string>
+    <string name="enable_zemer_desc">Yahudi müziği için şarkı sözleri</string>
+    <string name="update_available_message">Metrolist %s indirilmeye hazır.</string>
+    <string name="update_action">Güncelle</string>
+    <string name="pause">Duraklat</string>
+    <string name="theme_desc">Uygulama temasını özelleştirin</string>
+    <string name="theme_colors">Tema ve Renkler</string>
+    <string name="theme_mode">Tema modu</string>
+    <string name="color_palette">Renk paleti</string>
+    <string name="use_system_colors">Sistem renklerini kullan</string>
+</resources>

@@ -144,7 +144,6 @@
     <string name="lyrics_provider_selection_desc">Choose which lyrics providers are enabled</string>
     <string name="auto_scroll">Re-sync</string>
     <string name="slim">Slim</string>
-    <string name="force_bottom_navbar">Force bottom navigation bar</string>
     <string name="slim_navbar">Slim bottom navigation bar</string>
     <string name="auto_playlists">Auto playlists</string>
     <string name="show_liked_playlist">Show Liked playlist</string>
@@ -794,7 +793,6 @@
     <string name="discord_status_authorized">Authorized</string>
     <string name="discord_status_not_initialized">Not initialized</string>
     <string name="discord_error_loopback_timeout">Discord didn\'t respond in time. Please try again.</string>
-    <string name="discord_error_network_blocked">Could not reach Discord. Your network may be blocking it. If you have the Discord app open, Metrolist can also connect through it.</string>
     <string name="discord_error_loopback_unbound">Couldn\'t open a local callback port. Please free one and try again.</string>
     <string name="discord_error_no_browser">No browser was found to complete Discord authorization.</string>
     <string name="discord_error_token_refresh_failed">Discord session expired. Please reconnect.</string>
@@ -897,7 +895,6 @@
     <string name="restore_account_warning">The following account information will be restored and preserved:</string>
     <string name="restore">Restore</string>
     <string name="restore_database_incompatible">Cannot restore backup: database version incompatible. Your current data has been preserved.</string>
-    <string name="restore_database_too_old">This backup is from an older Metrolist version. Update Metrolist on your phone, create a new backup and restore that one.</string>
     <string name="checking_previous_account">Checking for previous account…</string>
     <string name="no_account_found">No account found</string>
 
@@ -993,15 +990,8 @@
     <string name="stream_source_web_creator">WEB_CREATOR</string>
     <string name="stream_source_web_creator_desc">Creator web client.</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">OK</string>
 
     <!-- Content filters -->
-    <string name="hide_clean_duplicates">Hide clean versions when an explicit one exists</string>
-    <string name="hide_clean_duplicates_desc">If a song or album appears in both versions, only the explicit one is shown.</string>
-    <string name="sign_in_with_google">Sign in with Google</string>
-    <string name="google_login_cookie_fallback">Or sign in with a cookie</string>
-    <string name="google_login_blocked">Google blocked sign-in inside the app window. You can still sign in with the cookie method below.</string>
-    <string name="google_login_failed">The sign-in window could not be opened</string>
 </resources>
 
 

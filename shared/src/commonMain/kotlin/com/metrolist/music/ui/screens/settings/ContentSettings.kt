@@ -4,6 +4,10 @@
  */
 
 package com.metrolist.music.ui.screens.settings
+
+import kotlinx.coroutines.launch
+
+import com.metrolist.music.utils.safeDataStoreEdit
 import com.metrolist.music.platform.LocalAppContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -106,6 +110,7 @@ fun ContentSettings(
     val context = LocalAppContext.current
     val database = LocalDatabase.current
     val (appLanguage, onAppLanguageChange) = rememberPreference(key = AppLanguageKey, defaultValue = SYSTEM_DEFAULT)
+    val languageScope = androidx.compose.runtime.rememberCoroutineScope()
 
     val (contentLanguage, onContentLanguageChange) = rememberPreference(key = ContentLanguageKey, defaultValue = "system")
     val (contentCountry, onContentCountryChange) = rememberPreference(key = ContentCountryKey, defaultValue = "system")
@@ -349,9 +354,15 @@ fun ContentSettings(
     if (showAppLanguageDialog) {
         EnumDialog(
             onDismiss = { showAppLanguageDialog = false },
-            onSelect = {
-                onAppLanguageChange(it)
+            onSelect = { language ->
                 showAppLanguageDialog = false
+                // DESKTOP: the UI language is applied at start-up, so save it and restart the app.
+                if (language != appLanguage) {
+                    languageScope.launch {
+                        context.safeDataStoreEdit { it[AppLanguageKey] = language }
+                        com.metrolist.music.platform.AppRestarter.restart()
+                    }
+                }
             },
             title = stringResource(Res.string.app_language),
             current = appLanguage,

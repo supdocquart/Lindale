@@ -12,6 +12,9 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.metrolist.music.viewmodels.metrolistViewModel
 import com.metrolist.music.constants.ExperimentalLyricsKey
@@ -27,18 +30,25 @@ fun Lyrics(
 ) {
     val (experimentalLyrics, _) = rememberPreference(key = ExperimentalLyricsKey, defaultValue = true)
 
+    // DESKTOP: overlay the sync banner while "Sync lyrics" mode is on.
+    val syncActive by LyricsSync.active.collectAsState()
+    Box(modifier) {
     if (experimentalLyrics) {
         ExperimentalLyrics(
             sliderPositionProvider = sliderPositionProvider,
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             showLyrics = showLyrics,
             lyricsViewModel = lyricsViewModel
         )
     } else {
         OriginalLyrics(
             sliderPositionProvider = sliderPositionProvider,
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             showLyrics = showLyrics
         )
+    }
+    if (syncActive && showLyrics) {
+        LyricsSyncBanner(Modifier.align(androidx.compose.ui.Alignment.TopCenter))
+    }
     }
 }

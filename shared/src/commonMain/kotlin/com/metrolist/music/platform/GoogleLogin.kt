@@ -28,6 +28,10 @@ object GoogleLogin {
 
     val isAvailable: Boolean get() = opener != null
 
+    /** Localised title for the sign-in window (Res is internal to this module). */
+    suspend fun windowTitle(): String =
+        org.jetbrains.compose.resources.getString(metrolist.shared.generated.resources.Res.string.sign_in_with_google)
+
     fun open(onResult: (Result) -> Unit) {
         val open = opener
         if (open == null) onResult(Result.Failed("embedded browser unavailable")) else open(onResult)

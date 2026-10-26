@@ -22,7 +22,13 @@ import com.metrolist.music.db.createDesktopDatabase
 import com.metrolist.music.playback.DesktopPlayerConnection
 import com.metrolist.music.platform.initDesktopPlatform
 
-fun main() {
+fun main(args: Array<String>) {
+    // DESKTOP: the "Sign in with Google" window runs in its own process (same launcher + this flag),
+    // so a JCEF crash cannot take the app down. It must not touch the app's log files.
+    if (JcefGoogleLogin.HELPER_FLAG in args) {
+        JcefGoogleLogin.runHelperProcess(args)
+        return
+    }
     // Lets a launcher pick Skia's backend (e.g. OPENGL, SOFTWARE) for memory comparisons.
     System.getenv("METROLIST_RENDER_API")?.takeIf { it.isNotBlank() }?.let { System.setProperty("skiko.renderApi", it) }
     // DESKTOP: stop AWT from erasing the window to white before Skia paints (white flash on start/resize).

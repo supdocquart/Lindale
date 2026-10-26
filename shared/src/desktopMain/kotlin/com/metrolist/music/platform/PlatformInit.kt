@@ -84,6 +84,16 @@ fun initDesktopPlatform() {
 
     StartupTrace.mark("koin_ready")
     val context = AppContext()
+    // DESKTOP: the app language also drives the UI strings. Compose resources follow the JVM default
+    // locale, so it is set here, before the first composition (changing it restarts the app).
+    runCatching {
+        kotlinx.coroutines.runBlocking { context.dataStore.data.first()[AppLanguageKey] }
+            ?.takeUnless { it == SYSTEM_DEFAULT }
+            ?.let { tag ->
+                Locale.setDefault(Locale.forLanguageTag(tag))
+                Timber.i("ui language: %s", tag)
+            }
+    }
     runCatching { ArtistNameAliases.initialize() }
     StartupTrace.span("init:InnerTubeXPlayer") { InnerTubeXPlayer.initialize(context) }
 
