@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">فرض شريط التنقل السفلي</string>
+    <string name="discord_error_network_blocked">تعذّر الوصول إلى Discord. قد تكون شبكتك تحظره. إذا كان تطبيق Discord مفتوحًا، يمكن لـ Metrolist الاتصال من خلاله أيضًا.</string>
+    <string name="restore_database_too_old">هذه النسخة الاحتياطية من إصدار أقدم من Metrolist. حدّث Metrolist على هاتفك، وأنشئ نسخة احتياطية جديدة ثم استعدها.</string>
+    <string name="ok">حسنًا</string>
+    <string name="hide_clean_duplicates">إخفاء النسخ النظيفة عند وجود نسخة صريحة</string>
+    <string name="hide_clean_duplicates_desc">إذا كانت الأغنية أو الألبوم متوفرة بالنسختين، فستظهر النسخة الصريحة فقط.</string>
+    <string name="sign_in_with_google">تسجيل الدخول باستخدام Google</string>
+    <string name="google_login_cookie_fallback">أو سجّل الدخول باستخدام ملف تعريف الارتباط</string>
+    <string name="google_login_blocked">حظرت Google تسجيل الدخول داخل نافذة التطبيق. لا يزال بإمكانك تسجيل الدخول بطريقة ملف تعريف الارتباط أدناه.</string>
+    <string name="google_login_failed">تعذّر فتح نافذة تسجيل الدخول</string>
+    <string name="login_desktop_instructions">لتسجيل الدخول بحساب YouTube Music على الكمبيوتر:\n1. افتح music.youtube.com في المتصفح بالزر أدناه وسجّل الدخول.\n2. اضغط F12 وافتح أدوات المطوّرين ← Network.\n3. أعد تحميل الصفحة وانقر على طلب \'browse\' أو \'music.youtube.com\'.\n4. ضمن Request Headers انسخ قيمة \'Cookie\' والصقها أدناه.</string>
+    <string name="open_youtube_music_in_browser">فتح YouTube Music في المتصفح</string>
+    <string name="youtube_music_cookie_label">ملف تعريف ارتباط YouTube Music (يجب أن يحتوي على SAPISID)</string>
+    <string name="paste_from_clipboard">لصق من الحافظة</string>
+    <string name="invalid_cookie_no_sapisid">ملف تعريف ارتباط غير صالح: لم يتم العثور على \'SAPISID\'. تأكد من تسجيل الدخول على music.youtube.com ونسخ ترويسة Cookie كاملة.</string>
+    <string name="login_save_failed">تعذّر حفظ تسجيل الدخول</string>
+    <string name="file_dialog_open">اختر ملفًا</string>
+    <string name="file_dialog_save">حفظ</string>
+    <string name="lyrics_source_title">تغيير مصدر الكلمات</string>
+    <string name="lyrics_source_synced">متزامنة</string>
+    <string name="lyrics_source_plain">نص عادي</string>
+    <string name="lyrics_source_none">غير موجودة</string>
+    <string name="lyrics_source_current">قيد الاستخدام</string>
+    <string name="lyrics_sync_title">مزامنة الكلمات</string>
+    <string name="lyrics_sync_hint">انقر على السطر الذي يُغنّى الآن. اضبط بدقة بالأزرار عند الحاجة.</string>
+    <string name="lyrics_sync_reset">إعادة تعيين</string>
+    <string name="lyrics_sync_done">تم</string>
+</resources>

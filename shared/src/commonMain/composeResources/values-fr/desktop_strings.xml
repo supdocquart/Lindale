@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Forcer la barre de navigation inférieure</string>
+    <string name="discord_error_network_blocked">Impossible de joindre Discord. Votre réseau le bloque peut-être. Si l\'application Discord est ouverte, Metrolist peut aussi s\'y connecter.</string>
+    <string name="restore_database_too_old">Cette sauvegarde provient d\'une ancienne version de Metrolist. Mettez Metrolist à jour sur votre téléphone, créez une nouvelle sauvegarde et restaurez-la.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Masquer les versions propres lorsqu\'une version explicite existe</string>
+    <string name="hide_clean_duplicates_desc">Si un titre ou un album existe dans les deux versions, seule la version explicite est affichée.</string>
+    <string name="sign_in_with_google">Se connecter avec Google</string>
+    <string name="google_login_cookie_fallback">Ou se connecter avec un cookie</string>
+    <string name="google_login_blocked">Google a bloqué la connexion dans la fenêtre de l\'application. Vous pouvez toujours vous connecter avec la méthode du cookie ci-dessous.</string>
+    <string name="google_login_failed">La fenêtre de connexion n\'a pas pu s\'ouvrir</string>
+    <string name="login_desktop_instructions">Pour vous connecter avec votre compte YouTube Music sur ordinateur :\n1. Ouvrez music.youtube.com dans votre navigateur avec le bouton ci-dessous et connectez-vous.\n2. Appuyez sur F12 et ouvrez Outils de développement → Network.\n3. Rechargez la page et cliquez sur une requête \'browse\' ou \'music.youtube.com\'.\n4. Sous Request Headers, copiez la valeur de \'Cookie\' et collez-la ci-dessous.</string>
+    <string name="open_youtube_music_in_browser">Ouvrir YouTube Music dans le navigateur</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (doit contenir SAPISID)</string>
+    <string name="paste_from_clipboard">Coller depuis le presse-papiers</string>
+    <string name="invalid_cookie_no_sapisid">Cookie invalide : \'SAPISID\' introuvable. Vérifiez que vous êtes connecté sur music.youtube.com et que vous avez copié tout l\'en-tête Cookie.</string>
+    <string name="login_save_failed">Échec de l\'enregistrement de la connexion</string>
+    <string name="file_dialog_open">Choisir un fichier</string>
+    <string name="file_dialog_save">Enregistrer</string>
+    <string name="lyrics_source_title">Changer la source des paroles</string>
+    <string name="lyrics_source_synced">Synchronisées</string>
+    <string name="lyrics_source_plain">Texte brut</string>
+    <string name="lyrics_source_none">Introuvables</string>
+    <string name="lyrics_source_current">Utilisée</string>
+    <string name="lyrics_sync_title">Synchroniser les paroles</string>
+    <string name="lyrics_sync_hint">Cliquez sur la ligne chantée en ce moment. Ajustez finement avec les boutons si besoin.</string>
+    <string name="lyrics_sync_reset">Réinitialiser</string>
+    <string name="lyrics_sync_done">Terminé</string>
+</resources>

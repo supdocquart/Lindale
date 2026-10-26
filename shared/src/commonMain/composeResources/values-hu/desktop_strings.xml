@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Alsó navigációs sáv kényszerítése</string>
+    <string name="discord_error_network_blocked">A Discord nem érhető el. Lehet, hogy a hálózatod blokkolja. Ha a Discord alkalmazás nyitva van, a Metrolist azon keresztül is csatlakozhat.</string>
+    <string name="restore_database_too_old">Ez a biztonsági mentés a Metrolist egy régebbi verziójából származik. Frissítsd a Metrolistet a telefonodon, készíts új mentést, és azt állítsd vissza.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Tiszta verziók elrejtése, ha van explicit</string>
+    <string name="hide_clean_duplicates_desc">Ha egy dal vagy album mindkét verzióban létezik, csak az explicit jelenik meg.</string>
+    <string name="sign_in_with_google">Bejelentkezés Google-fiókkal</string>
+    <string name="google_login_cookie_fallback">Vagy jelentkezz be cookie-val</string>
+    <string name="google_login_blocked">A Google letiltotta a bejelentkezést az alkalmazás ablakában. Az alábbi cookie-módszerrel továbbra is bejelentkezhetsz.</string>
+    <string name="google_login_failed">Nem sikerült megnyitni a bejelentkezési ablakot</string>
+    <string name="login_desktop_instructions">Bejelentkezés a YouTube Music-fiókodba számítógépen:\n1. Nyisd meg a music.youtube.com oldalt a böngészőben az alábbi gombbal, és jelentkezz be.\n2. Nyomd meg az F12-t, és nyisd meg: Developer Tools → Network.\n3. Töltsd újra az oldalt, és kattints egy \'browse\' vagy \'music.youtube.com\' kérésre.\n4. A Request Headers részben másold ki a \'Cookie\' értékét, és illeszd be lent.</string>
+    <string name="open_youtube_music_in_browser">YouTube Music megnyitása böngészőben</string>
+    <string name="youtube_music_cookie_label">YouTube Music cookie (tartalmaznia kell a SAPISID-et)</string>
+    <string name="paste_from_clipboard">Beillesztés a vágólapról</string>
+    <string name="invalid_cookie_no_sapisid">Érvénytelen cookie: a \'SAPISID\' nem található. Győződj meg róla, hogy be vagy jelentkezve a music.youtube.com oldalon, és a teljes Cookie fejlécet másoltad ki.</string>
+    <string name="login_save_failed">Nem sikerült menteni a bejelentkezést</string>
+    <string name="file_dialog_open">Válassz fájlt</string>
+    <string name="file_dialog_save">Mentés</string>
+    <string name="lyrics_source_title">Dalszöveg forrásának módosítása</string>
+    <string name="lyrics_source_synced">Szinkronizált</string>
+    <string name="lyrics_source_plain">Egyszerű szöveg</string>
+    <string name="lyrics_source_none">Nem található</string>
+    <string name="lyrics_source_current">Használatban</string>
+    <string name="lyrics_sync_title">Dalszöveg szinkronizálása</string>
+    <string name="lyrics_sync_hint">Kattints az éppen énekelt sorra. Szükség esetén finomhangolj a gombokkal.</string>
+    <string name="lyrics_sync_reset">Visszaállítás</string>
+    <string name="lyrics_sync_done">Kész</string>
+</resources>

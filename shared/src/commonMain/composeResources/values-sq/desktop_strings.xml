@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Detyro shiritin e poshtëm të navigimit</string>
+    <string name="discord_error_network_blocked">Discord nuk mund të arrihet. Rrjeti juaj mund ta bllokojë. Nëse aplikacioni Discord është i hapur, Metrolist mund të lidhet edhe përmes tij.</string>
+    <string name="restore_database_too_old">Kjo kopje rezervë është nga një version më i vjetër i Metrolist. Përditësoni Metrolist në telefon, krijoni një kopje të re dhe riktheni atë.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Fshih versionet e pastra kur ekziston një eksplicite</string>
+    <string name="hide_clean_duplicates_desc">Nëse një këngë ose album ekziston në të dy versionet, shfaqet vetëm ai eksplicit.</string>
+    <string name="sign_in_with_google">Hyr me Google</string>
+    <string name="google_login_cookie_fallback">Ose hyr me cookie</string>
+    <string name="google_login_blocked">Google bllokoi hyrjen në dritaren e aplikacionit. Mund të hyni ende me metodën e cookie më poshtë.</string>
+    <string name="google_login_failed">Dritarja e hyrjes nuk u hap</string>
+    <string name="login_desktop_instructions">Për të hyrë në llogarinë tuaj YouTube Music në kompjuter:\n1. Hapni music.youtube.com në shfletues me butonin më poshtë dhe hyni.\n2. Shtypni F12 dhe hapni Developer Tools → Network.\n3. Ringarkoni faqen dhe klikoni një kërkesë \'browse\' ose \'music.youtube.com\'.\n4. Te Request Headers, kopjoni vlerën e \'Cookie\' dhe ngjiteni më poshtë.</string>
+    <string name="open_youtube_music_in_browser">Hap YouTube Music në shfletues</string>
+    <string name="youtube_music_cookie_label">Cookie e YouTube Music (duhet të përmbajë SAPISID)</string>
+    <string name="paste_from_clipboard">Ngjit nga kujtesa</string>
+    <string name="invalid_cookie_no_sapisid">Cookie e pavlefshme: \'SAPISID\' nuk u gjet. Sigurohuni që keni hyrë në music.youtube.com dhe keni kopjuar të gjithë kokën Cookie.</string>
+    <string name="login_save_failed">Hyrja nuk u ruajt</string>
+    <string name="file_dialog_open">Zgjidhni një skedar</string>
+    <string name="file_dialog_save">Ruaj</string>
+    <string name="lyrics_source_title">Ndrysho burimin e teksteve</string>
+    <string name="lyrics_source_synced">Të sinkronizuara</string>
+    <string name="lyrics_source_plain">Tekst i thjeshtë</string>
+    <string name="lyrics_source_none">Nuk u gjet</string>
+    <string name="lyrics_source_current">Në përdorim</string>
+    <string name="lyrics_sync_title">Sinkronizo tekstet</string>
+    <string name="lyrics_sync_hint">Klikoni rreshtin që po këndohet tani. Rregulloni me butonat nëse duhet.</string>
+    <string name="lyrics_sync_reset">Rivendos</string>
+    <string name="lyrics_sync_done">U krye</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Onderste navigatiebalk forceren</string>
+    <string name="discord_error_network_blocked">Discord is niet bereikbaar. Je netwerk blokkeert het mogelijk. Als de Discord-app open is, kan Metrolist ook daarlangs verbinden.</string>
+    <string name="restore_database_too_old">Deze back-up komt van een oudere Metrolist-versie. Werk Metrolist op je telefoon bij, maak een nieuwe back-up en herstel die.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Schone versies verbergen als er een expliciete bestaat</string>
+    <string name="hide_clean_duplicates_desc">Als een nummer of album in beide versies bestaat, wordt alleen de expliciete getoond.</string>
+    <string name="sign_in_with_google">Inloggen met Google</string>
+    <string name="google_login_cookie_fallback">Of inloggen met een cookie</string>
+    <string name="google_login_blocked">Google heeft het inloggen in het app-venster geblokkeerd. Je kunt nog steeds inloggen met de cookiemethode hieronder.</string>
+    <string name="google_login_failed">Het inlogvenster kon niet worden geopend</string>
+    <string name="login_desktop_instructions">Zo log je op de desktop in met je YouTube Music-account:\n1. Open music.youtube.com in je browser met de knop hieronder en log in.\n2. Druk op F12 en open Ontwikkelhulpmiddelen → Network.\n3. Herlaad de pagina en klik op een \'browse\'- of \'music.youtube.com\'-verzoek.\n4. Kopieer onder Request Headers de waarde van \'Cookie\' en plak die hieronder.</string>
+    <string name="open_youtube_music_in_browser">YouTube Music openen in de browser</string>
+    <string name="youtube_music_cookie_label">YouTube Music-cookie (moet SAPISID bevatten)</string>
+    <string name="paste_from_clipboard">Plakken vanaf klembord</string>
+    <string name="invalid_cookie_no_sapisid">Ongeldige cookie: \'SAPISID\' niet gevonden. Controleer of je bent ingelogd op music.youtube.com en de volledige Cookie-header hebt gekopieerd.</string>
+    <string name="login_save_failed">Opslaan van de aanmelding mislukt</string>
+    <string name="file_dialog_open">Kies een bestand</string>
+    <string name="file_dialog_save">Opslaan</string>
+    <string name="lyrics_source_title">Songtekstbron wijzigen</string>
+    <string name="lyrics_source_synced">Gesynchroniseerd</string>
+    <string name="lyrics_source_plain">Platte tekst</string>
+    <string name="lyrics_source_none">Niet gevonden</string>
+    <string name="lyrics_source_current">In gebruik</string>
+    <string name="lyrics_sync_title">Songtekst synchroniseren</string>
+    <string name="lyrics_sync_hint">Klik op de regel die nu gezongen wordt. Stel zo nodig fijn af met de knoppen.</string>
+    <string name="lyrics_sync_reset">Herstellen</string>
+    <string name="lyrics_sync_done">Klaar</string>
+</resources>

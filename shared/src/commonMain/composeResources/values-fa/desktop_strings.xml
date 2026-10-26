@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">اجبار نوار پیمایش پایین</string>
+    <string name="discord_error_network_blocked">دسترسی به Discord ممکن نیست. شاید شبکه شما آن را مسدود کرده باشد. اگر برنامه Discord باز باشد، Metrolist می‌تواند از طریق آن هم وصل شود.</string>
+    <string name="restore_database_too_old">این پشتیبان از نسخه قدیمی‌تر Metrolist است. Metrolist را روی تلفن به‌روز کنید، پشتیبان جدیدی بسازید و آن را بازیابی کنید.</string>
+    <string name="ok">تأیید</string>
+    <string name="hide_clean_duplicates">پنهان کردن نسخه‌های تمیز وقتی نسخه صریح وجود دارد</string>
+    <string name="hide_clean_duplicates_desc">اگر آهنگ یا آلبومی در هر دو نسخه وجود داشته باشد، فقط نسخه صریح نمایش داده می‌شود.</string>
+    <string name="sign_in_with_google">ورود با Google</string>
+    <string name="google_login_cookie_fallback">یا ورود با کوکی</string>
+    <string name="google_login_blocked">Google ورود در پنجره برنامه را مسدود کرد. همچنان می‌توانید با روش کوکی در پایین وارد شوید.</string>
+    <string name="google_login_failed">پنجره ورود باز نشد</string>
+    <string name="login_desktop_instructions">برای ورود به حساب YouTube Music در رایانه:\n1. با دکمه زیر music.youtube.com را در مرورگر باز کنید و وارد شوید.\n2. کلید F12 را بزنید و ابزارهای توسعه‌دهنده ← Network را باز کنید.\n3. صفحه را دوباره بارگیری کنید و روی درخواست \'browse\' یا \'music.youtube.com\' کلیک کنید.\n4. در Request Headers مقدار \'Cookie\' را کپی کرده و در پایین جای‌گذاری کنید.</string>
+    <string name="open_youtube_music_in_browser">باز کردن YouTube Music در مرورگر</string>
+    <string name="youtube_music_cookie_label">کوکی YouTube Music (باید شامل SAPISID باشد)</string>
+    <string name="paste_from_clipboard">جای‌گذاری از کلیپ‌بورد</string>
+    <string name="invalid_cookie_no_sapisid">کوکی نامعتبر: \'SAPISID\' پیدا نشد. مطمئن شوید در music.youtube.com وارد شده‌اید و کل سرآیند Cookie را کپی کرده‌اید.</string>
+    <string name="login_save_failed">ذخیره ورود ناموفق بود</string>
+    <string name="file_dialog_open">انتخاب فایل</string>
+    <string name="file_dialog_save">ذخیره</string>
+    <string name="lyrics_source_title">تغییر منبع متن ترانه</string>
+    <string name="lyrics_source_synced">همگام</string>
+    <string name="lyrics_source_plain">متن ساده</string>
+    <string name="lyrics_source_none">پیدا نشد</string>
+    <string name="lyrics_source_current">در حال استفاده</string>
+    <string name="lyrics_sync_title">همگام‌سازی متن ترانه</string>
+    <string name="lyrics_sync_hint">روی خطی که الان خوانده می‌شود کلیک کنید. در صورت نیاز با دکمه‌ها دقیق تنظیم کنید.</string>
+    <string name="lyrics_sync_reset">بازنشانی</string>
+    <string name="lyrics_sync_done">انجام شد</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">כפה סרגל ניווט תחתון</string>
+    <string name="discord_error_network_blocked">לא ניתן להתחבר ל-Discord. ייתכן שהרשת שלך חוסמת אותו. אם אפליקציית Discord פתוחה, Metrolist יכול להתחבר גם דרכה.</string>
+    <string name="restore_database_too_old">הגיבוי הזה הוא מגרסה ישנה יותר של Metrolist. עדכן את Metrolist בטלפון, צור גיבוי חדש ושחזר אותו.</string>
+    <string name="ok">אישור</string>
+    <string name="hide_clean_duplicates">הסתר גרסאות נקיות כשיש גרסה בוטה</string>
+    <string name="hide_clean_duplicates_desc">אם שיר או אלבום קיימים בשתי הגרסאות, תוצג רק הגרסה הבוטה.</string>
+    <string name="sign_in_with_google">התחברות עם Google</string>
+    <string name="google_login_cookie_fallback">או התחברות עם עוגייה</string>
+    <string name="google_login_blocked">Google חסמה את ההתחברות בתוך חלון האפליקציה. עדיין אפשר להתחבר בשיטת העוגייה שלמטה.</string>
+    <string name="google_login_failed">לא ניתן לפתוח את חלון ההתחברות</string>
+    <string name="login_desktop_instructions">כדי להתחבר לחשבון YouTube Music במחשב:\n1. פתח את music.youtube.com בדפדפן בעזרת הכפתור שלמטה והתחבר.\n2. לחץ F12 ופתח את כלי המפתחים ← Network.\n3. רענן את הדף ולחץ על בקשת \'browse\' או \'music.youtube.com\'.\n4. תחת Request Headers העתק את הערך של \'Cookie\' והדבק אותו למטה.</string>
+    <string name="open_youtube_music_in_browser">פתח את YouTube Music בדפדפן</string>
+    <string name="youtube_music_cookie_label">עוגיית YouTube Music (חייבת לכלול SAPISID)</string>
+    <string name="paste_from_clipboard">הדבק מהלוח</string>
+    <string name="invalid_cookie_no_sapisid">עוגייה לא תקינה: \'SAPISID\' לא נמצא. ודא שהתחברת ב-music.youtube.com והעתקת את כל כותרת ה-Cookie.</string>
+    <string name="login_save_failed">שמירת ההתחברות נכשלה</string>
+    <string name="file_dialog_open">בחר קובץ</string>
+    <string name="file_dialog_save">שמור</string>
+    <string name="lyrics_source_title">שנה מקור מילים</string>
+    <string name="lyrics_source_synced">מסונכרן</string>
+    <string name="lyrics_source_plain">טקסט רגיל</string>
+    <string name="lyrics_source_none">לא נמצא</string>
+    <string name="lyrics_source_current">בשימוש</string>
+    <string name="lyrics_sync_title">סנכרן מילים</string>
+    <string name="lyrics_sync_hint">לחץ על השורה שמושרת עכשיו. כוונן בעזרת הכפתורים לפי הצורך.</string>
+    <string name="lyrics_sync_reset">איפוס</string>
+    <string name="lyrics_sync_done">סיום</string>
+</resources>

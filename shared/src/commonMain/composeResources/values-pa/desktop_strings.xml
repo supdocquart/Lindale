@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">ਹੇਠਲੀ ਨੈਵੀਗੇਸ਼ਨ ਬਾਰ ਲਾਜ਼ਮੀ ਕਰੋ</string>
+    <string name="discord_error_network_blocked">Discord ਤੱਕ ਨਹੀਂ ਪਹੁੰਚ ਸਕੇ। ਹੋ ਸਕਦਾ ਹੈ ਤੁਹਾਡਾ ਨੈੱਟਵਰਕ ਇਸਨੂੰ ਬਲੌਕ ਕਰ ਰਿਹਾ ਹੋਵੇ। ਜੇ Discord ਐਪ ਖੁੱਲ੍ਹੀ ਹੈ, ਤਾਂ Metrolist ਉਸ ਰਾਹੀਂ ਵੀ ਜੁੜ ਸਕਦਾ ਹੈ।</string>
+    <string name="restore_database_too_old">ਇਹ ਬੈਕਅੱਪ Metrolist ਦੇ ਪੁਰਾਣੇ ਸੰਸਕਰਣ ਦਾ ਹੈ। ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ Metrolist ਅੱਪਡੇਟ ਕਰੋ, ਨਵਾਂ ਬੈਕਅੱਪ ਬਣਾਓ ਅਤੇ ਉਸਨੂੰ ਰੀਸਟੋਰ ਕਰੋ।</string>
+    <string name="ok">ਠੀਕ ਹੈ</string>
+    <string name="hide_clean_duplicates">explicit ਸੰਸਕਰਣ ਹੋਣ \'ਤੇ ਸਾਫ਼ ਸੰਸਕਰਣ ਲੁਕਾਓ</string>
+    <string name="hide_clean_duplicates_desc">ਜੇ ਕੋਈ ਗੀਤ ਜਾਂ ਐਲਬਮ ਦੋਵਾਂ ਸੰਸਕਰਣਾਂ ਵਿੱਚ ਹੈ, ਤਾਂ ਸਿਰਫ਼ explicit ਸੰਸਕਰਣ ਦਿਖਾਇਆ ਜਾਵੇਗਾ।</string>
+    <string name="sign_in_with_google">Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ</string>
+    <string name="google_login_cookie_fallback">ਜਾਂ ਕੂਕੀ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ</string>
+    <string name="google_login_blocked">Google ਨੇ ਐਪ ਵਿੰਡੋ ਵਿੱਚ ਸਾਈਨ-ਇਨ ਬਲੌਕ ਕਰ ਦਿੱਤਾ। ਤੁਸੀਂ ਅਜੇ ਵੀ ਹੇਠਾਂ ਦਿੱਤੇ ਕੂਕੀ ਤਰੀਕੇ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰ ਸਕਦੇ ਹੋ।</string>
+    <string name="google_login_failed">ਸਾਈਨ-ਇਨ ਵਿੰਡੋ ਨਹੀਂ ਖੁੱਲ੍ਹ ਸਕੀ</string>
+    <string name="login_desktop_instructions">ਡੈਸਕਟਾਪ \'ਤੇ ਆਪਣੇ YouTube Music ਖਾਤੇ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰਨ ਲਈ:\n1. ਹੇਠਲੇ ਬਟਨ ਨਾਲ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ music.youtube.com ਖੋਲ੍ਹੋ ਅਤੇ ਸਾਈਨ ਇਨ ਕਰੋ।\n2. F12 ਦਬਾਓ ਅਤੇ ਡਿਵੈਲਪਰ ਟੂਲ → Network ਖੋਲ੍ਹੋ।\n3. ਪੰਨਾ ਰੀਲੋਡ ਕਰੋ ਅਤੇ \'browse\' ਜਾਂ \'music.youtube.com\' ਬੇਨਤੀ \'ਤੇ ਕਲਿੱਕ ਕਰੋ।\n4. Request Headers ਵਿੱਚ \'Cookie\' ਦਾ ਮੁੱਲ ਕਾਪੀ ਕਰਕੇ ਹੇਠਾਂ ਪੇਸਟ ਕਰੋ।</string>
+    <string name="open_youtube_music_in_browser">ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ YouTube Music ਖੋਲ੍ਹੋ</string>
+    <string name="youtube_music_cookie_label">YouTube Music ਕੂਕੀ (SAPISID ਹੋਣਾ ਲਾਜ਼ਮੀ)</string>
+    <string name="paste_from_clipboard">ਕਲਿੱਪਬੋਰਡ ਤੋਂ ਪੇਸਟ ਕਰੋ</string>
+    <string name="invalid_cookie_no_sapisid">ਅਵੈਧ ਕੂਕੀ: \'SAPISID\' ਨਹੀਂ ਮਿਲਿਆ। ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ music.youtube.com \'ਤੇ ਸਾਈਨ ਇਨ ਹੋ ਅਤੇ ਪੂਰਾ Cookie ਹੈਡਰ ਕਾਪੀ ਕੀਤਾ ਹੈ।</string>
+    <string name="login_save_failed">ਸਾਈਨ-ਇਨ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਹੋ ਸਕਿਆ</string>
+    <string name="file_dialog_open">ਇੱਕ ਫ਼ਾਈਲ ਚੁਣੋ</string>
+    <string name="file_dialog_save">ਸੁਰੱਖਿਅਤ ਕਰੋ</string>
+    <string name="lyrics_source_title">ਬੋਲਾਂ ਦਾ ਸਰੋਤ ਬਦਲੋ</string>
+    <string name="lyrics_source_synced">ਸਿੰਕ ਕੀਤੇ</string>
+    <string name="lyrics_source_plain">ਸਾਦਾ ਟੈਕਸਟ</string>
+    <string name="lyrics_source_none">ਨਹੀਂ ਮਿਲਿਆ</string>
+    <string name="lyrics_source_current">ਵਰਤੋਂ ਵਿੱਚ</string>
+    <string name="lyrics_sync_title">ਬੋਲ ਸਿੰਕ ਕਰੋ</string>
+    <string name="lyrics_sync_hint">ਜੋ ਲਾਈਨ ਹੁਣ ਗਾਈ ਜਾ ਰਹੀ ਹੈ ਉਸ \'ਤੇ ਕਲਿੱਕ ਕਰੋ। ਲੋੜ ਹੋਵੇ ਤਾਂ ਬਟਨਾਂ ਨਾਲ ਬਾਰੀਕੀ ਨਾਲ ਠੀਕ ਕਰੋ।</string>
+    <string name="lyrics_sync_reset">ਰੀਸੈੱਟ ਕਰੋ</string>
+    <string name="lyrics_sync_done">ਹੋ ਗਿਆ</string>
+</resources>

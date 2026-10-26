@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Alt naviqasiya panelini məcburi et</string>
+    <string name="discord_error_network_blocked">Discord-a çatmaq mümkün olmadı. Şəbəkəniz onu bloklaya bilər. Discord tətbiqi açıqdırsa, Metrolist onun vasitəsilə də qoşula bilər.</string>
+    <string name="restore_database_too_old">Bu ehtiyat nüsxə Metrolist-in köhnə versiyasındandır. Telefonunuzda Metrolist-i yeniləyin, yeni ehtiyat nüsxə yaradın və onu bərpa edin.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Açıq-saçıq versiya varsa təmiz versiyaları gizlət</string>
+    <string name="hide_clean_duplicates_desc">Mahnı və ya albomun hər iki versiyası varsa, yalnız açıq-saçıq versiya göstərilir.</string>
+    <string name="sign_in_with_google">Google ilə daxil ol</string>
+    <string name="google_login_cookie_fallback">Və ya cookie ilə daxil ol</string>
+    <string name="google_login_blocked">Google tətbiq pəncərəsində girişi blokladı. Aşağıdakı cookie üsulu ilə yenə də daxil ola bilərsiniz.</string>
+    <string name="google_login_failed">Giriş pəncərəsi açılmadı</string>
+    <string name="login_desktop_instructions">Masaüstündə YouTube Music hesabınıza daxil olmaq üçün:\n1. Aşağıdakı düymə ilə brauzerdə music.youtube.com-u açın və daxil olun.\n2. F12 düyməsini basın və Developer Tools → Network bölməsini açın.\n3. Səhifəni yeniləyin və \'browse\' və ya \'music.youtube.com\' sorğusuna klikləyin.\n4. Request Headers bölməsində \'Cookie\' dəyərini kopyalayın və aşağıya yapışdırın.</string>
+    <string name="open_youtube_music_in_browser">YouTube Music-i brauzerdə aç</string>
+    <string name="youtube_music_cookie_label">YouTube Music cookie (SAPISID olmalıdır)</string>
+    <string name="paste_from_clipboard">Mübadilə buferindən yapışdır</string>
+    <string name="invalid_cookie_no_sapisid">Yanlış cookie: \'SAPISID\' tapılmadı. music.youtube.com-a daxil olduğunuzdan və bütün Cookie başlığını kopyaladığınızdan əmin olun.</string>
+    <string name="login_save_failed">Giriş yadda saxlanılmadı</string>
+    <string name="file_dialog_open">Fayl seçin</string>
+    <string name="file_dialog_save">Yadda saxla</string>
+    <string name="lyrics_source_title">Mahnı sözləri mənbəyini dəyiş</string>
+    <string name="lyrics_source_synced">Sinxronlaşdırılmış</string>
+    <string name="lyrics_source_plain">Sadə mətn</string>
+    <string name="lyrics_source_none">Tapılmadı</string>
+    <string name="lyrics_source_current">İstifadədə</string>
+    <string name="lyrics_sync_title">Mahnı sözlərini sinxronlaşdır</string>
+    <string name="lyrics_sync_hint">İndi oxunan sətrə klikləyin. Lazım olsa düymələrlə dəqiq tənzimləyin.</string>
+    <string name="lyrics_sync_reset">Sıfırla</string>
+    <string name="lyrics_sync_done">Hazırdır</string>
+</resources>

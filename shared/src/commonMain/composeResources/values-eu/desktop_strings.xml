@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Behartu beheko nabigazio-barra</string>
+    <string name="discord_error_network_blocked">Ezin izan da Discord-era iritsi. Zure sareak blokeatzen du agian. Discord aplikazioa irekita badago, Metrolist haren bidez ere konekta daiteke.</string>
+    <string name="restore_database_too_old">Babeskopia hau Metrolist-en bertsio zaharrago batekoa da. Eguneratu Metrolist telefonoan, sortu babeskopia berri bat eta leheneratu hori.</string>
+    <string name="ok">Ados</string>
+    <string name="hide_clean_duplicates">Ezkutatu bertsio garbiak bertsio esplizitu bat badago</string>
+    <string name="hide_clean_duplicates_desc">Abesti edo album bat bi bertsioetan badago, esplizitua soilik erakusten da.</string>
+    <string name="sign_in_with_google">Hasi saioa Google-rekin</string>
+    <string name="google_login_cookie_fallback">Edo hasi saioa cookie batekin</string>
+    <string name="google_login_blocked">Google-k saio-hasiera blokeatu du aplikazioaren leihoan. Beheko cookie metodoarekin saioa has dezakezu oraindik.</string>
+    <string name="google_login_failed">Ezin izan da saio-hasierako leihoa ireki</string>
+    <string name="login_desktop_instructions">Ordenagailuan YouTube Music kontuarekin saioa hasteko:\n1. Ireki music.youtube.com nabigatzailean beheko botoiarekin eta hasi saioa.\n2. Sakatu F12 eta ireki Developer Tools → Network.\n3. Kargatu berriro orria eta egin klik \'browse\' edo \'music.youtube.com\' eskaeran.\n4. Request Headers atalean, kopiatu \'Cookie\' balioa eta itsatsi behean.</string>
+    <string name="open_youtube_music_in_browser">Ireki YouTube Music nabigatzailean</string>
+    <string name="youtube_music_cookie_label">YouTube Music cookie-a (SAPISID izan behar du)</string>
+    <string name="paste_from_clipboard">Itsatsi arbeletik</string>
+    <string name="invalid_cookie_no_sapisid">Cookie baliogabea: ez da \'SAPISID\' aurkitu. Ziurtatu music.youtube.com-en saioa hasita duzula eta Cookie goiburu osoa kopiatu duzula.</string>
+    <string name="login_save_failed">Ezin izan da saio-hasiera gorde</string>
+    <string name="file_dialog_open">Aukeratu fitxategi bat</string>
+    <string name="file_dialog_save">Gorde</string>
+    <string name="lyrics_source_title">Aldatu letren iturria</string>
+    <string name="lyrics_source_synced">Sinkronizatuta</string>
+    <string name="lyrics_source_plain">Testu arrunta</string>
+    <string name="lyrics_source_none">Ez da aurkitu</string>
+    <string name="lyrics_source_current">Erabiltzen</string>
+    <string name="lyrics_sync_title">Sinkronizatu letrak</string>
+    <string name="lyrics_sync_hint">Egin klik orain abesten ari den lerroan. Doitu botoiekin behar izanez gero.</string>
+    <string name="lyrics_sync_reset">Berrezarri</string>
+    <string name="lyrics_sync_done">Eginda</string>
+</resources>

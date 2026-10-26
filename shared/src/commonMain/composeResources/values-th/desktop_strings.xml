@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">บังคับใช้แถบนำทางด้านล่าง</string>
+    <string name="discord_error_network_blocked">ไม่สามารถเชื่อมต่อ Discord ได้ เครือข่ายของคุณอาจบล็อกอยู่ หากเปิดแอป Discord ไว้ Metrolist สามารถเชื่อมต่อผ่านแอปได้</string>
+    <string name="restore_database_too_old">ข้อมูลสำรองนี้มาจาก Metrolist เวอร์ชันเก่า โปรดอัปเดต Metrolist บนโทรศัพท์ สร้างข้อมูลสำรองใหม่ แล้วกู้คืนข้อมูลนั้น</string>
+    <string name="ok">ตกลง</string>
+    <string name="hide_clean_duplicates">ซ่อนเวอร์ชันสะอาดเมื่อมีเวอร์ชัน Explicit</string>
+    <string name="hide_clean_duplicates_desc">หากเพลงหรืออัลบั้มมีทั้งสองเวอร์ชัน จะแสดงเฉพาะเวอร์ชัน Explicit</string>
+    <string name="sign_in_with_google">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="google_login_cookie_fallback">หรือลงชื่อเข้าใช้ด้วยคุกกี้</string>
+    <string name="google_login_blocked">Google บล็อกการลงชื่อเข้าใช้ภายในหน้าต่างแอป คุณยังลงชื่อเข้าใช้ด้วยวิธีคุกกี้ด้านล่างได้</string>
+    <string name="google_login_failed">ไม่สามารถเปิดหน้าต่างลงชื่อเข้าใช้ได้</string>
+    <string name="login_desktop_instructions">วิธีลงชื่อเข้าใช้บัญชี YouTube Music บนเดสก์ท็อป:\n1. เปิด music.youtube.com ในเบราว์เซอร์ด้วยปุ่มด้านล่างแล้วลงชื่อเข้าใช้\n2. กด F12 แล้วเปิดเครื่องมือสำหรับนักพัฒนา → Network\n3. โหลดหน้าใหม่แล้วคลิกคำขอ \'browse\' หรือ \'music.youtube.com\'\n4. ใน Request Headers คัดลอกค่า \'Cookie\' แล้ววางด้านล่าง</string>
+    <string name="open_youtube_music_in_browser">เปิด YouTube Music ในเบราว์เซอร์</string>
+    <string name="youtube_music_cookie_label">คุกกี้ YouTube Music (ต้องมี SAPISID)</string>
+    <string name="paste_from_clipboard">วางจากคลิปบอร์ด</string>
+    <string name="invalid_cookie_no_sapisid">คุกกี้ไม่ถูกต้อง: ไม่พบ \'SAPISID\' โปรดตรวจสอบว่าคุณลงชื่อเข้าใช้ music.youtube.com แล้วและคัดลอกส่วนหัว Cookie ทั้งหมด</string>
+    <string name="login_save_failed">บันทึกการลงชื่อเข้าใช้ไม่สำเร็จ</string>
+    <string name="file_dialog_open">เลือกไฟล์</string>
+    <string name="file_dialog_save">บันทึก</string>
+    <string name="lyrics_source_title">เปลี่ยนแหล่งเนื้อเพลง</string>
+    <string name="lyrics_source_synced">ซิงค์แล้ว</string>
+    <string name="lyrics_source_plain">ข้อความธรรมดา</string>
+    <string name="lyrics_source_none">ไม่พบ</string>
+    <string name="lyrics_source_current">กำลังใช้</string>
+    <string name="lyrics_sync_title">ซิงค์เนื้อเพลง</string>
+    <string name="lyrics_sync_hint">คลิกบรรทัดที่กำลังร้องอยู่ ปรับละเอียดด้วยปุ่มหากจำเป็น</string>
+    <string name="lyrics_sync_reset">รีเซ็ต</string>
+    <string name="lyrics_sync_done">เสร็จสิ้น</string>
+</resources>

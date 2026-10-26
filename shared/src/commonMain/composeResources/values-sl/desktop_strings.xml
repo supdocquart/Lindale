@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Vsili spodnjo navigacijsko vrstico</string>
+    <string name="discord_error_network_blocked">Discord ni dosegljiv. Vaše omrežje ga morda blokira. Če je aplikacija Discord odprta, se Metrolist lahko poveže tudi prek nje.</string>
+    <string name="restore_database_too_old">Ta varnostna kopija je iz starejše različice Metrolista. Posodobite Metrolist na telefonu, ustvarite novo varnostno kopijo in obnovite njo.</string>
+    <string name="ok">V redu</string>
+    <string name="hide_clean_duplicates">Skrij čiste različice, če obstaja eksplicitna</string>
+    <string name="hide_clean_duplicates_desc">Če pesem ali album obstajata v obeh različicah, je prikazana samo eksplicitna.</string>
+    <string name="sign_in_with_google">Prijava z Googlom</string>
+    <string name="google_login_cookie_fallback">Ali se prijavite s piškotkom</string>
+    <string name="google_login_blocked">Google je blokiral prijavo v oknu aplikacije. Še vedno se lahko prijavite z metodo piškotka spodaj.</string>
+    <string name="google_login_failed">Okna za prijavo ni bilo mogoče odpreti</string>
+    <string name="login_desktop_instructions">Za prijavo v račun YouTube Music na računalniku:\n1. Z gumbom spodaj odprite music.youtube.com v brskalniku in se prijavite.\n2. Pritisnite F12 in odprite Developer Tools → Network.\n3. Znova naložite stran in kliknite zahtevo \'browse\' ali \'music.youtube.com\'.\n4. V Request Headers kopirajte vrednost \'Cookie\' in jo prilepite spodaj.</string>
+    <string name="open_youtube_music_in_browser">Odpri YouTube Music v brskalniku</string>
+    <string name="youtube_music_cookie_label">Piškotek YouTube Music (mora vsebovati SAPISID)</string>
+    <string name="paste_from_clipboard">Prilepi iz odložišča</string>
+    <string name="invalid_cookie_no_sapisid">Neveljaven piškotek: \'SAPISID\' ni najden. Preverite, ali ste prijavljeni v music.youtube.com in ali ste kopirali celotno glavo Cookie.</string>
+    <string name="login_save_failed">Prijave ni bilo mogoče shraniti</string>
+    <string name="file_dialog_open">Izberite datoteko</string>
+    <string name="file_dialog_save">Shrani</string>
+    <string name="lyrics_source_title">Zamenjaj vir besedila</string>
+    <string name="lyrics_source_synced">Sinhronizirano</string>
+    <string name="lyrics_source_plain">Navadno besedilo</string>
+    <string name="lyrics_source_none">Ni najdeno</string>
+    <string name="lyrics_source_current">V uporabi</string>
+    <string name="lyrics_sync_title">Sinhroniziraj besedilo</string>
+    <string name="lyrics_sync_hint">Kliknite vrstico, ki se trenutno poje. Po potrebi natančno nastavite z gumbi.</string>
+    <string name="lyrics_sync_reset">Ponastavi</string>
+    <string name="lyrics_sync_done">Končano</string>
+</resources>

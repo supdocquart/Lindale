@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Força la barra de navegació inferior</string>
+    <string name="discord_error_network_blocked">No s\'ha pogut accedir a Discord. És possible que la xarxa el bloquegi. Si l\'aplicació de Discord és oberta, Metrolist també s\'hi pot connectar a través d\'ella.</string>
+    <string name="restore_database_too_old">Aquesta còpia de seguretat és d\'una versió antiga de Metrolist. Actualitza Metrolist al telèfon, crea una còpia nova i restaura-la.</string>
+    <string name="ok">D\'acord</string>
+    <string name="hide_clean_duplicates">Amaga les versions netes si n\'hi ha una d\'explícita</string>
+    <string name="hide_clean_duplicates_desc">Si una cançó o un àlbum existeix en totes dues versions, només es mostra l\'explícita.</string>
+    <string name="sign_in_with_google">Inicia la sessió amb Google</string>
+    <string name="google_login_cookie_fallback">O inicia la sessió amb una galeta</string>
+    <string name="google_login_blocked">Google ha bloquejat l\'inici de sessió a la finestra de l\'aplicació. Encara pots iniciar la sessió amb el mètode de la galeta de sota.</string>
+    <string name="google_login_failed">No s\'ha pogut obrir la finestra d\'inici de sessió</string>
+    <string name="login_desktop_instructions">Per iniciar la sessió amb el teu compte de YouTube Music a l\'ordinador:\n1. Obre music.youtube.com al navegador amb el botó de sota i inicia la sessió.\n2. Prem F12 i obre Developer Tools → Network.\n3. Torna a carregar la pàgina i fes clic a una sol·licitud \'browse\' o \'music.youtube.com\'.\n4. A Request Headers, copia el valor de \'Cookie\' i enganxa\'l a sota.</string>
+    <string name="open_youtube_music_in_browser">Obre YouTube Music al navegador</string>
+    <string name="youtube_music_cookie_label">Galeta de YouTube Music (ha de contenir SAPISID)</string>
+    <string name="paste_from_clipboard">Enganxa des del porta-retalls</string>
+    <string name="invalid_cookie_no_sapisid">Galeta no vàlida: no s\'ha trobat \'SAPISID\'. Assegura\'t que has iniciat la sessió a music.youtube.com i que has copiat la capçalera Cookie sencera.</string>
+    <string name="login_save_failed">No s\'ha pogut desar l\'inici de sessió</string>
+    <string name="file_dialog_open">Tria un fitxer</string>
+    <string name="file_dialog_save">Desa</string>
+    <string name="lyrics_source_title">Canvia la font de la lletra</string>
+    <string name="lyrics_source_synced">Sincronitzada</string>
+    <string name="lyrics_source_plain">Text pla</string>
+    <string name="lyrics_source_none">No s\'ha trobat</string>
+    <string name="lyrics_source_current">En ús</string>
+    <string name="lyrics_sync_title">Sincronitza la lletra</string>
+    <string name="lyrics_sync_hint">Fes clic a la línia que s\'està cantant ara. Ajusta-ho amb els botons si cal.</string>
+    <string name="lyrics_sync_reset">Restableix</string>
+    <string name="lyrics_sync_done">Fet</string>
+</resources>

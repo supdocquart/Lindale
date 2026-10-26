@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">強制使用底部導覽列</string>
+    <string name="discord_error_network_blocked">無法連線到 Discord，你的網路可能封鎖了它。如果 Discord 應用程式已開啟，Metrolist 也可以透過它連線。</string>
+    <string name="restore_database_too_old">此備份來自舊版 Metrolist。請在手機上更新 Metrolist，建立新的備份後再還原。</string>
+    <string name="ok">確定</string>
+    <string name="hide_clean_duplicates">有限制級版本時隱藏乾淨版本</string>
+    <string name="hide_clean_duplicates_desc">如果歌曲或專輯同時有兩個版本，只顯示限制級版本。</string>
+    <string name="sign_in_with_google">使用 Google 登入</string>
+    <string name="google_login_cookie_fallback">或使用 Cookie 登入</string>
+    <string name="google_login_blocked">Google 封鎖了在應用程式視窗內登入。你仍可使用下方的 Cookie 方式登入。</string>
+    <string name="google_login_failed">無法開啟登入視窗</string>
+    <string name="login_desktop_instructions">在電腦上登入 YouTube Music 帳戶：\n1. 點選下方按鈕在瀏覽器中開啟 music.youtube.com 並登入。\n2. 按 F12 開啟開發人員工具 → Network。\n3. 重新整理頁面，點選 \'browse\' 或 \'music.youtube.com\' 要求。\n4. 在 Request Headers 中複製 \'Cookie\' 的值並貼到下方。</string>
+    <string name="open_youtube_music_in_browser">在瀏覽器中開啟 YouTube Music</string>
+    <string name="youtube_music_cookie_label">YouTube Music Cookie（必須包含 SAPISID）</string>
+    <string name="paste_from_clipboard">從剪貼簿貼上</string>
+    <string name="invalid_cookie_no_sapisid">Cookie 無效：找不到 \'SAPISID\'。請確認已在 music.youtube.com 登入，並複製了完整的 Cookie 標頭。</string>
+    <string name="login_save_failed">無法儲存登入資訊</string>
+    <string name="file_dialog_open">選擇檔案</string>
+    <string name="file_dialog_save">儲存</string>
+    <string name="lyrics_source_title">變更歌詞來源</string>
+    <string name="lyrics_source_synced">同步</string>
+    <string name="lyrics_source_plain">純文字</string>
+    <string name="lyrics_source_none">找不到</string>
+    <string name="lyrics_source_current">使用中</string>
+    <string name="lyrics_sync_title">同步歌詞</string>
+    <string name="lyrics_sync_hint">點選正在演唱的那一行。必要時用按鈕微調。</string>
+    <string name="lyrics_sync_reset">重設</string>
+    <string name="lyrics_sync_done">完成</string>
+</resources>

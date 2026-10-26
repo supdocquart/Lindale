@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">下部ナビゲーションバーを強制</string>
+    <string name="discord_error_network_blocked">Discord に接続できません。ネットワークでブロックされている可能性があります。Discord アプリが開いていれば、Metrolist はそれ経由でも接続できます。</string>
+    <string name="restore_database_too_old">このバックアップは古いバージョンの Metrolist のものです。スマートフォンの Metrolist を更新し、新しいバックアップを作成して復元してください。</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Explicit 版がある場合はクリーン版を非表示</string>
+    <string name="hide_clean_duplicates_desc">曲やアルバムが両方のバージョンで存在する場合、Explicit 版のみを表示します。</string>
+    <string name="sign_in_with_google">Google でログイン</string>
+    <string name="google_login_cookie_fallback">または Cookie でログイン</string>
+    <string name="google_login_blocked">Google がアプリ内ウィンドウでのログインをブロックしました。下の Cookie を使う方法で引き続きログインできます。</string>
+    <string name="google_login_failed">ログインウィンドウを開けませんでした</string>
+    <string name="login_desktop_instructions">デスクトップで YouTube Music アカウントにログインするには:\n1. 下のボタンでブラウザで music.youtube.com を開き、ログインします。\n2. F12 を押して開発者ツール → Network を開きます。\n3. ページを再読み込みし、\'browse\' または \'music.youtube.com\' のリクエストをクリックします。\n4. Request Headers の \'Cookie\' の値をコピーし、下に貼り付けます。</string>
+    <string name="open_youtube_music_in_browser">ブラウザで YouTube Music を開く</string>
+    <string name="youtube_music_cookie_label">YouTube Music の Cookie (SAPISID を含む必要があります)</string>
+    <string name="paste_from_clipboard">クリップボードから貼り付け</string>
+    <string name="invalid_cookie_no_sapisid">無効な Cookie です: \'SAPISID\' が見つかりません。music.youtube.com にログインしていて、Cookie ヘッダー全体をコピーしたことを確認してください。</string>
+    <string name="login_save_failed">ログイン情報を保存できませんでした</string>
+    <string name="file_dialog_open">ファイルを選択</string>
+    <string name="file_dialog_save">保存</string>
+    <string name="lyrics_source_title">歌詞のソースを変更</string>
+    <string name="lyrics_source_synced">同期</string>
+    <string name="lyrics_source_plain">テキストのみ</string>
+    <string name="lyrics_source_none">見つかりません</string>
+    <string name="lyrics_source_current">使用中</string>
+    <string name="lyrics_sync_title">歌詞を同期</string>
+    <string name="lyrics_sync_hint">今歌われている行をクリックしてください。必要に応じてボタンで微調整します。</string>
+    <string name="lyrics_sync_reset">リセット</string>
+    <string name="lyrics_sync_done">完了</string>
+</resources>

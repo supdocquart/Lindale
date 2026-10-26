@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Прымусова ніжняя панэль навігацыі</string>
+    <string name="discord_error_network_blocked">Не ўдалося падключыцца да Discord. Магчыма, ваша сетка яго блакуе. Калі праграма Discord адкрыта, Metrolist можа падключыцца праз яе.</string>
+    <string name="restore_database_too_old">Гэтая рэзервовая копія створана ў старэйшай версіі Metrolist. Абнавіце Metrolist на тэлефоне, стварыце новую рэзервовую копію і аднавіце яе.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Хаваць чыстыя версіі, калі ёсць версія з ненарматыўнай лексікай</string>
+    <string name="hide_clean_duplicates_desc">Калі трэк або альбом ёсць у абедзвюх версіях, паказваецца толькі версія з ненарматыўнай лексікай.</string>
+    <string name="sign_in_with_google">Увайсці праз Google</string>
+    <string name="google_login_cookie_fallback">Або ўвайсці з дапамогай cookie</string>
+    <string name="google_login_blocked">Google заблакаваў уваход у акне праграмы. Вы ўсё яшчэ можаце ўвайсці спосабам з cookie ніжэй.</string>
+    <string name="google_login_failed">Не ўдалося адкрыць акно ўваходу</string>
+    <string name="login_desktop_instructions">Каб увайсці ва ўліковы запіс YouTube Music на камп\'ютары:\n1. Адкрыйце music.youtube.com у браўзеры кнопкай ніжэй і ўвайдзіце.\n2. Націсніце F12 і адкрыйце Інструменты распрацоўшчыка → Network.\n3. Абнавіце старонку і націсніце на запыт \'browse\' або \'music.youtube.com\'.\n4. У раздзеле Request Headers скапіруйце значэнне \'Cookie\' і ўстаўце яго ніжэй.</string>
+    <string name="open_youtube_music_in_browser">Адкрыць YouTube Music у браўзеры</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (павінен утрымліваць SAPISID)</string>
+    <string name="paste_from_clipboard">Уставіць з буфера абмену</string>
+    <string name="invalid_cookie_no_sapisid">Несапраўдны cookie: \'SAPISID\' не знойдзены. Пераканайцеся, што вы ўвайшлі на music.youtube.com і скапіравалі загаловак Cookie цалкам.</string>
+    <string name="login_save_failed">Не ўдалося захаваць уваход</string>
+    <string name="file_dialog_open">Выберыце файл</string>
+    <string name="file_dialog_save">Захаваць</string>
+    <string name="lyrics_source_title">Змяніць крыніцу тэксту</string>
+    <string name="lyrics_source_synced">Сінхранізаваны</string>
+    <string name="lyrics_source_plain">Просты тэкст</string>
+    <string name="lyrics_source_none">Не знойдзена</string>
+    <string name="lyrics_source_current">Выкарыстоўваецца</string>
+    <string name="lyrics_sync_title">Сінхранізаваць тэкст</string>
+    <string name="lyrics_sync_hint">Націсніце на радок, які гучыць зараз. Пры неабходнасці падладзьце кнопкамі.</string>
+    <string name="lyrics_sync_reset">Скінуць</string>
+    <string name="lyrics_sync_done">Гатова</string>
+</resources>

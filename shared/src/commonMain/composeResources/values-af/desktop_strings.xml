@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Dwing onderste navigasiebalk af</string>
+    <string name="discord_error_network_blocked">Kan Discord nie bereik nie. Jou netwerk blokkeer dit dalk. As die Discord-toep oop is, kan Metrolist ook daardeur koppel.</string>
+    <string name="restore_database_too_old">Hierdie rugsteun kom van \'n ouer Metrolist-weergawe. Werk Metrolist op jou foon by, maak \'n nuwe rugsteun en herstel dit.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Versteek skoon weergawes as \'n eksplisiete een bestaan</string>
+    <string name="hide_clean_duplicates_desc">As \'n liedjie of album in albei weergawes bestaan, word net die eksplisiete een gewys.</string>
+    <string name="sign_in_with_google">Meld aan met Google</string>
+    <string name="google_login_cookie_fallback">Of meld aan met \'n koekie</string>
+    <string name="google_login_blocked">Google het aanmelding binne die toepvenster geblokkeer. Jy kan steeds met die koekiemetode hieronder aanmeld.</string>
+    <string name="google_login_failed">Die aanmeldvenster kon nie oopmaak nie</string>
+    <string name="login_desktop_instructions">Om op die rekenaar met jou YouTube Music-rekening aan te meld:\n1. Maak music.youtube.com in jou blaaier oop met die knoppie hieronder en meld aan.\n2. Druk F12 en maak Ontwikkelaarnutsgoed → Network oop.\n3. Herlaai die bladsy en klik op \'n \'browse\'- of \'music.youtube.com\'-versoek.\n4. Kopieer onder Request Headers die waarde van \'Cookie\' en plak dit hieronder.</string>
+    <string name="open_youtube_music_in_browser">Maak YouTube Music in die blaaier oop</string>
+    <string name="youtube_music_cookie_label">YouTube Music-koekie (moet SAPISID bevat)</string>
+    <string name="paste_from_clipboard">Plak van knipbord</string>
+    <string name="invalid_cookie_no_sapisid">Ongeldige koekie: \'SAPISID\' nie gevind nie. Maak seker jy is by music.youtube.com aangemeld en het die hele Cookie-opskrif gekopieer.</string>
+    <string name="login_save_failed">Kon nie die aanmelding stoor nie</string>
+    <string name="file_dialog_open">Kies \'n lêer</string>
+    <string name="file_dialog_save">Stoor</string>
+    <string name="lyrics_source_title">Verander lirieke-bron</string>
+    <string name="lyrics_source_synced">Gesinkroniseer</string>
+    <string name="lyrics_source_plain">Gewone teks</string>
+    <string name="lyrics_source_none">Nie gevind nie</string>
+    <string name="lyrics_source_current">In gebruik</string>
+    <string name="lyrics_sync_title">Sinkroniseer lirieke</string>
+    <string name="lyrics_sync_hint">Klik op die reël wat nou gesing word. Verfyn met die knoppies indien nodig.</string>
+    <string name="lyrics_sync_reset">Stel terug</string>
+    <string name="lyrics_sync_done">Klaar</string>
+</resources>

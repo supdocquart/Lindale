@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Paksa bilah navigasi bawah</string>
+    <string name="discord_error_network_blocked">Tidak dapat menjangkau Discord. Jaringan Anda mungkin memblokirnya. Jika aplikasi Discord terbuka, Metrolist juga dapat terhubung melaluinya.</string>
+    <string name="restore_database_too_old">Cadangan ini berasal dari versi Metrolist yang lebih lama. Perbarui Metrolist di ponsel Anda, buat cadangan baru, lalu pulihkan cadangan tersebut.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Sembunyikan versi bersih jika ada versi eksplisit</string>
+    <string name="hide_clean_duplicates_desc">Jika lagu atau album tersedia dalam kedua versi, hanya versi eksplisit yang ditampilkan.</string>
+    <string name="sign_in_with_google">Masuk dengan Google</string>
+    <string name="google_login_cookie_fallback">Atau masuk dengan cookie</string>
+    <string name="google_login_blocked">Google memblokir proses masuk di dalam jendela aplikasi. Anda masih bisa masuk dengan metode cookie di bawah.</string>
+    <string name="google_login_failed">Jendela masuk tidak dapat dibuka</string>
+    <string name="login_desktop_instructions">Untuk masuk dengan akun YouTube Music di desktop:\n1. Buka music.youtube.com di browser dengan tombol di bawah lalu masuk.\n2. Tekan F12 dan buka Alat Developer → Network.\n3. Muat ulang halaman dan klik permintaan \'browse\' atau \'music.youtube.com\'.\n4. Di Request Headers, salin nilai \'Cookie\' dan tempel di bawah.</string>
+    <string name="open_youtube_music_in_browser">Buka YouTube Music di browser</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (harus berisi SAPISID)</string>
+    <string name="paste_from_clipboard">Tempel dari papan klip</string>
+    <string name="invalid_cookie_no_sapisid">Cookie tidak valid: \'SAPISID\' tidak ditemukan. Pastikan Anda sudah masuk di music.youtube.com dan menyalin seluruh header Cookie.</string>
+    <string name="login_save_failed">Gagal menyimpan info masuk</string>
+    <string name="file_dialog_open">Pilih file</string>
+    <string name="file_dialog_save">Simpan</string>
+    <string name="lyrics_source_title">Ganti sumber lirik</string>
+    <string name="lyrics_source_synced">Tersinkron</string>
+    <string name="lyrics_source_plain">Teks biasa</string>
+    <string name="lyrics_source_none">Tidak ditemukan</string>
+    <string name="lyrics_source_current">Digunakan</string>
+    <string name="lyrics_sync_title">Sinkronkan lirik</string>
+    <string name="lyrics_sync_hint">Klik baris yang sedang dinyanyikan. Sesuaikan dengan tombol jika perlu.</string>
+    <string name="lyrics_sync_reset">Atur ulang</string>
+    <string name="lyrics_sync_done">Selesai</string>
+</resources>

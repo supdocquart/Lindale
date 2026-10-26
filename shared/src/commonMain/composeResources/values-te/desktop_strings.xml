@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">దిగువ నావిగేషన్ బార్‌ను తప్పనిసరి చేయి</string>
+    <string name="discord_error_network_blocked">Discord‌ను చేరుకోలేకపోయాం. మీ నెట్‌వర్క్ దానిని బ్లాక్ చేస్తుండవచ్చు. Discord యాప్ తెరిచి ఉంటే, Metrolist దాని ద్వారా కూడా కనెక్ట్ కావచ్చు.</string>
+    <string name="restore_database_too_old">ఈ బ్యాకప్ Metrolist పాత వెర్షన్‌ది. మీ ఫోన్‌లో Metrolist‌ను అప్‌డేట్ చేసి, కొత్త బ్యాకప్ తయారు చేసి దాన్ని రీస్టోర్ చేయండి.</string>
+    <string name="ok">సరే</string>
+    <string name="hide_clean_duplicates">explicit వెర్షన్ ఉంటే క్లీన్ వెర్షన్లను దాచు</string>
+    <string name="hide_clean_duplicates_desc">పాట లేదా ఆల్బమ్ రెండు వెర్షన్లలో ఉంటే, explicit వెర్షన్ మాత్రమే చూపబడుతుంది.</string>
+    <string name="sign_in_with_google">Googleతో సైన్ ఇన్ చేయండి</string>
+    <string name="google_login_cookie_fallback">లేదా కుకీతో సైన్ ఇన్ చేయండి</string>
+    <string name="google_login_blocked">యాప్ విండోలో సైన్-ఇన్‌ను Google బ్లాక్ చేసింది. మీరు ఇప్పటికీ దిగువ కుకీ పద్ధతితో సైన్ ఇన్ చేయవచ్చు.</string>
+    <string name="google_login_failed">సైన్-ఇన్ విండోను తెరవలేకపోయాం</string>
+    <string name="login_desktop_instructions">డెస్క్‌టాప్‌లో మీ YouTube Music ఖాతాతో సైన్ ఇన్ చేయడానికి:\n1. దిగువ బటన్‌తో బ్రౌజర్‌లో music.youtube.com తెరిచి సైన్ ఇన్ చేయండి.\n2. F12 నొక్కి డెవలపర్ టూల్స్ → Network తెరవండి.\n3. పేజీని రీలోడ్ చేసి \'browse\' లేదా \'music.youtube.com\' అభ్యర్థనపై క్లిక్ చేయండి.\n4. Request Headersలో \'Cookie\' విలువను కాపీ చేసి దిగువ పేస్ట్ చేయండి.</string>
+    <string name="open_youtube_music_in_browser">బ్రౌజర్‌లో YouTube Music తెరవండి</string>
+    <string name="youtube_music_cookie_label">YouTube Music కుకీ (SAPISID ఉండాలి)</string>
+    <string name="paste_from_clipboard">క్లిప్‌బోర్డ్ నుండి పేస్ట్ చేయండి</string>
+    <string name="invalid_cookie_no_sapisid">చెల్లని కుకీ: \'SAPISID\' కనుగొనబడలేదు. మీరు music.youtube.comలో సైన్ ఇన్ అయ్యారని, పూర్తి Cookie హెడర్‌ను కాపీ చేశారని నిర్ధారించుకోండి.</string>
+    <string name="login_save_failed">సైన్-ఇన్‌ను సేవ్ చేయలేకపోయాం</string>
+    <string name="file_dialog_open">ఫైల్‌ను ఎంచుకోండి</string>
+    <string name="file_dialog_save">సేవ్ చేయి</string>
+    <string name="lyrics_source_title">లిరిక్స్ మూలాన్ని మార్చు</string>
+    <string name="lyrics_source_synced">సింక్ చేయబడింది</string>
+    <string name="lyrics_source_plain">సాదా వచనం</string>
+    <string name="lyrics_source_none">కనుగొనబడలేదు</string>
+    <string name="lyrics_source_current">వాడుకలో ఉంది</string>
+    <string name="lyrics_sync_title">లిరిక్స్‌ను సింక్ చేయి</string>
+    <string name="lyrics_sync_hint">ఇప్పుడు పాడుతున్న లైన్‌పై క్లిక్ చేయండి. అవసరమైతే బటన్లతో సూక్ష్మంగా సరిచేయండి.</string>
+    <string name="lyrics_sync_reset">రీసెట్ చేయి</string>
+    <string name="lyrics_sync_done">పూర్తయింది</string>
+</resources>

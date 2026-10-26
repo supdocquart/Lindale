@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Tving nedste navigasjonslinje</string>
+    <string name="discord_error_network_blocked">Får ikkje kontakt med Discord. Nettverket ditt blokkerer det kanskje. Om Discord-appen er open, kan Metrolist òg kople til gjennom han.</string>
+    <string name="restore_database_too_old">Denne tryggingskopien er frå ein eldre versjon av Metrolist. Oppdater Metrolist på telefonen, lag ein ny tryggingskopi og gjenopprett han.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Gøym reine versjonar når ein eksplisitt finst</string>
+    <string name="hide_clean_duplicates_desc">Om ein song eller eit album finst i begge versjonar, blir berre den eksplisitte vist.</string>
+    <string name="sign_in_with_google">Logg på med Google</string>
+    <string name="google_login_cookie_fallback">Eller logg på med informasjonskapsel</string>
+    <string name="google_login_blocked">Google blokkerte pålogging i appvindauget. Du kan framleis logge på med metoden med informasjonskapsel nedanfor.</string>
+    <string name="google_login_failed">Kunne ikkje opne påloggingsvindauget</string>
+    <string name="login_desktop_instructions">Slik loggar du på YouTube Music-kontoen din på datamaskina:\n1. Opne music.youtube.com i nettlesaren med knappen nedanfor og logg på.\n2. Trykk F12 og opne Developer Tools → Network.\n3. Last inn sida på nytt og klikk på ein \'browse\'- eller \'music.youtube.com\'-førespurnad.\n4. Under Request Headers kopierer du verdien av \'Cookie\' og limer han inn nedanfor.</string>
+    <string name="open_youtube_music_in_browser">Opne YouTube Music i nettlesaren</string>
+    <string name="youtube_music_cookie_label">YouTube Music-informasjonskapsel (må innehalde SAPISID)</string>
+    <string name="paste_from_clipboard">Lim inn frå utklippstavla</string>
+    <string name="invalid_cookie_no_sapisid">Ugyldig informasjonskapsel: fann ikkje \'SAPISID\'. Sjekk at du er logga på music.youtube.com og at du kopierte heile Cookie-overskrifta.</string>
+    <string name="login_save_failed">Kunne ikkje lagre pålogginga</string>
+    <string name="file_dialog_open">Vel ei fil</string>
+    <string name="file_dialog_save">Lagre</string>
+    <string name="lyrics_source_title">Byt kjelde for songtekst</string>
+    <string name="lyrics_source_synced">Synkronisert</string>
+    <string name="lyrics_source_plain">Rein tekst</string>
+    <string name="lyrics_source_none">Ikkje funne</string>
+    <string name="lyrics_source_current">I bruk</string>
+    <string name="lyrics_sync_title">Synkroniser songtekst</string>
+    <string name="lyrics_sync_hint">Klikk på linja som blir sungen no. Finjuster med knappane ved behov.</string>
+    <string name="lyrics_sync_reset">Tilbakestill</string>
+    <string name="lyrics_sync_done">Ferdig</string>
+</resources>

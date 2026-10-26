@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">கீழ் வழிசெலுத்தல் பட்டியைக் கட்டாயமாக்கு</string>
+    <string name="discord_error_network_blocked">Discord-ஐ அணுக முடியவில்லை. உங்கள் நெட்வொர்க் அதைத் தடுக்கக்கூடும். Discord ஆப் திறந்திருந்தால், Metrolist அதன் வழியாகவும் இணையலாம்.</string>
+    <string name="restore_database_too_old">இந்தக் காப்புப்பிரதி Metrolist-இன் பழைய பதிப்பிலிருந்து வந்தது. உங்கள் ஃபோனில் Metrolist-ஐப் புதுப்பித்து, புதிய காப்புப்பிரதியை உருவாக்கி அதை மீட்டெடுக்கவும்.</string>
+    <string name="ok">சரி</string>
+    <string name="hide_clean_duplicates">explicit பதிப்பு இருந்தால் சுத்தமான பதிப்புகளை மறை</string>
+    <string name="hide_clean_duplicates_desc">ஒரு பாடல் அல்லது ஆல்பம் இரண்டு பதிப்புகளிலும் இருந்தால், explicit பதிப்பு மட்டும் காட்டப்படும்.</string>
+    <string name="sign_in_with_google">Google மூலம் உள்நுழை</string>
+    <string name="google_login_cookie_fallback">அல்லது குக்கீ மூலம் உள்நுழை</string>
+    <string name="google_login_blocked">ஆப் சாளரத்தில் உள்நுழைவை Google தடுத்தது. கீழே உள்ள குக்கீ முறையில் இன்னும் உள்நுழையலாம்.</string>
+    <string name="google_login_failed">உள்நுழைவு சாளரத்தைத் திறக்க முடியவில்லை</string>
+    <string name="login_desktop_instructions">டெஸ்க்டாப்பில் உங்கள் YouTube Music கணக்கில் உள்நுழைய:\n1. கீழே உள்ள பொத்தானால் உலாவியில் music.youtube.com-ஐத் திறந்து உள்நுழையவும்.\n2. F12-ஐ அழுத்தி டெவலப்பர் கருவிகள் → Network-ஐத் திறக்கவும்.\n3. பக்கத்தை மீண்டும் ஏற்றி \'browse\' அல்லது \'music.youtube.com\' கோரிக்கையைக் கிளிக் செய்யவும்.\n4. Request Headers-இல் \'Cookie\' மதிப்பை நகலெடுத்து கீழே ஒட்டவும்.</string>
+    <string name="open_youtube_music_in_browser">உலாவியில் YouTube Music-ஐத் திற</string>
+    <string name="youtube_music_cookie_label">YouTube Music குக்கீ (SAPISID இருக்க வேண்டும்)</string>
+    <string name="paste_from_clipboard">கிளிப்போர்டிலிருந்து ஒட்டு</string>
+    <string name="invalid_cookie_no_sapisid">தவறான குக்கீ: \'SAPISID\' கிடைக்கவில்லை. music.youtube.com-இல் உள்நுழைந்துள்ளீர்கள் என்பதையும் முழு Cookie தலைப்பையும் நகலெடுத்தீர்கள் என்பதையும் உறுதிசெய்யவும்.</string>
+    <string name="login_save_failed">உள்நுழைவைச் சேமிக்க முடியவில்லை</string>
+    <string name="file_dialog_open">கோப்பைத் தேர்ந்தெடு</string>
+    <string name="file_dialog_save">சேமி</string>
+    <string name="lyrics_source_title">பாடல் வரி மூலத்தை மாற்று</string>
+    <string name="lyrics_source_synced">ஒத்திசைக்கப்பட்டது</string>
+    <string name="lyrics_source_plain">சாதாரண உரை</string>
+    <string name="lyrics_source_none">கிடைக்கவில்லை</string>
+    <string name="lyrics_source_current">பயன்பாட்டில்</string>
+    <string name="lyrics_sync_title">பாடல் வரிகளை ஒத்திசை</string>
+    <string name="lyrics_sync_hint">இப்போது பாடப்படும் வரியைக் கிளிக் செய்யவும். தேவைப்பட்டால் பொத்தான்களால் நுணுக்கமாகச் சரிசெய்யவும்.</string>
+    <string name="lyrics_sync_reset">மீட்டமை</string>
+    <string name="lyrics_sync_done">முடிந்தது</string>
+</resources>

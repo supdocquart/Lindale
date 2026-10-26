@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Sunni alumine navigeerimisriba</string>
+    <string name="discord_error_network_blocked">Discordiga ei saa ühendust. Teie võrk võib seda blokeerida. Kui Discordi rakendus on avatud, saab Metrolist ühenduda ka selle kaudu.</string>
+    <string name="restore_database_too_old">See varukoopia pärineb Metrolisti vanemast versioonist. Värskendage Metrolisti telefonis, looge uus varukoopia ja taastage see.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Peida puhtad versioonid, kui on olemas vulgaarne</string>
+    <string name="hide_clean_duplicates_desc">Kui lugu või album on olemas mõlemas versioonis, kuvatakse ainult vulgaarne.</string>
+    <string name="sign_in_with_google">Logi sisse Google\'iga</string>
+    <string name="google_login_cookie_fallback">Või logi sisse küpsisega</string>
+    <string name="google_login_blocked">Google blokeeris sisselogimise rakenduse aknas. Saate endiselt sisse logida allpool oleva küpsisemeetodiga.</string>
+    <string name="google_login_failed">Sisselogimisakent ei saanud avada</string>
+    <string name="login_desktop_instructions">YouTube Musicu kontoga arvutis sisselogimiseks:\n1. Avage allpool oleva nupuga brauseris music.youtube.com ja logige sisse.\n2. Vajutage F12 ja avage Developer Tools → Network.\n3. Laadige leht uuesti ja klõpsake päringut \'browse\' või \'music.youtube.com\'.\n4. Kopeerige jaotises Request Headers väärtus \'Cookie\' ja kleepige see allapoole.</string>
+    <string name="open_youtube_music_in_browser">Ava YouTube Music brauseris</string>
+    <string name="youtube_music_cookie_label">YouTube Musicu küpsis (peab sisaldama SAPISID-i)</string>
+    <string name="paste_from_clipboard">Kleebi lõikelaualt</string>
+    <string name="invalid_cookie_no_sapisid">Vigane küpsis: \'SAPISID\' ei leitud. Veenduge, et olete music.youtube.com-i sisse logitud ja kopeerisite kogu Cookie päise.</string>
+    <string name="login_save_failed">Sisselogimist ei saanud salvestada</string>
+    <string name="file_dialog_open">Valige fail</string>
+    <string name="file_dialog_save">Salvesta</string>
+    <string name="lyrics_source_title">Muuda laulusõnade allikat</string>
+    <string name="lyrics_source_synced">Sünkroonitud</string>
+    <string name="lyrics_source_plain">Lihttekst</string>
+    <string name="lyrics_source_none">Ei leitud</string>
+    <string name="lyrics_source_current">Kasutusel</string>
+    <string name="lyrics_sync_title">Sünkrooni laulusõnad</string>
+    <string name="lyrics_sync_hint">Klõpsake real, mida praegu lauldakse. Vajadusel täpsustage nuppudega.</string>
+    <string name="lyrics_sync_reset">Lähtesta</string>
+    <string name="lyrics_sync_done">Valmis</string>
+</resources>

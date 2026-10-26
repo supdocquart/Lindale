@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Επιβολή κάτω γραμμής πλοήγησης</string>
+    <string name="discord_error_network_blocked">Δεν είναι δυνατή η πρόσβαση στο Discord. Ίσως το δίκτυό σας το αποκλείει. Αν η εφαρμογή Discord είναι ανοιχτή, το Metrolist μπορεί να συνδεθεί και μέσω αυτής.</string>
+    <string name="restore_database_too_old">Αυτό το αντίγραφο ασφαλείας προέρχεται από παλαιότερη έκδοση του Metrolist. Ενημερώστε το Metrolist στο τηλέφωνο, δημιουργήστε νέο αντίγραφο και επαναφέρετε αυτό.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Απόκρυψη καθαρών εκδόσεων όταν υπάρχει explicit</string>
+    <string name="hide_clean_duplicates_desc">Αν ένα τραγούδι ή άλμπουμ υπάρχει και στις δύο εκδόσεις, εμφανίζεται μόνο η explicit.</string>
+    <string name="sign_in_with_google">Σύνδεση με Google</string>
+    <string name="google_login_cookie_fallback">Ή σύνδεση με cookie</string>
+    <string name="google_login_blocked">Η Google απέκλεισε τη σύνδεση στο παράθυρο της εφαρμογής. Μπορείτε ακόμα να συνδεθείτε με τη μέθοδο cookie παρακάτω.</string>
+    <string name="google_login_failed">Δεν ήταν δυνατό το άνοιγμα του παραθύρου σύνδεσης</string>
+    <string name="login_desktop_instructions">Για σύνδεση στον λογαριασμό YouTube Music στον υπολογιστή:\n1. Ανοίξτε το music.youtube.com στο πρόγραμμα περιήγησης με το κουμπί παρακάτω και συνδεθείτε.\n2. Πατήστε F12 και ανοίξτε Developer Tools → Network.\n3. Ανανεώστε τη σελίδα και κάντε κλικ σε ένα αίτημα \'browse\' ή \'music.youtube.com\'.\n4. Στα Request Headers, αντιγράψτε την τιμή του \'Cookie\' και επικολλήστε την παρακάτω.</string>
+    <string name="open_youtube_music_in_browser">Άνοιγμα YouTube Music στο πρόγραμμα περιήγησης</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (πρέπει να περιέχει SAPISID)</string>
+    <string name="paste_from_clipboard">Επικόλληση από το πρόχειρο</string>
+    <string name="invalid_cookie_no_sapisid">Μη έγκυρο cookie: δεν βρέθηκε \'SAPISID\'. Βεβαιωθείτε ότι έχετε συνδεθεί στο music.youtube.com και ότι αντιγράψατε ολόκληρη την κεφαλίδα Cookie.</string>
+    <string name="login_save_failed">Δεν ήταν δυνατή η αποθήκευση της σύνδεσης</string>
+    <string name="file_dialog_open">Επιλέξτε αρχείο</string>
+    <string name="file_dialog_save">Αποθήκευση</string>
+    <string name="lyrics_source_title">Αλλαγή πηγής στίχων</string>
+    <string name="lyrics_source_synced">Συγχρονισμένοι</string>
+    <string name="lyrics_source_plain">Απλό κείμενο</string>
+    <string name="lyrics_source_none">Δεν βρέθηκαν</string>
+    <string name="lyrics_source_current">Σε χρήση</string>
+    <string name="lyrics_sync_title">Συγχρονισμός στίχων</string>
+    <string name="lyrics_sync_hint">Κάντε κλικ στη γραμμή που τραγουδιέται τώρα. Ρυθμίστε με ακρίβεια με τα κουμπιά αν χρειάζεται.</string>
+    <string name="lyrics_sync_reset">Επαναφορά</string>
+    <string name="lyrics_sync_done">Τέλος</string>
+</resources>

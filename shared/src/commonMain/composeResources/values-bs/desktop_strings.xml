@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Prisili donju navigacijsku traku</string>
+    <string name="discord_error_network_blocked">Discord nije dostupan. Vaša mreža ga možda blokira. Ako je Discord aplikacija otvorena, Metrolist se može povezati i preko nje.</string>
+    <string name="restore_database_too_old">Ova rezervna kopija je iz starije verzije Metroliste. Ažurirajte Metrolist na telefonu, napravite novu rezervnu kopiju i vratite nju.</string>
+    <string name="ok">U redu</string>
+    <string name="hide_clean_duplicates">Sakrij čiste verzije ako postoji eksplicitna</string>
+    <string name="hide_clean_duplicates_desc">Ako pjesma ili album postoje u obje verzije, prikazuje se samo eksplicitna.</string>
+    <string name="sign_in_with_google">Prijavi se putem Googlea</string>
+    <string name="google_login_cookie_fallback">Ili se prijavi kolačićem</string>
+    <string name="google_login_blocked">Google je blokirao prijavu u prozoru aplikacije. I dalje se možete prijaviti metodom kolačića ispod.</string>
+    <string name="google_login_failed">Prozor za prijavu se nije mogao otvoriti</string>
+    <string name="login_desktop_instructions">Za prijavu na YouTube Music račun na računaru:\n1. Otvorite music.youtube.com u pregledniku dugmetom ispod i prijavite se.\n2. Pritisnite F12 i otvorite Developer Tools → Network.\n3. Ponovo učitajte stranicu i kliknite na zahtjev \'browse\' ili \'music.youtube.com\'.\n4. U Request Headers kopirajte vrijednost \'Cookie\' i zalijepite je ispod.</string>
+    <string name="open_youtube_music_in_browser">Otvori YouTube Music u pregledniku</string>
+    <string name="youtube_music_cookie_label">YouTube Music kolačić (mora sadržavati SAPISID)</string>
+    <string name="paste_from_clipboard">Zalijepi iz međuspremnika</string>
+    <string name="invalid_cookie_no_sapisid">Neispravan kolačić: \'SAPISID\' nije pronađen. Provjerite jeste li prijavljeni na music.youtube.com i jeste li kopirali cijelo Cookie zaglavlje.</string>
+    <string name="login_save_failed">Prijava nije sačuvana</string>
+    <string name="file_dialog_open">Odaberite datoteku</string>
+    <string name="file_dialog_save">Sačuvaj</string>
+    <string name="lyrics_source_title">Promijeni izvor teksta pjesme</string>
+    <string name="lyrics_source_synced">Sinhronizovano</string>
+    <string name="lyrics_source_plain">Običan tekst</string>
+    <string name="lyrics_source_none">Nije pronađeno</string>
+    <string name="lyrics_source_current">U upotrebi</string>
+    <string name="lyrics_sync_title">Sinhronizuj tekst</string>
+    <string name="lyrics_sync_hint">Kliknite na red koji se sada pjeva. Po potrebi fino podesite dugmadima.</string>
+    <string name="lyrics_sync_reset">Resetuj</string>
+    <string name="lyrics_sync_done">Gotovo</string>
+</resources>

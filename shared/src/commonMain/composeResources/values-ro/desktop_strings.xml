@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Forțează bara de navigare de jos</string>
+    <string name="discord_error_network_blocked">Discord nu poate fi accesat. Este posibil ca rețeaua ta să îl blocheze. Dacă aplicația Discord este deschisă, Metrolist se poate conecta și prin ea.</string>
+    <string name="restore_database_too_old">Această copie de rezervă provine dintr-o versiune mai veche de Metrolist. Actualizează Metrolist pe telefon, creează o copie nouă și restaureaz-o pe aceea.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Ascunde versiunile curate dacă există una explicită</string>
+    <string name="hide_clean_duplicates_desc">Dacă o melodie sau un album există în ambele versiuni, este afișată doar cea explicită.</string>
+    <string name="sign_in_with_google">Conectează-te cu Google</string>
+    <string name="google_login_cookie_fallback">Sau conectează-te cu un cookie</string>
+    <string name="google_login_blocked">Google a blocat conectarea în fereastra aplicației. Te poți conecta în continuare cu metoda cookie de mai jos.</string>
+    <string name="google_login_failed">Fereastra de conectare nu a putut fi deschisă</string>
+    <string name="login_desktop_instructions">Pentru a te conecta la contul YouTube Music pe computer:\n1. Deschide music.youtube.com în browser cu butonul de mai jos și conectează-te.\n2. Apasă F12 și deschide Developer Tools → Network.\n3. Reîncarcă pagina și dă clic pe o solicitare \'browse\' sau \'music.youtube.com\'.\n4. În Request Headers, copiază valoarea \'Cookie\' și lipește-o mai jos.</string>
+    <string name="open_youtube_music_in_browser">Deschide YouTube Music în browser</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (trebuie să conțină SAPISID)</string>
+    <string name="paste_from_clipboard">Lipește din clipboard</string>
+    <string name="invalid_cookie_no_sapisid">Cookie nevalid: \'SAPISID\' nu a fost găsit. Asigură-te că ești conectat la music.youtube.com și că ai copiat întregul antet Cookie.</string>
+    <string name="login_save_failed">Conectarea nu a putut fi salvată</string>
+    <string name="file_dialog_open">Alege un fișier</string>
+    <string name="file_dialog_save">Salvează</string>
+    <string name="lyrics_source_title">Schimbă sursa versurilor</string>
+    <string name="lyrics_source_synced">Sincronizate</string>
+    <string name="lyrics_source_plain">Text simplu</string>
+    <string name="lyrics_source_none">Negăsite</string>
+    <string name="lyrics_source_current">În uz</string>
+    <string name="lyrics_sync_title">Sincronizează versurile</string>
+    <string name="lyrics_sync_hint">Dă clic pe rândul cântat acum. Ajustează fin cu butoanele dacă e nevoie.</string>
+    <string name="lyrics_sync_reset">Resetează</string>
+    <string name="lyrics_sync_done">Gata</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Vynutit spodní navigační lištu</string>
+    <string name="discord_error_network_blocked">Nelze se připojit k Discordu. Vaše síť jej možná blokuje. Pokud máte otevřenou aplikaci Discord, Metrolist se může připojit i přes ni.</string>
+    <string name="restore_database_too_old">Tato záloha pochází ze starší verze Metrolistu. Aktualizujte Metrolist v telefonu, vytvořte novou zálohu a obnovte ji.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Skrýt čisté verze, pokud existuje explicitní</string>
+    <string name="hide_clean_duplicates_desc">Pokud skladba nebo album existuje v obou verzích, zobrazí se jen explicitní.</string>
+    <string name="sign_in_with_google">Přihlásit se přes Google</string>
+    <string name="google_login_cookie_fallback">Nebo se přihlásit pomocí cookie</string>
+    <string name="google_login_blocked">Google zablokoval přihlášení v okně aplikace. Stále se můžete přihlásit metodou cookie níže.</string>
+    <string name="google_login_failed">Přihlašovací okno se nepodařilo otevřít</string>
+    <string name="login_desktop_instructions">Přihlášení k účtu YouTube Music na počítači:\n1. Tlačítkem níže otevřete v prohlížeči music.youtube.com a přihlaste se.\n2. Stiskněte F12 a otevřete Nástroje pro vývojáře → Network.\n3. Obnovte stránku a klikněte na požadavek \'browse\' nebo \'music.youtube.com\'.\n4. V části Request Headers zkopírujte hodnotu \'Cookie\' a vložte ji níže.</string>
+    <string name="open_youtube_music_in_browser">Otevřít YouTube Music v prohlížeči</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (musí obsahovat SAPISID)</string>
+    <string name="paste_from_clipboard">Vložit ze schránky</string>
+    <string name="invalid_cookie_no_sapisid">Neplatné cookie: \'SAPISID\' nebylo nalezeno. Ujistěte se, že jste přihlášeni na music.youtube.com a zkopírovali celou hlavičku Cookie.</string>
+    <string name="login_save_failed">Uložení přihlášení se nezdařilo</string>
+    <string name="file_dialog_open">Vyberte soubor</string>
+    <string name="file_dialog_save">Uložit</string>
+    <string name="lyrics_source_title">Změnit zdroj textu</string>
+    <string name="lyrics_source_synced">Synchronizovaný</string>
+    <string name="lyrics_source_plain">Prostý text</string>
+    <string name="lyrics_source_none">Nenalezeno</string>
+    <string name="lyrics_source_current">Používá se</string>
+    <string name="lyrics_sync_title">Synchronizovat text</string>
+    <string name="lyrics_sync_hint">Klikněte na řádek, který se právě zpívá. V případě potřeby dolaďte tlačítky.</string>
+    <string name="lyrics_sync_reset">Obnovit</string>
+    <string name="lyrics_sync_done">Hotovo</string>
+</resources>

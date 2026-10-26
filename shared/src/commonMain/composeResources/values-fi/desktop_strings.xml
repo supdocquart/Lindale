@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Pakota alanavigointipalkki</string>
+    <string name="discord_error_network_blocked">Discordiin ei saada yhteyttä. Verkkosi saattaa estää sen. Jos Discord-sovellus on auki, Metrolist voi yhdistää myös sen kautta.</string>
+    <string name="restore_database_too_old">Tämä varmuuskopio on Metrolistin vanhemmasta versiosta. Päivitä Metrolist puhelimessasi, tee uusi varmuuskopio ja palauta se.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Piilota siistit versiot, jos eksplisiittinen on olemassa</string>
+    <string name="hide_clean_duplicates_desc">Jos kappale tai albumi on olemassa molempina versioina, vain eksplisiittinen näytetään.</string>
+    <string name="sign_in_with_google">Kirjaudu Googlella</string>
+    <string name="google_login_cookie_fallback">Tai kirjaudu evästeellä</string>
+    <string name="google_login_blocked">Google esti kirjautumisen sovelluksen ikkunassa. Voit silti kirjautua alla olevalla evästetavalla.</string>
+    <string name="google_login_failed">Kirjautumisikkunaa ei voitu avata</string>
+    <string name="login_desktop_instructions">Kirjautuminen YouTube Music -tilillesi tietokoneella:\n1. Avaa music.youtube.com selaimessa alla olevalla painikkeella ja kirjaudu sisään.\n2. Paina F12 ja avaa Developer Tools → Network.\n3. Lataa sivu uudelleen ja napsauta \'browse\'- tai \'music.youtube.com\'-pyyntöä.\n4. Kopioi Request Headers -kohdasta \'Cookie\'-arvo ja liitä se alle.</string>
+    <string name="open_youtube_music_in_browser">Avaa YouTube Music selaimessa</string>
+    <string name="youtube_music_cookie_label">YouTube Music -eväste (täytyy sisältää SAPISID)</string>
+    <string name="paste_from_clipboard">Liitä leikepöydältä</string>
+    <string name="invalid_cookie_no_sapisid">Virheellinen eväste: \'SAPISID\' ei löytynyt. Varmista, että olet kirjautunut music.youtube.comiin ja kopioit koko Cookie-otsakkeen.</string>
+    <string name="login_save_failed">Kirjautumista ei voitu tallentaa</string>
+    <string name="file_dialog_open">Valitse tiedosto</string>
+    <string name="file_dialog_save">Tallenna</string>
+    <string name="lyrics_source_title">Vaihda sanoitusten lähde</string>
+    <string name="lyrics_source_synced">Synkronoitu</string>
+    <string name="lyrics_source_plain">Pelkkä teksti</string>
+    <string name="lyrics_source_none">Ei löytynyt</string>
+    <string name="lyrics_source_current">Käytössä</string>
+    <string name="lyrics_sync_title">Synkronoi sanoitukset</string>
+    <string name="lyrics_sync_hint">Napsauta riviä, jota lauletaan juuri nyt. Hienosäädä painikkeilla tarvittaessa.</string>
+    <string name="lyrics_sync_reset">Nollaa</string>
+    <string name="lyrics_sync_done">Valmis</string>
+</resources>

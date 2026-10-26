@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Buộc dùng thanh điều hướng dưới</string>
+    <string name="discord_error_network_blocked">Không thể kết nối Discord. Mạng của bạn có thể đang chặn nó. Nếu ứng dụng Discord đang mở, Metrolist cũng có thể kết nối qua đó.</string>
+    <string name="restore_database_too_old">Bản sao lưu này từ phiên bản Metrolist cũ hơn. Hãy cập nhật Metrolist trên điện thoại, tạo bản sao lưu mới và khôi phục bản đó.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Ẩn bản sạch khi có bản explicit</string>
+    <string name="hide_clean_duplicates_desc">Nếu một bài hát hoặc album có cả hai phiên bản, chỉ hiển thị bản explicit.</string>
+    <string name="sign_in_with_google">Đăng nhập bằng Google</string>
+    <string name="google_login_cookie_fallback">Hoặc đăng nhập bằng cookie</string>
+    <string name="google_login_blocked">Google đã chặn đăng nhập trong cửa sổ ứng dụng. Bạn vẫn có thể đăng nhập bằng cách dùng cookie bên dưới.</string>
+    <string name="google_login_failed">Không thể mở cửa sổ đăng nhập</string>
+    <string name="login_desktop_instructions">Để đăng nhập tài khoản YouTube Music trên máy tính:\n1. Mở music.youtube.com trong trình duyệt bằng nút bên dưới và đăng nhập.\n2. Nhấn F12 và mở Công cụ cho nhà phát triển → Network.\n3. Tải lại trang và nhấp vào yêu cầu \'browse\' hoặc \'music.youtube.com\'.\n4. Trong Request Headers, sao chép giá trị \'Cookie\' và dán vào bên dưới.</string>
+    <string name="open_youtube_music_in_browser">Mở YouTube Music trong trình duyệt</string>
+    <string name="youtube_music_cookie_label">Cookie YouTube Music (phải chứa SAPISID)</string>
+    <string name="paste_from_clipboard">Dán từ bộ nhớ tạm</string>
+    <string name="invalid_cookie_no_sapisid">Cookie không hợp lệ: không tìm thấy \'SAPISID\'. Hãy chắc rằng bạn đã đăng nhập music.youtube.com và sao chép toàn bộ tiêu đề Cookie.</string>
+    <string name="login_save_failed">Không lưu được thông tin đăng nhập</string>
+    <string name="file_dialog_open">Chọn tệp</string>
+    <string name="file_dialog_save">Lưu</string>
+    <string name="lyrics_source_title">Đổi nguồn lời bài hát</string>
+    <string name="lyrics_source_synced">Đồng bộ</string>
+    <string name="lyrics_source_plain">Văn bản thường</string>
+    <string name="lyrics_source_none">Không tìm thấy</string>
+    <string name="lyrics_source_current">Đang dùng</string>
+    <string name="lyrics_sync_title">Đồng bộ lời bài hát</string>
+    <string name="lyrics_sync_hint">Nhấp vào dòng đang được hát. Tinh chỉnh bằng các nút nếu cần.</string>
+    <string name="lyrics_sync_reset">Đặt lại</string>
+    <string name="lyrics_sync_done">Xong</string>
+</resources>

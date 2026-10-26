@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Priverstinai rodyti apatinę naršymo juostą</string>
+    <string name="discord_error_network_blocked">Nepavyko pasiekti Discord. Jūsų tinklas gali jį blokuoti. Jei Discord programa atidaryta, Metrolist gali prisijungti ir per ją.</string>
+    <string name="restore_database_too_old">Ši atsarginė kopija yra iš senesnės Metrolist versijos. Atnaujinkite Metrolist telefone, sukurkite naują atsarginę kopiją ir atkurkite ją.</string>
+    <string name="ok">Gerai</string>
+    <string name="hide_clean_duplicates">Slėpti švarias versijas, jei yra atvira</string>
+    <string name="hide_clean_duplicates_desc">Jei daina ar albumas yra abiejų versijų, rodoma tik atvira versija.</string>
+    <string name="sign_in_with_google">Prisijungti su Google</string>
+    <string name="google_login_cookie_fallback">Arba prisijunkite slapuku</string>
+    <string name="google_login_blocked">Google užblokavo prisijungimą programos lange. Vis dar galite prisijungti toliau nurodytu slapuko būdu.</string>
+    <string name="google_login_failed">Nepavyko atidaryti prisijungimo lango</string>
+    <string name="login_desktop_instructions">Norėdami prisijungti prie YouTube Music paskyros kompiuteryje:\n1. Mygtuku žemiau atidarykite music.youtube.com naršyklėje ir prisijunkite.\n2. Paspauskite F12 ir atidarykite Developer Tools → Network.\n3. Iš naujo įkelkite puslapį ir spustelėkite užklausą \'browse\' arba \'music.youtube.com\'.\n4. Skiltyje Request Headers nukopijuokite \'Cookie\' reikšmę ir įklijuokite ją žemiau.</string>
+    <string name="open_youtube_music_in_browser">Atidaryti YouTube Music naršyklėje</string>
+    <string name="youtube_music_cookie_label">YouTube Music slapukas (turi būti SAPISID)</string>
+    <string name="paste_from_clipboard">Įklijuoti iš iškarpinės</string>
+    <string name="invalid_cookie_no_sapisid">Netinkamas slapukas: \'SAPISID\' nerastas. Įsitikinkite, kad esate prisijungę prie music.youtube.com ir nukopijavote visą Cookie antraštę.</string>
+    <string name="login_save_failed">Nepavyko išsaugoti prisijungimo</string>
+    <string name="file_dialog_open">Pasirinkite failą</string>
+    <string name="file_dialog_save">Išsaugoti</string>
+    <string name="lyrics_source_title">Keisti dainų žodžių šaltinį</string>
+    <string name="lyrics_source_synced">Sinchronizuota</string>
+    <string name="lyrics_source_plain">Paprastas tekstas</string>
+    <string name="lyrics_source_none">Nerasta</string>
+    <string name="lyrics_source_current">Naudojama</string>
+    <string name="lyrics_sync_title">Sinchronizuoti dainų žodžius</string>
+    <string name="lyrics_sync_hint">Spustelėkite eilutę, kuri dainuojama dabar. Jei reikia, tiksliai sureguliuokite mygtukais.</string>
+    <string name="lyrics_sync_reset">Atkurti</string>
+    <string name="lyrics_sync_done">Atlikta</string>
+</resources>

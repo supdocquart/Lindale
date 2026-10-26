@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">താഴെയുള്ള നാവിഗേഷൻ ബാർ നിർബന്ധമാക്കുക</string>
+    <string name="discord_error_network_blocked">Discord-ലേക്ക് എത്താനായില്ല. നിങ്ങളുടെ നെറ്റ്‌വർക്ക് അത് തടയുന്നുണ്ടാകാം. Discord ആപ്പ് തുറന്നിട്ടുണ്ടെങ്കിൽ, Metrolist-ന് അതിലൂടെയും കണക്റ്റ് ചെയ്യാം.</string>
+    <string name="restore_database_too_old">ഈ ബാക്കപ്പ് Metrolist-ന്റെ പഴയ പതിപ്പിൽ നിന്നാണ്. ഫോണിൽ Metrolist അപ്‌ഡേറ്റ് ചെയ്ത്, പുതിയ ബാക്കപ്പ് സൃഷ്ടിച്ച് അത് പുനഃസ്ഥാപിക്കുക.</string>
+    <string name="ok">ശരി</string>
+    <string name="hide_clean_duplicates">explicit പതിപ്പ് ഉണ്ടെങ്കിൽ ക്ലീൻ പതിപ്പുകൾ മറയ്ക്കുക</string>
+    <string name="hide_clean_duplicates_desc">ഒരു പാട്ടോ ആൽബമോ രണ്ട് പതിപ്പുകളിലും ഉണ്ടെങ്കിൽ, explicit പതിപ്പ് മാത്രം കാണിക്കും.</string>
+    <string name="sign_in_with_google">Google ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="google_login_cookie_fallback">അല്ലെങ്കിൽ കുക്കി ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="google_login_blocked">ആപ്പ് വിൻഡോയിലെ സൈൻ-ഇൻ Google തടഞ്ഞു. താഴെയുള്ള കുക്കി രീതി ഉപയോഗിച്ച് ഇപ്പോഴും സൈൻ ഇൻ ചെയ്യാം.</string>
+    <string name="google_login_failed">സൈൻ-ഇൻ വിൻഡോ തുറക്കാനായില്ല</string>
+    <string name="login_desktop_instructions">ഡെസ്ക്ടോപ്പിൽ നിങ്ങളുടെ YouTube Music അക്കൗണ്ടിൽ സൈൻ ഇൻ ചെയ്യാൻ:\n1. താഴെയുള്ള ബട്ടൺ ഉപയോഗിച്ച് ബ്രൗസറിൽ music.youtube.com തുറന്ന് സൈൻ ഇൻ ചെയ്യുക.\n2. F12 അമർത്തി ഡെവലപ്പർ ടൂളുകൾ → Network തുറക്കുക.\n3. പേജ് റീലോഡ് ചെയ്ത് \'browse\' അല്ലെങ്കിൽ \'music.youtube.com\' അഭ്യർത്ഥനയിൽ ക്ലിക്ക് ചെയ്യുക.\n4. Request Headers-ൽ \'Cookie\' മൂല്യം പകർത്തി താഴെ ഒട്ടിക്കുക.</string>
+    <string name="open_youtube_music_in_browser">ബ്രൗസറിൽ YouTube Music തുറക്കുക</string>
+    <string name="youtube_music_cookie_label">YouTube Music കുക്കി (SAPISID ഉണ്ടായിരിക്കണം)</string>
+    <string name="paste_from_clipboard">ക്ലിപ്പ്ബോർഡിൽ നിന്ന് ഒട്ടിക്കുക</string>
+    <string name="invalid_cookie_no_sapisid">അസാധുവായ കുക്കി: \'SAPISID\' കണ്ടെത്തിയില്ല. music.youtube.com-ൽ സൈൻ ഇൻ ചെയ്തിട്ടുണ്ടെന്നും Cookie ഹെഡർ മുഴുവനായി പകർത്തിയെന്നും ഉറപ്പാക്കുക.</string>
+    <string name="login_save_failed">സൈൻ-ഇൻ സംരക്ഷിക്കാനായില്ല</string>
+    <string name="file_dialog_open">ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക</string>
+    <string name="file_dialog_save">സംരക്ഷിക്കുക</string>
+    <string name="lyrics_source_title">വരികളുടെ ഉറവിടം മാറ്റുക</string>
+    <string name="lyrics_source_synced">സമന്വയിപ്പിച്ചത്</string>
+    <string name="lyrics_source_plain">സാധാരണ ടെക്സ്റ്റ്</string>
+    <string name="lyrics_source_none">കണ്ടെത്തിയില്ല</string>
+    <string name="lyrics_source_current">ഉപയോഗത്തിൽ</string>
+    <string name="lyrics_sync_title">വരികൾ സമന്വയിപ്പിക്കുക</string>
+    <string name="lyrics_sync_hint">ഇപ്പോൾ പാടുന്ന വരിയിൽ ക്ലിക്ക് ചെയ്യുക. ആവശ്യമെങ്കിൽ ബട്ടണുകൾ ഉപയോഗിച്ച് സൂക്ഷ്മമായി ക്രമീകരിക്കുക.</string>
+    <string name="lyrics_sync_reset">പുനഃസജ്ജമാക്കുക</string>
+    <string name="lyrics_sync_done">പൂർത്തിയായി</string>
+</resources>

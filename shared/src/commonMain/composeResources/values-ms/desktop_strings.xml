@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Paksa bar navigasi bawah</string>
+    <string name="discord_error_network_blocked">Tidak dapat menghubungi Discord. Rangkaian anda mungkin menyekatnya. Jika aplikasi Discord dibuka, Metrolist juga boleh bersambung melaluinya.</string>
+    <string name="restore_database_too_old">Sandaran ini daripada versi Metrolist yang lebih lama. Kemas kini Metrolist pada telefon anda, buat sandaran baharu dan pulihkan sandaran itu.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Sembunyikan versi bersih jika versi eksplisit wujud</string>
+    <string name="hide_clean_duplicates_desc">Jika lagu atau album wujud dalam kedua-dua versi, hanya versi eksplisit dipaparkan.</string>
+    <string name="sign_in_with_google">Log masuk dengan Google</string>
+    <string name="google_login_cookie_fallback">Atau log masuk dengan kuki</string>
+    <string name="google_login_blocked">Google menyekat log masuk dalam tetingkap aplikasi. Anda masih boleh log masuk dengan kaedah kuki di bawah.</string>
+    <string name="google_login_failed">Tetingkap log masuk tidak dapat dibuka</string>
+    <string name="login_desktop_instructions">Untuk log masuk dengan akaun YouTube Music di desktop:\n1. Buka music.youtube.com dalam pelayar dengan butang di bawah dan log masuk.\n2. Tekan F12 dan buka Alat Pembangun → Network.\n3. Muat semula halaman dan klik permintaan \'browse\' atau \'music.youtube.com\'.\n4. Di bawah Request Headers, salin nilai \'Cookie\' dan tampal di bawah.</string>
+    <string name="open_youtube_music_in_browser">Buka YouTube Music dalam pelayar</string>
+    <string name="youtube_music_cookie_label">Kuki YouTube Music (mesti mengandungi SAPISID)</string>
+    <string name="paste_from_clipboard">Tampal dari papan keratan</string>
+    <string name="invalid_cookie_no_sapisid">Kuki tidak sah: \'SAPISID\' tidak ditemui. Pastikan anda telah log masuk di music.youtube.com dan menyalin keseluruhan pengepala Cookie.</string>
+    <string name="login_save_failed">Gagal menyimpan log masuk</string>
+    <string name="file_dialog_open">Pilih fail</string>
+    <string name="file_dialog_save">Simpan</string>
+    <string name="lyrics_source_title">Tukar sumber lirik</string>
+    <string name="lyrics_source_synced">Disegerakkan</string>
+    <string name="lyrics_source_plain">Teks biasa</string>
+    <string name="lyrics_source_none">Tidak ditemui</string>
+    <string name="lyrics_source_current">Sedang digunakan</string>
+    <string name="lyrics_sync_title">Segerakkan lirik</string>
+    <string name="lyrics_sync_hint">Klik baris yang sedang dinyanyikan. Laraskan dengan butang jika perlu.</string>
+    <string name="lyrics_sync_reset">Tetap semula</string>
+    <string name="lyrics_sync_done">Selesai</string>
+</resources>

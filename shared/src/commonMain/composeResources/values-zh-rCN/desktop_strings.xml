@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">强制使用底部导航栏</string>
+    <string name="discord_error_network_blocked">无法连接到 Discord，你的网络可能屏蔽了它。如果 Discord 应用已打开，Metrolist 也可以通过它连接。</string>
+    <string name="restore_database_too_old">此备份来自旧版 Metrolist。请在手机上更新 Metrolist，创建新的备份后再恢复。</string>
+    <string name="ok">确定</string>
+    <string name="hide_clean_duplicates">存在露骨版本时隐藏纯净版本</string>
+    <string name="hide_clean_duplicates_desc">如果歌曲或专辑同时有两个版本，只显示露骨版本。</string>
+    <string name="sign_in_with_google">使用 Google 登录</string>
+    <string name="google_login_cookie_fallback">或使用 Cookie 登录</string>
+    <string name="google_login_blocked">Google 阻止了在应用窗口内登录。你仍可以使用下面的 Cookie 方式登录。</string>
+    <string name="google_login_failed">无法打开登录窗口</string>
+    <string name="login_desktop_instructions">在桌面端登录 YouTube Music 账号：\n1. 点击下方按钮在浏览器中打开 music.youtube.com 并登录。\n2. 按 F12 打开开发者工具 → Network。\n3. 刷新页面，点击 \'browse\' 或 \'music.youtube.com\' 请求。\n4. 在 Request Headers 中复制 \'Cookie\' 的值并粘贴到下方。</string>
+    <string name="open_youtube_music_in_browser">在浏览器中打开 YouTube Music</string>
+    <string name="youtube_music_cookie_label">YouTube Music Cookie（必须包含 SAPISID）</string>
+    <string name="paste_from_clipboard">从剪贴板粘贴</string>
+    <string name="invalid_cookie_no_sapisid">Cookie 无效：未找到 \'SAPISID\'。请确认已在 music.youtube.com 登录，并复制了完整的 Cookie 请求头。</string>
+    <string name="login_save_failed">保存登录信息失败</string>
+    <string name="file_dialog_open">选择文件</string>
+    <string name="file_dialog_save">保存</string>
+    <string name="lyrics_source_title">更换歌词来源</string>
+    <string name="lyrics_source_synced">同步</string>
+    <string name="lyrics_source_plain">纯文本</string>
+    <string name="lyrics_source_none">未找到</string>
+    <string name="lyrics_source_current">使用中</string>
+    <string name="lyrics_sync_title">同步歌词</string>
+    <string name="lyrics_sync_hint">点击正在演唱的那一行。必要时用按钮微调。</string>
+    <string name="lyrics_sync_reset">重置</string>
+    <string name="lyrics_sync_done">完成</string>
+</resources>

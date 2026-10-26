@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
+<resources>
+    <string name="force_bottom_navbar">Pilitin ang navigation bar sa ibaba</string>
+    <string name="discord_error_network_blocked">Hindi maabot ang Discord. Maaaring hinaharangan ito ng iyong network. Kung bukas ang Discord app, makakakonekta rin ang Metrolist sa pamamagitan nito.</string>
+    <string name="restore_database_too_old">Galing ang backup na ito sa mas lumang bersyon ng Metrolist. I-update ang Metrolist sa iyong telepono, gumawa ng bagong backup at i-restore iyon.</string>
+    <string name="ok">OK</string>
+    <string name="hide_clean_duplicates">Itago ang malinis na bersyon kapag may explicit</string>
+    <string name="hide_clean_duplicates_desc">Kung parehong bersyon ang mayroon ang isang kanta o album, ang explicit lang ang ipapakita.</string>
+    <string name="sign_in_with_google">Mag-sign in gamit ang Google</string>
+    <string name="google_login_cookie_fallback">O mag-sign in gamit ang cookie</string>
+    <string name="google_login_blocked">Hinarangan ng Google ang pag-sign in sa loob ng window ng app. Makakapag-sign in ka pa rin gamit ang cookie sa ibaba.</string>
+    <string name="google_login_failed">Hindi mabuksan ang window ng pag-sign in</string>
+    <string name="login_desktop_instructions">Para mag-sign in gamit ang iyong YouTube Music account sa desktop:\n1. Buksan ang music.youtube.com sa browser gamit ang button sa ibaba at mag-sign in.\n2. Pindutin ang F12 at buksan ang Developer Tools → Network.\n3. I-reload ang page at i-click ang request na \'browse\' o \'music.youtube.com\'.\n4. Sa Request Headers, kopyahin ang value ng \'Cookie\' at i-paste sa ibaba.</string>
+    <string name="open_youtube_music_in_browser">Buksan ang YouTube Music sa browser</string>
+    <string name="youtube_music_cookie_label">Cookie ng YouTube Music (dapat may SAPISID)</string>
+    <string name="paste_from_clipboard">I-paste mula sa clipboard</string>
+    <string name="invalid_cookie_no_sapisid">Hindi wastong cookie: hindi nakita ang \'SAPISID\'. Tiyaking naka-sign in ka sa music.youtube.com at nakopya mo ang buong Cookie header.</string>
+    <string name="login_save_failed">Hindi na-save ang pag-sign in</string>
+    <string name="file_dialog_open">Pumili ng file</string>
+    <string name="file_dialog_save">I-save</string>
+    <string name="lyrics_source_title">Palitan ang pinagmulan ng lyrics</string>
+    <string name="lyrics_source_synced">Naka-sync</string>
+    <string name="lyrics_source_plain">Plain text</string>
+    <string name="lyrics_source_none">Hindi nakita</string>
+    <string name="lyrics_source_current">Ginagamit</string>
+    <string name="lyrics_sync_title">I-sync ang lyrics</string>
+    <string name="lyrics_sync_hint">I-click ang linyang kinakanta ngayon. Ayusin gamit ang mga button kung kailangan.</string>
+    <string name="lyrics_sync_reset">I-reset</string>
+    <string name="lyrics_sync_done">Tapos na</string>
+</resources>
