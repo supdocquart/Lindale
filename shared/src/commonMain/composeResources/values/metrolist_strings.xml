@@ -998,6 +998,10 @@
     <!-- Content filters -->
     <string name="hide_clean_duplicates">Hide clean versions when an explicit one exists</string>
     <string name="hide_clean_duplicates_desc">If a song or album appears in both versions, only the explicit one is shown.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="google_login_cookie_fallback">Or sign in with a cookie</string>
+    <string name="google_login_blocked">Google blocked sign-in inside the app window. You can still sign in with the cookie method below.</string>
+    <string name="google_login_failed">The sign-in window could not be opened</string>
 </resources>
 
 

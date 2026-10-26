@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 
@@ -256,6 +257,51 @@ fun LoginScreen(
                         text = stringResource(Res.string.login),
                         style = MaterialTheme.typography.headlineSmall,
                     )
+                    // DESKTOP: embedded Google sign-in (JCEF); the cookie steps below stay as a fallback.
+                    if (com.metrolist.music.platform.GoogleLogin.isAvailable) {
+                        Spacer(Modifier.height(12.dp))
+                        Button(
+                            enabled = loginStage != LoginStage.CheckingAccounts &&
+                                loginStage != LoginStage.Completing,
+                            onClick = {
+                                errorMessage = null
+                                com.metrolist.music.platform.GoogleLogin.open { result ->
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        when (result) {
+                                            is com.metrolist.music.platform.GoogleLogin.Result.Success ->
+                                                checkAvailableAccounts(
+                                                    AuthData(
+                                                        cookie = result.cookie,
+                                                        visitorData = result.visitorData,
+                                                        dataSyncId = result.dataSyncId,
+                                                        authUser = result.authUser,
+                                                    ),
+                                                )
+                                            com.metrolist.music.platform.GoogleLogin.Result.Blocked ->
+                                                errorMessage = getString(Res.string.google_login_blocked)
+                                            is com.metrolist.music.platform.GoogleLogin.Result.Failed ->
+                                                errorMessage = getString(Res.string.google_login_failed) +
+                                                    " (" + result.reason + ")"
+                                            com.metrolist.music.platform.GoogleLogin.Result.Cancelled -> Unit
+                                        }
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.login),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(Res.string.sign_in_with_google))
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = stringResource(Res.string.google_login_cookie_fallback),
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
                     Spacer(Modifier.height(8.dp))
                     Text(
                         text = "Masaüstü sürümünde YouTube Music hesabınızla oturum açmak için:\n" +

@@ -33,6 +33,8 @@ fun main() {
 
 private fun runApp() = application {
     initDesktopPlatform()
+    // DESKTOP: enables the "Sign in with Google" window when JCEF is present.
+    remember { JcefGoogleLogin.install() }
 
     // DESKTOP: Restore the last window size, position and maximized state.
     val windowState = remember { WindowStateStore.load() }
