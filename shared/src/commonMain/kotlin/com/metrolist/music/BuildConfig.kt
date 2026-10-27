@@ -2,13 +2,13 @@ package com.metrolist.music
 
 object BuildConfig {
     const val DEBUG = true
-    const val VERSION_NAME = "1.0.0"
-    const val BASE_VERSION_NAME = "1.0.0"
+    const val VERSION_NAME = "0.1.0-beta"
+    const val BASE_VERSION_NAME = "0.1.0-beta"
     const val VERSION_CODE = 1
     const val FLAVOR = "foss"
     const val ARCHITECTURE = "universal"
     const val CAST_AVAILABLE = false
-    // DESKTOP: updater still points at the original project; disabled until the fork has its own releases.
+    // DESKTOP: Updater now reads Lindale's releases; switched on after the first release is tested.
     const val UPDATER_AVAILABLE = false
     const val LASTFM_API_KEY = ""
     const val LASTFM_SECRET = ""

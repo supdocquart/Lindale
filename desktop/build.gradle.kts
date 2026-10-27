@@ -70,7 +70,8 @@ compose.desktop {
         nativeDistributions {
             targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe)
             packageName = "Lindale"
-            packageVersion = "1.0.0"
+            // Windows installers need a numeric version; the "-beta" label lives in BuildConfig.VERSION_NAME.
+            packageVersion = "0.1.0"
             // Ship the whole runtime: a missing JDK module only shows up as a crash on the tester's PC.
             includeAllModules = true
             // paketle.bat copies VLC into appResources/windows/vlc so playback works without a VLC install.
