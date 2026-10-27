@@ -75,7 +75,7 @@ object DiscordDesktopOAuth {
             Timber.tag(TAG).w("oauthCallback: %s:// registration is only implemented on Windows", SCHEME)
             return
         }
-        val dir = File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), "Metrolist").apply { mkdirs() }
+        val dir = File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), com.metrolist.music.platform.AppBrand.NAME).apply { mkdirs() }
 
         val script = File(dir, "discord-callback.ps1")
         script.writeText(

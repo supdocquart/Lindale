@@ -29,6 +29,8 @@ fun main(args: Array<String>) {
         JcefGoogleLogin.runHelperProcess(args)
         return
     }
+    // DESKTOP: rename Metrolist -> Lindale; move the old data folders before anything opens them.
+    com.metrolist.music.platform.AppBrand.migrateLegacyFolders()
     // Lets a launcher pick Skia's backend (e.g. OPENGL, SOFTWARE) for memory comparisons.
     System.getenv("METROLIST_RENDER_API")?.takeIf { it.isNotBlank() }?.let { System.setProperty("skiko.renderApi", it) }
     // DESKTOP: stop AWT from erasing the window to white before Skia paints (white flash on start/resize).
@@ -70,7 +72,13 @@ private fun runApp() = application {
             playerConnection.release()
             exitApplication()
         },
-        title = "Metrolist",
+        title = com.metrolist.music.platform.AppBrand.DISPLAY_NAME,
+        // DESKTOP: taskbar/title-bar icon (the exe icon comes from desktop/icon.ico via jpackage).
+        icon = remember {
+            androidx.compose.ui.graphics.painter.BitmapPainter(
+                androidx.compose.ui.res.useResource("lindale.png") { androidx.compose.ui.res.loadImageBitmap(it) },
+            )
+        },
         state = windowState,
         visible = windowReady,
         onKeyEvent = { event ->

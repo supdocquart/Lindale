@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- DESKTOP: strings that exist only in the desktop port (upstream files stay untouched). -->
 <resources>
+    <string name="app_display_name">Lindalë</string>
     <string name="force_bottom_navbar">Force bottom navigation bar</string>
     <string name="discord_error_network_blocked">Could not reach Discord. Your network may be blocking it. If you have the Discord app open, Metrolist can also connect through it.</string>
     <string name="restore_database_too_old">This backup is from an older Metrolist version. Update Metrolist on your phone, create a new backup and restore that one.</string>

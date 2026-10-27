@@ -226,7 +226,7 @@ private fun buildPlaybackErrorReport(
     reportedAt: Instant,
 ): String =
     buildString {
-        appendLine("Metrolist Playback Error Report")
+        appendLine("${com.metrolist.music.platform.AppBrand.NAME} Playback Error Report")
         appendLine("================================")
         appendLine("Time: $reportedAt")
         appendLine("App version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")

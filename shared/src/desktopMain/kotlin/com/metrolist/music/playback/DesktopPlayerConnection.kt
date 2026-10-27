@@ -421,7 +421,7 @@ class DesktopPlayerConnection(
     private fun initVlcEngine() {
         try {
             val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
-            val vlcBase = File(localAppData, "Metrolist/vlc")
+            val vlcBase = File(localAppData, "${com.metrolist.music.platform.AppBrand.NAME}/vlc")
             val candidateDirs = buildList {
                 // Packaged builds ship VLC next to the app (see paketle.bat).
                 System.getProperty("compose.application.resources.dir")?.let { add(File(it, "vlc")) }

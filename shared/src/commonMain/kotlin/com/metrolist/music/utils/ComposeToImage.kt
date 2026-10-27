@@ -111,7 +111,7 @@ object ComposeToImage {
 
         g.font = Font(Font.SANS_SERIF, Font.BOLD, (w * 0.03).toInt())
         g.color = fg2
-        g.drawString("Metrolist", pad, h - pad)
+        g.drawString(com.metrolist.music.platform.AppBrand.DISPLAY_NAME, pad, h - pad)
         g.dispose()
         img
     }
@@ -161,7 +161,7 @@ object ComposeToImage {
         val file = saveBitmapAsFile(context, bitmap, fileName) ?: return@withContext null
         val home = File(System.getProperty("user.home"))
         val pictures = File(home, "Pictures").takeIf { it.isDirectory } ?: home
-        val target = File(File(pictures, "Metrolist").apply { mkdirs() }, file.name)
+        val target = File(File(pictures, com.metrolist.music.platform.AppBrand.NAME).apply { mkdirs() }, file.name)
         file.copyTo(target, overwrite = true)
         ToastHost.post(target.absolutePath, Toast.LENGTH_LONG)
         target

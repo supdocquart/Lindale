@@ -41,6 +41,7 @@ import java.net.URI
 import java.util.zip.ZipFile
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
+import com.metrolist.music.platform.AppBrand
 
 /**
  * Headless smoke test. Run through `gradlew :desktop:smokeTest`, which points metrolist.dataDir at
@@ -97,7 +98,8 @@ fun main() {
 
 private fun isRealAppData(candidate: File): Boolean =
     listOfNotNull(System.getenv("APPDATA"), System.getenv("LOCALAPPDATA"))
-        .mapNotNull { root -> runCatching { File(root, "Metrolist").canonicalFile }.getOrNull() }
+        .flatMap { root -> listOf(AppBrand.NAME, AppBrand.LEGACY_NAME).map { File(root, it) } }
+        .mapNotNull { dir -> runCatching { dir.canonicalFile }.getOrNull() }
         .any { real -> candidate == real || candidate.path.startsWith(real.path + File.separator) }
 
 private fun installWatchdog() {

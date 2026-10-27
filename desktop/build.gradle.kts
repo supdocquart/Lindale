@@ -69,7 +69,7 @@ compose.desktop {
         )
         nativeDistributions {
             targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe)
-            packageName = "Metrolist"
+            packageName = "Lindale"
             packageVersion = "1.0.0"
             // Ship the whole runtime: a missing JDK module only shows up as a crash on the tester's PC.
             includeAllModules = true
@@ -77,7 +77,7 @@ compose.desktop {
             appResourcesRootDir.set(project.layout.projectDirectory.dir("appResources"))
             windows {
                 iconFile.set(project.file("icon.ico"))
-                menuGroup = "Metrolist"
+                menuGroup = "Lindale"
                 shortcut = true
                 perUserInstall = true
                 dirChooser = true

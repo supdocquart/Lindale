@@ -18,6 +18,7 @@ import javax.accessibility.Accessible
 import javax.accessibility.AccessibleRole
 import javax.accessibility.AccessibleState
 import javax.swing.SwingUtilities
+import com.metrolist.music.platform.AppBrand
 
 /**
  * Writes stdout/stderr, crashes, navigation, clicks and key presses to logs/latest.log.
@@ -35,7 +36,7 @@ object DebugLog {
             val dir = when {
                 System.getProperty("metrolist.logDir") != null -> File(System.getProperty("metrolist.logDir"))
                 // Installed apps cannot write next to the exe; keep logs in the user's profile.
-                packaged -> File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), "Metrolist/logs")
+                packaged -> File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), "${AppBrand.NAME}/logs")
                 else -> File(System.getProperty("user.dir"), "logs")
             }
             dir.mkdirs()

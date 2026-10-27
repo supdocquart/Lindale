@@ -178,7 +178,7 @@ fun BackupAndRestore(
             ),
         )
 
-        val appName = "Metrolist"
+        val appName = com.metrolist.music.platform.AppBrand.NAME
         Material3SettingsGroup(
             items =
                 listOf(

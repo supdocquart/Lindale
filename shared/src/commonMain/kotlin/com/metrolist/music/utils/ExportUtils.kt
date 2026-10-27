@@ -10,7 +10,7 @@ fun getExportFileUri(context: Any?, file: File): Uri = Uri.fromFile(file)
 fun saveToPublicDocuments(context: Any?, file: File, mimeType: String? = null): Result<Unit> = runCatching {
     val documents = File(System.getProperty("user.home"), "Documents").takeIf { it.isDirectory }
         ?: File(System.getProperty("user.home"))
-    val dir = File(documents, "Metrolist").apply { mkdirs() }
+    val dir = File(documents, com.metrolist.music.platform.AppBrand.NAME).apply { mkdirs() }
     val target = File(dir, file.name)
     file.copyTo(target, overwrite = true)
     ToastHost.post(target.absolutePath, Toast.LENGTH_LONG)
