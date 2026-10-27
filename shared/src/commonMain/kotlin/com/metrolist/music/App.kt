@@ -541,11 +541,7 @@ private fun DesktopTitleBar(
             modifier = Modifier.align(Alignment.CenterStart).padding(start = leftInset + 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(Res.drawable.app_logo),
-                contentDescription = null,
-                modifier = Modifier.size(22.dp),
-            )
+            // DESKTOP: no logo here (the old Metrolist mark); the window/taskbar icon shows Lindale's.
             IconButton(
                 onClick = onBack,
                 modifier = Modifier.titleBarInteractive(interaction),
