@@ -40,7 +40,7 @@ sealed class DiscordAuthException(message: String, cause: Throwable? = null) : E
 }
 
 private const val TAG = "DiscordSvc"
-const val REDIRECT_URI = "metrolistdiscord://oauth2/callback"
+const val REDIRECT_URI = "lindalediscord://oauth2/callback"
 
 private fun createDefaultClient(): HttpClient = HttpClient {
     install(HttpTimeout) {

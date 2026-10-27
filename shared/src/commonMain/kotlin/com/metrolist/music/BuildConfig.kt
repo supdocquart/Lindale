@@ -12,5 +12,5 @@ object BuildConfig {
     const val UPDATER_AVAILABLE = false
     const val LASTFM_API_KEY = ""
     const val LASTFM_SECRET = ""
-    const val DISCORD_APP_ID = 1447278780795064401L
+    const val DISCORD_APP_ID = 1564541685365612594L // DESKTOP: Lindale's own Discord application
 }

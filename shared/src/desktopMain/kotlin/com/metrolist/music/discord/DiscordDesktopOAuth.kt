@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit
 /**
  * Loopback HTTP receiver for the Discord OAuth redirect.
  *
- * Discord redirects to metrolistdiscord://oauth2/callback. On Windows that scheme is registered
+ * Discord redirects to lindalediscord://oauth2/callback. On Windows that scheme is registered
  * under HKCU to a small PowerShell script which forwards the URL to a loopback server started
  * only for the duration of one authorization.
  */
 object DiscordDesktopOAuth {
     private const val TAG = "DiscordSvc"
-    private const val SCHEME = "metrolistdiscord"
+    private const val SCHEME = "lindalediscord"
 
     fun install() {
         DiscordOAuthCallback.platformReceiver = { start() }
@@ -95,7 +95,7 @@ object DiscordDesktopOAuth {
         val reg = buildString {
             append("Windows Registry Editor Version 5.00\r\n\r\n")
             append("[$root]\r\n")
-            append("@=\"URL:Metrolist Discord\"\r\n")
+            append("@=\"URL:Lindale Discord\"\r\n")
             append("\"URL Protocol\"=\"\"\r\n\r\n")
             append("[$root\\shell\\open\\command]\r\n")
             append("@=\"${esc(command)}\"\r\n")
