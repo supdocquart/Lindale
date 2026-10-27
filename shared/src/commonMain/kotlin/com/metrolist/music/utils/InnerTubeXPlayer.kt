@@ -27,12 +27,7 @@ import com.metrolist.innertubex.extraction.TokenProviderCapabilities
 import com.metrolist.innertubex.extraction.YtConfigParser
 import com.metrolist.innertubex.extraction.YtConfigParserImpl
 import com.metrolist.innertubex.extraction.generateClientPlaybackNonce
-import com.metrolist.innertubex.extraction.strategy.ClientPoTokenCapabilities
-import com.metrolist.innertubex.extraction.strategy.ClientSelectionMode
 import com.metrolist.innertubex.extraction.strategy.ContentAwareFallbackStrategy
-import com.metrolist.innertubex.extraction.strategy.PlaybackClientCatalog
-import com.metrolist.innertubex.extraction.strategy.PlaybackClientCatalogView
-import com.metrolist.innertubex.extraction.strategy.PlaybackClientManifest
 import com.metrolist.innertubex.extraction.strategy.PoTokenProviderKind
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.platform.DesktopFiles
@@ -149,47 +144,6 @@ object InnerTubeXPlayer {
         return failures.clientNames
     }
 
-    private val promotedClientIds = setOf(
-        "ANDROID_VR_NO_AUTH",
-        "ANDROID_VR_1_65_10",
-        "ANDROID_VR_1_61_48",
-        "TVHTML5",
-        "TVHTML5_DOWNGRADED",
-        "TVHTML5_SIMPLY",
-        "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
-        "VISIONOS_0_1",
-        "VISIONOS",
-        "IOS",
-        "IPADOS",
-        "ANDROID",
-        "WEB_REMIX",
-    )
-
-    private val desktopCatalogView = object : PlaybackClientCatalogView by PlaybackClientCatalog {
-        private fun adaptManifest(manifest: PlaybackClientManifest): PlaybackClientManifest {
-            val shouldPromote = manifest.id in promotedClientIds
-            val noPoTokenAvailable = tokenProvider.capabilities.providers.isEmpty()
-            return manifest.copy(
-                selectionMode = if (shouldPromote) ClientSelectionMode.AUTOMATIC else manifest.selectionMode,
-                poTokens = if (noPoTokenAvailable) ClientPoTokenCapabilities() else manifest.poTokens,
-            )
-        }
-
-        override fun find(id: String): com.metrolist.innertubex.extraction.strategy.PlaybackClientOption? {
-            val option = PlaybackClientCatalog.find(id) ?: return null
-            return option.copy(manifest = adaptManifest(option.manifest))
-        }
-
-        override val automaticManifests: List<PlaybackClientManifest>
-            get() {
-                val baseIds = LinkedHashSet<String>()
-                PlaybackClientCatalog.automaticManifests.forEach { baseIds.add(it.id) }
-                promotedClientIds.forEach { baseIds.add(it) }
-                return baseIds.mapNotNull { id -> PlaybackClientCatalog.findManifest(id)?.let(::adaptManifest) }
-                    .filter { it.selectionMode == ClientSelectionMode.AUTOMATIC }
-            }
-    }
-
     suspend fun deobfuscateCipher(videoId: String, cipher: String): String? {
         return runCatching {
             val direct = bundle().cipherService.deobfuscateSignatureCipher(videoId, cipher) ?: return@runCatching null
@@ -240,7 +194,10 @@ object InnerTubeXPlayer {
                     cipherService = cipherService,
                     innerTube = latestTransport.innerTube,
                     tokenProvider = tokenProvider,
-                    fallbackStrategy = ContentAwareFallbackStrategy(catalog = desktopCatalogView),
+                    // DESKTOP: InnerTubeX's own client catalog. The old desktop view promoted extra clients and
+                    // dropped their PO-token requirement, which made it pick WEB_REMIX without a token and
+                    // YouTube refused the stream (VLC "media player error").
+                    fallbackStrategy = ContentAwareFallbackStrategy(),
                     logger = logger,
                 )
             ExtractionBundle(latestTransport.generation, cipherService, extractor).also { currentBundle = it }

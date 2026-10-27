@@ -1648,6 +1648,13 @@ class DesktopPlayerConnection(
 
                 httpClient.newCall(reqBuilder.build()).execute().use { upstream ->
                     val statusCode = upstream.code
+                    if (statusCode >= 400) {
+                        // DESKTOP: VLC only reports "media player error"; log why the stream was refused
+                        // (never the URL: it carries signed tokens) and drop the cached URL so a retry
+                        // resolves a fresh one.
+                        Timber.w("Stream proxy: upstream HTTP %d for %s (client=%s)", statusCode, videoId, info.clientName)
+                        resolvedStreams.remove(videoId)
+                    }
                     val contentType = upstream.header("Content-Type") ?: info.mimeType
                     val contentLength = upstream.body?.contentLength() ?: -1L
                     val contentRange = upstream.header("Content-Range")
@@ -1677,8 +1684,10 @@ class DesktopPlayerConnection(
                         }
                     }
                 }
-            } catch (_: Exception) {
+            } catch (e: java.io.IOException) {
                 // Client disconnected (e.g. seek or track change)
+            } catch (e: Exception) {
+                Timber.w(e, "Stream proxy failed")
             } finally {
                 runCatching { exchange.close() }
             }
