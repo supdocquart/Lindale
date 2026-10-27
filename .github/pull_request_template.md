@@ -1,18 +1,8 @@
-## Problem
-<!-- Describe the issue or limitation this PR addresses  
-DO NOT PR NEW FEATURES, WE'RE ON A FEATURE FREEZE!!! -->
-
-## Cause
-<!-- Explain the root cause of the problem -->
-
-## Solution
-<!-- List the changes made to fix the issue -->
-- 
+## What and why
+<!-- What does this change, and why? -->
 
 ## Testing
-<!-- Describe how the changes were tested -->
+<!-- How did you test it? Mention `gradlew :desktop:smokeTest` if you ran it. -->
 
-## Related Issues
-<!-- List any related issues or PRs -->
+## Related issues
 - Closes #
-- Related to #
