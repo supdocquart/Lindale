@@ -1,0 +1,9 @@
+Orijinal Metrolist kaynak kodu - SADECE REFERANS
+Depo:   https://github.com/MetrolistGroup/Metrolist
+Surum:  v13.7.0 (commit 7c5ba3ad22cb562d337897f82163a2b7fce665f3)
+
+Bu klasor derlenmez ve release paketine girmez. Masaustu surumu shared/ ve
+desktop/ altindaki kodla calisir. Orijinal projede yeni surum cikinca bu klasor
+o surumle degistirilir; git diff neyin degistigini gosterir ve ilgili
+degisiklikler DESKTOP_PORT_NOTES.txt'deki eslemeyle bizim koda tasinir.
+Klasordeki dosyalari elle duzenlemeyin.
