@@ -134,7 +134,7 @@ fun ChangelogScreen(
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
             ) {
-                val githubReleasesUrl = stringResource(Res.string.github_releases_url)
+                val githubReleasesUrl = "${com.metrolist.music.platform.AppBrand.REPO_URL}/releases"
                 ExtendedFloatingActionButton(
                     onClick = { uriHandler.openUri(githubReleasesUrl) },
                     icon = { Icon(painterResource(Res.drawable.github), contentDescription = null, modifier = Modifier.size(24.dp)) },

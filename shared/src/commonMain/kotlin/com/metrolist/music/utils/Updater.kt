@@ -35,8 +35,9 @@ object Updater {
     private var cachedAllReleases: List<ReleaseInfo> = emptyList()
     
     private const val CHECK_INTERVAL_MILLIS = 2 * 60 * 60 * 1000L // 2 hours
-    private const val GITHUB_API_BASE = "https://api.github.com/repos/MetrolistGroup/Metrolist"
-    private const val KMP_LATEST_RELEASE_URL = "https://api.github.com/repos/MetrolistGroup/Metrolist-KMP/releases/latest"
+    // DESKTOP: Lindale's own releases, not upstream's Android ones.
+    private const val GITHUB_API_BASE = com.metrolist.music.platform.AppBrand.REPO_API
+    private const val KMP_LATEST_RELEASE_URL = "$GITHUB_API_BASE/releases/latest"
     private const val KMP_APK_NAME = "Metrolist.apk"
 
     fun compareVersions(v1: String, v2: String): Int {
@@ -72,14 +73,16 @@ object Updater {
             val asset = assetsArray.getJSONObject(i)
             val name = asset.getString("name")
             
-            // Skip non-APK files
-            if (!name.endsWith(".apk")) continue
+            // DESKTOP: Windows installers (.exe preferred) plus the upstream APK names below.
+            if (!name.endsWith(".apk") && !name.endsWith(".exe") && !name.endsWith(".msi")) continue
             
             val downloadUrl = asset.getString("browser_download_url")
             val size = asset.getLong("size")
             
             val (arch, variant) = when {
-                name == "Metrolist.apk" -> "universal" to "foss"
+                name.endsWith(".exe") -> "universal" to "foss"
+                name.endsWith(".msi") -> "universal" to "msi"
+                name == "Metrolist.apk" -> "universal" to "apk"
                 name == "Metrolist-with-Google-Cast.apk" -> "universal" to "gms"
                 name.startsWith("app-") && name.endsWith("-release.apk") -> {
                     val arch = name.removePrefix("app-").removeSuffix("-release.apk")

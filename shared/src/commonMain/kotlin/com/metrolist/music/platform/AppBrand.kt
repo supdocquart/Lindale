@@ -16,6 +16,12 @@ object AppBrand {
     /** Name used before the rename; its folders are moved over once. */
     const val LEGACY_NAME = "Metrolist"
 
+    /** Lindale's own repository: releases, update checks, about screen. */
+    const val REPO_URL = "https://github.com/supdocquart/Lindale"
+
+    /** GitHub REST base for [REPO_URL]. */
+    const val REPO_API = "https://api.github.com/repos/supdocquart/Lindale"
+
     /**
      * Moves %APPDATA%\Metrolist and %LOCALAPPDATA%\Metrolist to the new name, once. Must run before
      * anything opens files there (first thing in main). When the new folder already exists, only the

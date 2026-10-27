@@ -45,7 +45,7 @@ Requirements: Windows 10 or 11, 64-bit.
 You need Git and a 64-bit **VLC 3.0** install (the app uses libVLC for playback; release builds bundle it).
 
 ```bat
-git clone https://github.com/<OWNER>/Lindale.git
+git clone https://github.com/supdocquart/Lindale.git
 cd Lindale
 gradlew.bat :desktop:run
 ```
