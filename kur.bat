@@ -35,12 +35,9 @@ timeout /t 1 /nobreak >nul
 rem VLC eklentileri her derlemede yeni tarihle uretiliyor; hepsini yeniden kopyalamak Windows Defender
 rem taramasina yol aciyor ve ilk acilisi ~12 sn yavaslatiyordu. VLC klasorunde sadece eksik dosyalar kopyalanir
 rem (VLC surumu degisirse kurulu app\resources\vlc klasorunu silip tekrar kurun).
-robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" "%SRC%\app\resources\mpv" /NFL /NDL /NJH /NJS /NP >> %LOG%
+robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" /NFL /NDL /NJH /NJS /NP >> %LOG%
 set RC=%ERRORLEVEL%
 robocopy "%SRC%\app\resources\vlc" "%DEST%\app\resources\vlc" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
-if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%
-rem libmpv (tek buyuk DLL) de ayni sekilde: sadece eksikse kopyalanir (yeni surumde kurulu mpv klasorunu silin).
-robocopy "%SRC%\app\resources\mpv" "%DEST%\app\resources\mpv" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
 if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%
 if %RC% GEQ 8 (
     echo INSTALL FAILED >> %LOG%

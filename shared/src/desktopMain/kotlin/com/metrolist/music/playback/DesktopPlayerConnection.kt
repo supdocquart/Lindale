@@ -66,6 +66,10 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory
+import uk.co.caprica.vlcj.player.base.MediaPlayer
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -143,11 +147,10 @@ class DesktopPlayerConnection(
     @Volatile
     private var consecutivePlaybackErrors: Int = 0
 
-    // DESKTOP: libmpv by default, libVLC as fallback (see AudioEngine).
-    @Volatile
-    private var engine: AudioEngine? = null
+    private var mediaPlayerFactory: MediaPlayerFactory? = null
+    private var vlcPlayer: MediaPlayer? = null
 
-    // Declared before init {} runs initEngine(), which reads it.
+    // Declared before init {} runs initVlcEngine(), which reads it.
     @Volatile
     private var playbackParams: PlaybackParameters = PlaybackParameters.DEFAULT
 
@@ -196,79 +199,8 @@ class DesktopPlayerConnection(
 
     override val player: DesktopPlayer = DesktopPlayer()
 
-    // DESKTOP: completed once the audio engine is ready; playback waits for it instead of the whole UI.
+    // DESKTOP: completed once libVLC is ready; playback waits for it instead of the whole UI.
     private val vlcReady = kotlinx.coroutines.CompletableDeferred<Unit>()
-
-    // DESKTOP: declared before init {}, whose engine thread hands it to the engine.
-    private val engineListener = object : AudioEngine.Listener {
-        override fun onBuffering() {
-            if (!isPlaying.value) {
-                playbackState.value = Player.STATE_BUFFERING
-                player.notifyPlaybackState(Player.STATE_BUFFERING)
-            }
-        }
-
-        override fun onPlaying() {
-            // DESKTOP: a successful start breaks the auto-skip error streak.
-            consecutivePlaybackErrors = 0
-            playbackState.value = Player.STATE_READY
-            isPlaying.value = true
-            player.playWhenReady = true
-            player.notifyPlaybackState(Player.STATE_READY)
-            player.notifyIsPlaying(true)
-        }
-
-        override fun onPaused() {
-            isPlaying.value = false
-            player.playWhenReady = false
-            player.notifyIsPlaying(false)
-        }
-
-        override fun onStopped() {
-            isPlaying.value = false
-            player.notifyIsPlaying(false)
-        }
-
-        override fun onLength(ms: Long) {
-            if (ms > 0L) player.internalDuration = ms
-        }
-
-        override fun onEnded() {
-            ioScope.launch { onTrackEndedNaturally() }
-        }
-
-        override fun onError(message: String) {
-            Timber.e("%s playback error for %s: %s", engine?.name, mediaMetadata.value?.id, message)
-            isPlaying.value = false
-            playbackState.value = Player.STATE_IDLE
-            error.value = PlaybackException(
-                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
-                "Playback error",
-            )
-
-            // DESKTOP: mirror upstream AutoSkipNextOnErrorKey without looping forever on a broken queue.
-            val hasNext = player.nextMediaItemIndex != -1
-            if (autoSkipNextOnErrorCached && hasNext &&
-                consecutivePlaybackErrors < MAX_CONSECUTIVE_PLAYBACK_ERRORS
-            ) {
-                consecutivePlaybackErrors++
-                Timber.d(
-                    "Auto-skipping to next track after playback error (%d/%d)",
-                    consecutivePlaybackErrors,
-                    MAX_CONSECUTIVE_PLAYBACK_ERRORS,
-                )
-                ioScope.launch { seekToNext() }
-            } else {
-                Timber.d(
-                    "Staying on the errored item: autoSkipOnError=%s hasNext=%s consecutiveErrors=%d",
-                    autoSkipNextOnErrorCached,
-                    hasNext,
-                    consecutivePlaybackErrors,
-                )
-            }
-        }
-    }
-
 
     init {
         InnerTubeXPlayer.initialize(AppContext.Default)
@@ -279,7 +211,7 @@ class DesktopPlayerConnection(
         // now runs on its own thread; every property above is already initialised at this point.
         Thread({
             try {
-                com.metrolist.music.platform.StartupTrace.span("player:engine_init") { initEngine() }
+                com.metrolist.music.platform.StartupTrace.span("player:vlc_init") { initVlcEngine() }
             } finally {
                 vlcReady.complete(Unit)
             }
@@ -403,13 +335,13 @@ class DesktopPlayerConnection(
         // Position & duration polling loop while active
         scope.launch {
             while (isActive) {
-                val e = engine
-                if (e != null && isPlaying.value) {
-                    val time = runCatching { e.timeMs }.getOrDefault(-1L)
+                val mp = vlcPlayer
+                if (mp != null && isPlaying.value) {
+                    val time = runCatching { mp.status().time() }.getOrDefault(-1L)
                     if (time >= 0L) {
                         player.internalPosition = time
                     }
-                    val length = runCatching { e.lengthMs }.getOrDefault(-1L)
+                    val length = runCatching { mp.status().length() }.getOrDefault(-1L)
                     if (length > 0L) {
                         player.internalDuration = length
                     }
@@ -419,31 +351,54 @@ class DesktopPlayerConnection(
         }
     }
 
-    /**
-     * DESKTOP: Tempo & pitch / speed dialogs. mpv applies both live; libVLC sets pitch only at start-up,
-     * so there the engine is recreated and playback resumes at the same spot.
-     */
+    /** Same speed and pitch = "varispeed" (pitch follows speed, like a record). */
+    private fun PlaybackParameters.isVarispeed() = speed != 1f && kotlin.math.abs(pitch - speed) < 0.001f
+
+    private fun PlaybackParameters.semitones(): Float = (12.0 * kotlin.math.log2(pitch.toDouble())).toFloat()
+
+    private fun vlcArgs(params: PlaybackParameters): Array<String> = buildList {
+        add("--no-video")
+        add("--no-stats")
+        add("--network-caching=1500")
+        add("--http-reconnect")
+        // Pitch can only be set when libVLC starts, so a pitch change rebuilds the engine below.
+        if (params.isVarispeed()) {
+            add("--no-audio-time-stretch")
+        } else if (kotlin.math.abs(params.semitones()) > 0.01f) {
+            add("--audio-filter=scaletempo_pitch")
+            add("--pitch-shift=${params.semitones()}")
+        }
+    }.toTypedArray()
+
+    /** DESKTOP: Tempo & pitch / speed dialogs. Tempo changes live; pitch restarts VLC at the same spot. */
     private fun applyPlaybackParameters(params: PlaybackParameters) {
+        val old = playbackParams
         playbackParams = params
-        val e = engine ?: return
-        if (runCatching { e.setPlaybackParameters(params.speed, params.pitch) }.getOrDefault(true)) return
+        val pitchChanged = old.isVarispeed() != params.isVarispeed() ||
+            (!params.isVarispeed() && kotlin.math.abs(old.semitones() - params.semitones()) > 0.01f)
+        if (!pitchChanged) {
+            runCatching { vlcPlayer?.controls()?.setRate(params.speed) }
+            return
+        }
         val index = currentMediaItemIndex.value
         val position = player.currentPosition
-        val wasActive = e.isPlaying || isPlaying.value
-        engine = null
-        runCatching { e.release() }
-        initEngine()
-        applyVolume()
+        val wasActive = vlcPlayer?.status()?.isPlaying == true || isPlaying.value
+        runCatching { vlcPlayer?.controls()?.stop() }
+        runCatching { vlcPlayer?.release() }
+        runCatching { mediaPlayerFactory?.release() }
+        vlcPlayer = null
+        mediaPlayerFactory = null
+        initVlcEngine()
         if (wasActive && index in player.itemsList.indices) playIndex(index, position)
     }
 
-    /** DESKTOP: the only place that pushes volume to the engine, with the loudness normalization gain applied. */
+    /** DESKTOP: the only place that pushes volume to VLC, with the loudness normalization gain applied. */
     private fun applyVolume() {
-        val e = engine ?: return
+        val mp = vlcPlayer ?: return
         val playerVolume = service.playerVolume.value.coerceIn(0f, 1f)
         val factor = if (normalizationEnabledCached) normalizationFactor else 1.0
-        val volume = (playerVolume * factor * 100).roundToInt().coerceIn(0, 200)
-        runCatching { e.setVolume(if (isMuted.value) 0 else volume) }
+        val vlcVolume = (playerVolume * factor * 100).roundToInt().coerceIn(0, 200)
+        runCatching { mp.audio().setVolume(if (isMuted.value) 0 else vlcVolume) }
     }
 
     /** DESKTOP: gain calculation mirrors the upstream MusicService.normalizationGainMb behaviour. */
@@ -463,26 +418,120 @@ class DesktopPlayerConnection(
         )
     }
 
-    /**
-     * DESKTOP: libmpv unless `-Dlindale.audioEngine=vlc` (or env LINDALE_AUDIO_ENGINE=vlc); libVLC is
-     * also the fallback when libmpv is missing or fails to start.
-     */
-    private fun initEngine() {
-        val wanted = (System.getProperty("lindale.audioEngine") ?: System.getenv("LINDALE_AUDIO_ENGINE"))
-            ?.lowercase()
-        val params = playbackParams
-        val created = if (wanted == "vlc") {
-            VlcEngine.create(engineListener, params.speed, params.pitch)
-        } else {
-            MpvEngine.create(engineListener, params.speed, params.pitch)
-                ?: VlcEngine.create(engineListener, params.speed, params.pitch)
-        }
-        engine = created
-        Timber.i("Audio engine: %s", created?.name ?: "none")
-        com.metrolist.music.ui.component.DownloadCenter.engine = createDownloadEngine()
-        created?.equalizer?.let { eq ->
-            runCatching { com.metrolist.music.eq.EqualizerService.attach(eq) }
-                .onFailure { Timber.e(it, "EQ: attach failed") }
+    private fun initVlcEngine() {
+        try {
+            val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
+            val vlcBase = File(localAppData, "${com.metrolist.music.platform.AppBrand.NAME}/vlc")
+            val candidateDirs = buildList {
+                // Packaged builds ship VLC next to the app (see paketle.bat).
+                System.getProperty("compose.application.resources.dir")?.let { add(File(it, "vlc")) }
+                add(File(vlcBase, "vlc-3.0.24"))
+                if (vlcBase.exists()) {
+                    vlcBase.listFiles()?.filter { it.isDirectory }?.forEach { add(it) }
+                }
+                add(File("C:\\Program Files\\VideoLAN\\VLC"))
+            }
+            val vlcDir = candidateDirs.firstOrNull { File(it, "libvlc.dll").exists() }
+            if (vlcDir != null) {
+                val path = vlcDir.absolutePath
+                val pluginsPath = File(vlcDir, "plugins").absolutePath
+                System.setProperty("jna.library.path", path)
+                System.setProperty("VLC_PLUGIN_PATH", pluginsPath)
+                NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path)
+                NativeLibrary.addSearchPath("libvlccore", path)
+                Timber.d("Loaded 64-bit libvlc from: $path")
+            }
+
+            val factory = MediaPlayerFactory(*vlcArgs(playbackParams))
+            mediaPlayerFactory = factory
+            val mp = factory.mediaPlayers().newMediaPlayer()
+            mp.events().addMediaPlayerEventListener(object : MediaPlayerEventAdapter() {
+                override fun buffering(mediaPlayer: MediaPlayer, newCache: Float) {
+                    if (newCache < 100f && !isPlaying.value) {
+                        playbackState.value = Player.STATE_BUFFERING
+                        player.notifyPlaybackState(Player.STATE_BUFFERING)
+                    }
+                }
+
+                override fun playing(mediaPlayer: MediaPlayer) {
+                    // VLC resets the rate for each new media; keep the user's tempo.
+                    val speed = playbackParams.speed
+                    if (speed != 1f) runCatching { mediaPlayer.controls().setRate(speed) }
+                    // DESKTOP: a successful start breaks the auto-skip error streak.
+                    consecutivePlaybackErrors = 0
+                    playbackState.value = Player.STATE_READY
+                    isPlaying.value = true
+                    player.playWhenReady = true
+                    player.notifyPlaybackState(Player.STATE_READY)
+                    player.notifyIsPlaying(true)
+                }
+
+                override fun paused(mediaPlayer: MediaPlayer) {
+                    isPlaying.value = false
+                    player.playWhenReady = false
+                    player.notifyIsPlaying(false)
+                }
+
+                override fun stopped(mediaPlayer: MediaPlayer) {
+                    isPlaying.value = false
+                    player.notifyIsPlaying(false)
+                }
+
+                override fun timeChanged(mediaPlayer: MediaPlayer, newTime: Long) {
+                    if (newTime >= 0L) {
+                        player.internalPosition = newTime
+                    }
+                }
+
+                override fun lengthChanged(mediaPlayer: MediaPlayer, newLength: Long) {
+                    if (newLength > 0L) {
+                        player.internalDuration = newLength
+                    }
+                }
+
+                override fun finished(mediaPlayer: MediaPlayer) {
+                    ioScope.launch {
+                        onTrackEndedNaturally()
+                    }
+                }
+
+                override fun error(mediaPlayer: MediaPlayer) {
+                    Timber.e("VLCJ media player error for ${mediaMetadata.value?.id}")
+                    isPlaying.value = false
+                    playbackState.value = Player.STATE_IDLE
+                    error.value = PlaybackException(
+                        PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+                        "Playback error",
+                    )
+
+                    // DESKTOP: mirror upstream AutoSkipNextOnErrorKey without looping forever on a broken queue.
+                    val hasNext = player.nextMediaItemIndex != -1
+                    if (autoSkipNextOnErrorCached && hasNext &&
+                        consecutivePlaybackErrors < MAX_CONSECUTIVE_PLAYBACK_ERRORS
+                    ) {
+                        consecutivePlaybackErrors++
+                        Timber.d(
+                            "Auto-skipping to next track after playback error (%d/%d)",
+                            consecutivePlaybackErrors,
+                            MAX_CONSECUTIVE_PLAYBACK_ERRORS,
+                        )
+                        ioScope.launch { seekToNext() }
+                    } else {
+                        Timber.d(
+                            "Staying on the errored item: autoSkipOnError=%s hasNext=%s consecutiveErrors=%d",
+                            autoSkipNextOnErrorCached,
+                            hasNext,
+                            consecutivePlaybackErrors,
+                        )
+                    }
+                }
+            })
+            vlcPlayer = mp
+            com.metrolist.music.ui.component.DownloadCenter.engine = createDownloadEngine()
+            runCatching { com.metrolist.music.eq.EqualizerService.attach(VlcEqualizerBackend(factory, mp)) }
+                .onFailure { Timber.e(it, "EQ: VLC equalizer unavailable") }
+        } catch (e: Throwable) {
+            Timber.e(e, "Failed to initialize VLCJ audio engine")
         }
     }
 
@@ -706,16 +755,17 @@ class DesktopPlayerConnection(
             val videoId = item.mediaId.ifBlank { meta?.id.orEmpty() }
             if (videoId.isBlank()) return@launch
 
-            // DESKTOP: the audio engine starts in the background; wait for it before touching the player.
+            // DESKTOP: libVLC is initialised in the background; wait for it before touching the player.
             vlcReady.await()
 
             val localFile = com.metrolist.music.ui.component.DownloadCenter.localFile(videoId)
             if (localFile != null) {
-                val e = engine
-                if (e != null) {
+                val mp = vlcPlayer
+                if (mp != null) {
                     Timber.i("Playing downloaded file for %s", videoId)
                     applyVolume()
-                    e.load(localFile.absolutePath, startPositionMs)
+                    val options = if (startPositionMs > 0L) arrayOf(":start-time=${startPositionMs / 1000.0}") else emptyArray()
+                    mp.media().play(localFile.absolutePath, *options)
                     return@launch
                 }
             }
@@ -734,10 +784,15 @@ class DesktopPlayerConnection(
                 updateNormalizationFactor()
 
                 val proxyUrl = streamProxy.getStreamUrl(videoId)
-                val e = engine
-                if (e != null) {
+                val mp = vlcPlayer
+                if (mp != null) {
                     applyVolume()
-                    e.load(proxyUrl, startPositionMs)
+                    val options = if (startPositionMs > 0L) {
+                        arrayOf(":start-time=${startPositionMs / 1000.0}")
+                    } else {
+                        emptyArray()
+                    }
+                    mp.media().play(proxyUrl, *options)
                 }
             }.onFailure { err ->
                 Timber.e(err, "Failed to resolve stream for $videoId")
@@ -927,30 +982,30 @@ class DesktopPlayerConnection(
     }
 
     override fun play() {
-        // DESKTOP: play pressed while the audio engine is still starting: playIndex waits for it.
-        val e = engine ?: run {
+        // DESKTOP: play pressed while libVLC is still starting: playIndex waits for it.
+        val mp = vlcPlayer ?: run {
             if (player.mediaItemCount > 0) playIndex(currentMediaItemIndex.value, player.currentPosition)
             return
         }
-        // A fresh engine (app start, or rebuilt after a pitch change) has no media loaded yet.
-        val hasMedia = runCatching { e.hasMedia }.getOrDefault(false)
+        // A fresh VLC player (app start, or rebuilt after a pitch change) has no media loaded yet.
+        val hasMedia = runCatching { mp.media().isValid }.getOrDefault(false)
         if (!hasMedia || playbackState.value == Player.STATE_IDLE || playbackState.value == Player.STATE_ENDED) {
             if (player.mediaItemCount > 0) {
                 playIndex(currentMediaItemIndex.value, player.currentPosition)
             }
         } else {
-            e.play()
+            mp.controls().play()
         }
     }
 
     override fun pause() {
-        engine?.pause()
+        vlcPlayer?.controls()?.pause()
     }
 
     override fun seekTo(position: Long) {
         val target = position.coerceAtLeast(0L)
         player.internalPosition = target
-        engine?.seek(target)
+        vlcPlayer?.controls()?.setTime(target)
     }
 
     override fun seekToNext() {
@@ -1265,8 +1320,9 @@ class DesktopPlayerConnection(
         // DESKTOP: runs on app close, so the last queue and position are written synchronously.
         saveQueueToDisk()
         playJob?.cancel()
-        runCatching { engine?.release() }
-        engine = null
+        runCatching { vlcPlayer?.controls()?.stop() }
+        runCatching { vlcPlayer?.release() }
+        runCatching { mediaPlayerFactory?.release() }
         runCatching { streamProxy.stop() }
     }
 
@@ -1452,7 +1508,7 @@ class DesktopPlayerConnection(
         }
 
         override fun stop() {
-            runCatching { engine?.stop() }
+            runCatching { vlcPlayer?.controls()?.stop() }
             this@DesktopPlayerConnection.isPlaying.value = false
             this@DesktopPlayerConnection.playbackState.value = STATE_IDLE
         }
