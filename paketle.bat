@@ -26,8 +26,8 @@ if not %ERRORLEVEL%==0 (
 )
 
 echo [3/4] Zip olusturuluyor >> %LOG%
-if exist dist\Lindale-demo.zip del /q dist\Lindale-demo.zip
-powershell -NoProfile -Command "Compress-Archive -Path 'desktop\build\compose\binaries\main\app\Lindale' -DestinationPath 'dist\Lindale-demo.zip' -CompressionLevel Optimal" >> %LOG% 2>&1
+if exist dist\Lindale-portable.zip del /q dist\Lindale-portable.zip
+powershell -NoProfile -Command "Compress-Archive -Path 'desktop\build\compose\binaries\main\app\Lindale' -DestinationPath 'dist\Lindale-portable.zip' -CompressionLevel Optimal" >> %LOG% 2>&1
 
 echo [4/4] Kurulum exe'si olusturuluyor >> %LOG%
 rem jpackage, WiX kimliklerini sistem diliyle buyuk/kucuk harfe ceviriyor: Turkce Windows'ta "icon" -> "İcon"
@@ -36,7 +36,7 @@ set JAVA_TOOL_OPTIONS=-Duser.language=en -Duser.country=US
 rem compose.desktop.verbose: jpackage/WiX (candle, light) ciktisini da loga yazar; hata olursa sebebi gorunur.
 call .\gradlew.bat :desktop:packageExe --no-configuration-cache --console=plain -Pcompose.desktop.verbose=true >> %LOG% 2>&1
 if %ERRORLEVEL%==0 (
-    for %%f in (desktop\build\compose\binaries\main\exe\*.exe) do copy /y "%%f" dist\Lindale-demo-setup.exe >> %LOG%
+    for %%f in (desktop\build\compose\binaries\main\exe\*.exe) do copy /y "%%f" dist\Lindale-setup.exe >> %LOG%
 ) else (
     echo EXE adimi basarisiz, zip yine de hazir. >> %LOG%
 )
