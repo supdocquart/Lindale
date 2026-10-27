@@ -80,6 +80,9 @@ compose.desktop {
                 iconFile.set(project.file("icon.ico"))
                 menuGroup = "Lindale"
                 shortcut = true
+                // DESKTOP: fixed forever, so a new Lindale installer upgrades the old one instead of
+                // installing a second copy. Never change it.
+                upgradeUuid = "1ca9abb7-22db-403d-a97f-d99f01612e32"
                 perUserInstall = true
                 dirChooser = true
             }
