@@ -39,7 +39,7 @@ robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" "%SRC%\app\resource
 set RC=%ERRORLEVEL%
 robocopy "%SRC%\app\resources\vlc" "%DEST%\app\resources\vlc" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
 if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%
-rem libmpv (tek buyuk DLL) de ayni sekilde: sadece degistiyse kopyala.
+rem libmpv (tek buyuk DLL) de ayni sekilde: sadece eksikse kopyalanir (yeni surumde kurulu mpv klasorunu silin).
 robocopy "%SRC%\app\resources\mpv" "%DEST%\app\resources\mpv" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
 if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%
 if %RC% GEQ 8 (
