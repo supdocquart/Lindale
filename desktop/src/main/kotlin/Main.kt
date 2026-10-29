@@ -66,11 +66,11 @@ private fun runApp() = application {
             com.metrolist.music.playback.DesktopScrobbler(playerConnection).also { it.start() }
         }
     }
-
     remember(playerConnection) {
         com.metrolist.music.platform.StartupTrace.span("media_session_start") {
             WindowsMediaSession(playerConnection).also { it.start() }
         }
+    }
 
     Window(
         onCloseRequest = {
@@ -107,6 +107,13 @@ private fun runApp() = application {
             val kfm = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager()
             kfm.addKeyEventDispatcher(dispatcher)
             onDispose { kfm.removeKeyEventDispatcher(dispatcher) }
+        }
+        // Privacy > "Disable screenshots": keep the window out of screenshots and screen sharing.
+        LaunchedEffect(window) {
+            com.metrolist.music.platform.WindowsTitleBar.captureHiddenPref
+                .collect { hidden ->
+                    java.awt.EventQueue.invokeLater { com.metrolist.music.platform.WindowsTitleBar.setCaptureHidden(window, hidden) }
+                }
         }
         // Title bar follows the app theme (see WindowChrome / WindowsTitleBar / JbrTitleBar).
         DisposableEffect(window) {

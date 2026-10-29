@@ -223,7 +223,7 @@ fun PrivacySettings(
                 Material3SettingsItem(
                     icon = painterResource(Res.drawable.screenshot),
                     title = { Text(stringResource(Res.string.disable_screenshot)) },
-                    description = { Text(stringResource(Res.string.disable_screenshot_desc)) },
+                    description = { Text(stringResource(Res.string.hide_from_capture_desc)) },
                     trailingContent = {
                         Switch(
                             checked = disableScreenshot,

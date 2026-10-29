@@ -1,6 +1,9 @@
 package com.metrolist.music.platform
 
+import com.metrolist.music.utils.dataStore
 import com.sun.jna.Library
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import com.sun.jna.Memory
 import com.sun.jna.Native
 import com.sun.jna.Pointer
@@ -21,6 +24,27 @@ object WindowsTitleBar {
     private const val DWMWA_TEXT_COLOR = 36
 
     private val isWindows = System.getProperty("os.name").orEmpty().startsWith("Windows")
+
+    private interface User32 : Library {
+        fun SetWindowDisplayAffinity(hwnd: Pointer, affinity: Int): Boolean
+    }
+
+    private val user32: User32? by lazy {
+        if (!isWindows) null else runCatching { Native.load("user32", User32::class.java) }.getOrNull()
+    }
+
+    /** Privacy > "Disable screenshot" preference. */
+    val captureHiddenPref: kotlinx.coroutines.flow.Flow<Boolean>
+        get() = AppContext().dataStore.data
+            .map { it[com.metrolist.music.constants.DisableScreenshotKey] ?: false }
+            .distinctUntilChanged()
+
+    /** Privacy setting: hides the window from screenshots, recordings and screen sharing (Windows 10 2004+). */
+    fun setCaptureHidden(window: java.awt.Window, hidden: Boolean) {
+        val hwnd = runCatching { Native.getWindowPointer(window) }.getOrNull() ?: return
+        // WDA_EXCLUDEFROMCAPTURE = 0x11, WDA_NONE = 0
+        runCatching { user32?.SetWindowDisplayAffinity(hwnd, if (hidden) 0x11 else 0) }
+    }
 
     private val dwm: Dwmapi? by lazy {
         if (!isWindows) null else runCatching { Native.load("dwmapi", Dwmapi::class.java) }.getOrNull()
