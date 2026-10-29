@@ -123,15 +123,5 @@ logs/
 desktop/appResources/
 dist/
 
-yedek/
-
-
-# DESKTOP: local backups (git history bundle etc.); never commit
-_yedek/
-
-
-
-
-
-# Upstream reference snapshot: lives on the `upstream` branch, a local copy is kept here
+# Upstream reference snapshot: lives on the `upstream` branch; a local copy may be kept here
 upstream/

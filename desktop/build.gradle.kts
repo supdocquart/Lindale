@@ -134,7 +134,7 @@ tasks.withType<org.jetbrains.compose.desktop.application.tasks.AbstractJLinkTask
     }
 }
 
-// Dev runs (Metrolist.bat): logs in the repo + native memory tracking for MemoryMonitor. Not in packaged builds.
+// Dev runs (gradlew :desktop:run): logs in the repo + native memory tracking for MemoryMonitor. Not in packaged builds.
 tasks.withType<JavaExec>().configureEach {
     if (name == "run") {
         systemProperty("metrolist.logDir", rootProject.file("logs").absolutePath)

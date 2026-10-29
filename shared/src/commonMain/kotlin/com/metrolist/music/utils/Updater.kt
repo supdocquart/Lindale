@@ -37,8 +37,6 @@ object Updater {
     private const val CHECK_INTERVAL_MILLIS = 2 * 60 * 60 * 1000L // 2 hours
     // DESKTOP: Lindale's own releases, not upstream's Android ones.
     private const val GITHUB_API_BASE = com.metrolist.music.platform.AppBrand.REPO_API
-    private const val KMP_LATEST_RELEASE_URL = "$GITHUB_API_BASE/releases/latest"
-    private const val KMP_APK_NAME = "Metrolist.apk"
 
     fun compareVersions(v1: String, v2: String): Int {
         val v1Parts = v1.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
@@ -165,27 +163,6 @@ object Updater {
                 
                 cachedAllReleases = releases
                 releases
-            }
-        }
-
-    internal fun parseKmpRelease(response: String): ReleaseInfo? {
-        val release = JSONObject(response)
-        val assets = parseAssets(release.getJSONArray("assets")).filter { it.name == KMP_APK_NAME }
-        val tagName = release.getString("tag_name")
-
-        return ReleaseInfo(
-            tagName = tagName,
-            versionName = tagName.removePrefix("v"),
-            description = release.optString("body").takeUnless { release.isNull("body") }.orEmpty(),
-            releaseDate = release.getString("published_at"),
-            assets = assets,
-        ).takeIf { assets.isNotEmpty() }
-    }
-
-    suspend fun getLatestKmpRelease(): Result<ReleaseInfo?> =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                parseKmpRelease(client.get(KMP_LATEST_RELEASE_URL).bodyAsText())
             }
         }
 

@@ -234,7 +234,7 @@ class GitHubAutoEqSearch(context: Any? = null) {
         try {
             conn.connectTimeout = 10_000
             conn.readTimeout = 20_000
-            conn.setRequestProperty("User-Agent", "Metrolist-Desktop")
+            conn.setRequestProperty("User-Agent", com.metrolist.music.platform.AppBrand.NAME)
             check(conn.responseCode == 200) { "HTTP ${conn.responseCode} for $url" }
             return conn.inputStream.bufferedReader().use { it.readText() }
         } finally {

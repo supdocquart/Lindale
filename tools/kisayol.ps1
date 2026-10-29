@@ -13,7 +13,7 @@ foreach ($dir in $places) {
         if ($l.TargetPath -eq $OldExe) { Remove-Item -Force $legacy; Write-Output "Eski kisayol silindi: $legacy" }
     }
     $lnkPath = Join-Path $dir 'Lindale.lnk'
-    # Keep an existing shortcut that points somewhere else (e.g. the developer Metrolist.bat).
+    # Keep an existing shortcut that points somewhere else (e.g. a developer build).
     if (Test-Path $lnkPath) {
         $old = $shell.CreateShortcut($lnkPath)
         if ($old.TargetPath -and ($old.TargetPath -ne $Exe)) {

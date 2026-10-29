@@ -92,7 +92,10 @@ object DebugLog {
             else -> "b${ev.button}"
         }
         val size = win?.let { "${it.width}x${it.height}" } ?: "?"
-        val target = if (System.getProperty("metrolist.trace.a11y") == "false") "-" else describeAt(src, ev.point)
+        // DESKTOP: element labels (song, playlist and account names) only in dev runs; installed builds
+        // logs get shared in bug reports.
+        val labels = System.getProperty("metrolist.logDir") != null && System.getProperty("metrolist.trace.a11y") != "false"
+        val target = if (labels) describeAt(src, ev.point) else "-"
         write(
             "CLICK",
             "$button x=${p.x} y=${p.y} win=$size count=${ev.clickCount} page=${UiTrace.currentRoute} player=${UiTrace.playerSheet} target=$target",

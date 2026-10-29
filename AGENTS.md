@@ -22,5 +22,5 @@ gradlew.bat :desktop:smokeTest       :: headless checks in an isolated data fold
 gradlew.bat :desktop:run             :: run the app (needs a 64-bit VLC 3.0 install)
 ```
 
-See `DESKTOP_PORT_NOTES.txt` for how the port differs from Android Metrolist and how upstream
+See `PORTING.md` for how the port differs from Android Metrolist and how upstream
 updates are brought over.

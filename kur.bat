@@ -14,7 +14,7 @@ set VLC_SRC=%LOCALAPPDATA%\Lindale\vlc\vlc-3.0.24
 if not exist "%VLC_SRC%\libvlc.dll" set VLC_SRC=%LOCALAPPDATA%\Metrolist\vlc\vlc-3.0.24
 if not exist "%VLC_SRC%\libvlc.dll" set VLC_SRC=C:\Program Files\VideoLAN\VLC
 if not exist "%VLC_SRC%\libvlc.dll" (
-    echo VLC bulunamadi: once Metrolist.bat ile bir kez calistirin. >> %LOG%
+    echo VLC bulunamadi: 64-bit VLC 3.0 kurun. >> %LOG%
     echo INSTALL FAILED >> %LOG%
     echo VLC bulunamadi. & pause & exit /b 1
 )

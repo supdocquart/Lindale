@@ -56,7 +56,6 @@ class KeyValueStore private constructor(private val file: File) {
 
     fun getString(key: String, defValue: String?): String? = synchronized(lock) { data[key] as? String ?: defValue }
     fun getLong(key: String, defValue: Long): Long = synchronized(lock) { (data[key] as? Number)?.toLong() ?: defValue }
-    fun getInt(key: String, defValue: Int): Int = synchronized(lock) { (data[key] as? Number)?.toInt() ?: defValue }
     fun getBoolean(key: String, defValue: Boolean): Boolean = synchronized(lock) { data[key] as? Boolean ?: defValue }
     fun contains(key: String): Boolean = synchronized(lock) { data.containsKey(key) }
 
@@ -74,7 +73,6 @@ class KeyValueStore private constructor(private val file: File) {
         fun putString(key: String, value: String?) = apply { changes[key] = value }
         fun putLong(key: String, value: Long) = apply { changes[key] = value }
         fun putInt(key: String, value: Int) = apply { changes[key] = value }
-        fun putBoolean(key: String, value: Boolean) = apply { changes[key] = value }
         fun remove(key: String) = apply { changes[key] = null }
         fun clear() = apply { clearAll = true }
 

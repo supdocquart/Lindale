@@ -54,9 +54,12 @@ internal object MemoryMonitor {
         thread(name = "memory-monitor", isDaemon = true) {
             Thread.sleep(15_000L)
             var tick = 0
+            // DESKTOP: the native breakdown needs -XX:NativeMemoryTracking (dev runs only).
+            val nmt = java.lang.management.ManagementFactory.getRuntimeMXBean().inputArguments
+                .any { it.startsWith("-XX:NativeMemoryTracking") && !it.endsWith("=off") }
             while (true) {
                 runCatching { Timber.i(snapshot()) }
-                if (tick++ % 5 == 0) runCatching { Timber.i(jvmNativeBreakdown()) }
+                if (nmt && tick++ % 5 == 0) runCatching { Timber.i(jvmNativeBreakdown()) }
                 Thread.sleep(intervalMs)
             }
         }
