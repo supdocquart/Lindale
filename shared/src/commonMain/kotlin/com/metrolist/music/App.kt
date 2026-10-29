@@ -188,10 +188,12 @@ fun MetrolistApp(
             expandedBound = maxHeight - titleBarHeight,
         )
         // DESKTOP: search results and suggestions draw under the expanded player, so fold it away.
-        LaunchedEffect(searchOpen, currentRoute) {
-            val onSearchPage = currentRoute?.startsWith("search") == true
-            if ((searchOpen || onSearchPage) && playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+        LaunchedEffect(searchOpen) {
+            if (searchOpen && playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
         }
+        // DESKTOP: the search page's own bar is hidden behind the expanded player, so the title bar
+        // keeps a field there too; it stays while its panel is open so the panel has an input.
+        val showTitleSearch = currentTitleRes != null || playerBottomSheetState.isExpanded || searchOpen
 
         // DESKTOP: the Home action is shared by the rail, the bottom bar and the title bar.
         val navigateHome: () -> Unit = {
@@ -290,7 +292,7 @@ fun MetrolistApp(
                         if (customTitleBar) {
                             DesktopTitleBar(
                                 pureBlack = pureBlack,
-                                showSearch = currentTitleRes != null,
+                                showSearch = showTitleSearch,
                                 searchText = searchText,
                                 onSearchTextChange = {
                                     searchText = it
@@ -398,7 +400,7 @@ fun MetrolistApp(
                                 )
                             }
 
-                            if (currentTitleRes != null) {
+                            if (showTitleSearch) {
                                 if (searchOpen) {
                                     Box(
                                         modifier = Modifier
