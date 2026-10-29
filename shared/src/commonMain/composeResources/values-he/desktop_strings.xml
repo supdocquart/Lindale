@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">איפוס</string>
     <string name="lyrics_sync_done">סיום</string>
     <string name="search_in_app">חיפוש ב-Lindale…</string>
+    <string name="about_based_on">Lindale היא גרסת מחשב של Metrolist. החלק של YouTube Music הוא עבודת צוות Metrolist שלהלן, תודה!</string>
+    <string name="about_report_bug">דיווח על באג</string>
+    <string name="about_metrolist_section">Metrolist (האפליקציה המקורית)</string>
 </resources>

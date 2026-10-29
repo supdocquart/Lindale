@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Berrezarri</string>
     <string name="lyrics_sync_done">Eginda</string>
     <string name="search_in_app">Bilatu Lindalen…</string>
+    <string name="about_based_on">Lindale Metrolist-en mahaigaineko bertsioa da. YouTube Music-en zatia beheko Metrolist taldearen lana da, eskerrik asko!</string>
+    <string name="about_report_bug">Akatsa jakinarazi</string>
+    <string name="about_metrolist_section">Metrolist (jatorrizko aplikazioa)</string>
 </resources>

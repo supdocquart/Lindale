@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Visszaállítás</string>
     <string name="lyrics_sync_done">Kész</string>
     <string name="search_in_app">Keresés a Lindale-ben…</string>
+    <string name="about_based_on">A Lindale a Metrolist asztali változata. A YouTube Music rész az alábbi Metrolist csapat munkája, köszönjük!</string>
+    <string name="about_report_bug">Hiba bejelentése</string>
+    <string name="about_metrolist_section">Metrolist (eredeti alkalmazás)</string>
 </resources>

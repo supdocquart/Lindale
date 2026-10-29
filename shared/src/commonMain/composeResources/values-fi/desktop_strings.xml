@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Nollaa</string>
     <string name="lyrics_sync_done">Valmis</string>
     <string name="search_in_app">Hae Lindalesta…</string>
+    <string name="about_based_on">Lindale on Metrolistin työpöytäversio. YouTube Music -puoli on alla olevan Metrolist-tiimin työtä, kiitos!</string>
+    <string name="about_report_bug">Ilmoita virheestä</string>
+    <string name="about_metrolist_section">Metrolist (alkuperäinen sovellus)</string>
 </resources>

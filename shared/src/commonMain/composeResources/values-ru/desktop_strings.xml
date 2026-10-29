@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Сбросить</string>
     <string name="lyrics_sync_done">Готово</string>
     <string name="search_in_app">Поиск в Lindale…</string>
+    <string name="about_based_on">Lindale — настольная версия Metrolist. Вся работа с YouTube Music — заслуга команды Metrolist ниже, спасибо!</string>
+    <string name="about_report_bug">Сообщить об ошибке</string>
+    <string name="about_metrolist_section">Metrolist (оригинальное приложение)</string>
 </resources>

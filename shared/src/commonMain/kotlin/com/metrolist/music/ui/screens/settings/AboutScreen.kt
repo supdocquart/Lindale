@@ -119,11 +119,17 @@ private val collaborators = listOf(
     Contributor(name = "Nyx", roleRes = Res.string.credits_collaborator, githubHandle = "nyxiereal", sponsorUrl = "https://github.com/sponsors/nyxiereal", polygon = MaterialShapes.Cookie12Sided, favoriteSongVideoId = "zselaN6zPXw"),
 )
 
+// DESKTOP: Lindale's own links; Metrolist's community links are listed in their own group.
 private val communityLinks = listOf(
+    CommunityLink(Res.string.credits_view_repo, Res.drawable.github, com.metrolist.music.platform.AppBrand.REPO_URL),
+    CommunityLink(Res.string.about_report_bug, Res.drawable.bug_report, "${com.metrolist.music.platform.AppBrand.REPO_URL}/issues"),
+    CommunityLink(Res.string.credits_license_name, Res.drawable.info, "${com.metrolist.music.platform.AppBrand.REPO_URL}/blob/main/LICENSE")
+)
+
+private val metrolistLinks = listOf(
+    CommunityLink(Res.string.credits_view_repo, Res.drawable.github, "https://github.com/MetrolistGroup/Metrolist"),
     CommunityLink(Res.string.credits_discord, Res.drawable.discord, "https://discord.com/invite/zrdbeRG2Mt"),
     CommunityLink(Res.string.credits_telegram, Res.drawable.telegram, "https://t.me/metrolistapp"),
-    CommunityLink(Res.string.credits_view_repo, Res.drawable.github, com.metrolist.music.platform.AppBrand.REPO_URL),
-    CommunityLink(Res.string.credits_license_name, Res.drawable.info, "${com.metrolist.music.platform.AppBrand.REPO_URL}/blob/main/LICENSE")
 )
 
 private fun handleEasterEggClick(
@@ -256,24 +262,16 @@ fun AboutScreen(
                     .padding(24.dp)
             ) {
                 Image(
-                    painter = painterResource(Res.drawable.small_icon),
-                    contentDescription = stringResource(Res.string.metrolist),
-                    colorFilter = ColorFilter.tint(
-                        color = MaterialTheme.colorScheme.primary,
-                        blendMode = BlendMode.SrcIn,
-                    ),
-                    modifier = Modifier.size(64.dp)
+                    painter = painterResource(Res.drawable.lindale_logo),
+                    contentDescription = com.metrolist.music.platform.AppBrand.DISPLAY_NAME,
+                    modifier = Modifier.size(64.dp).clip(RoundedCornerShape(16.dp))
                 )
         
                 Spacer(Modifier.width(20.dp))
         
                 Column {
-                    val metrolistName = stringResource(Res.string.metrolist)
-                        .lowercase(Locale.getDefault())
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
                     Text(
-                        text = metrolistName,
+                        text = com.metrolist.music.platform.AppBrand.DISPLAY_NAME,
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Black,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -303,7 +301,7 @@ fun AboutScreen(
                             color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                         ) {
                             Text(
-                                text = BuildConfig.ARCHITECTURE.uppercase(),
+                                text = "WINDOWS",
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -311,7 +309,7 @@ fun AboutScreen(
                             )
                         }
 
-                        if (BuildConfig.DEBUG) {
+                        if (false) { // DESKTOP: BuildConfig.DEBUG is always true here; no DEBUG badge in releases
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
                                 color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
@@ -330,7 +328,39 @@ fun AboutScreen(
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
+
+        Material3SettingsGroup(
+            title = stringResource(Res.string.community_and_info),
+            items = communityLinks.map { link ->
+                Material3SettingsItem(
+                    icon = painterResource(link.iconRes),
+                    title = { Text(stringResource(link.labelRes), fontWeight = FontWeight.SemiBold) },
+                    description = if (link.labelRes == Res.string.credits_license_name) {
+                        { Text(stringResource(Res.string.credits_license_desc)) }
+                    } else null,
+                    onClick = { uriHandler.openUri(link.url) }
+                )
+            }
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = stringResource(Res.string.about_metrolist_section),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = stringResource(Res.string.about_based_on),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(16.dp))
 
         // Lead Developer Hero Card
         ElevatedCard(
@@ -475,16 +505,12 @@ fun AboutScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        // Community & Info using standard Group
         Material3SettingsGroup(
-            title = stringResource(Res.string.community_and_info),
-            items = communityLinks.map { link ->
+            title = stringResource(Res.string.about_metrolist_section),
+            items = metrolistLinks.map { link ->
                 Material3SettingsItem(
                     icon = painterResource(link.iconRes),
                     title = { Text(stringResource(link.labelRes), fontWeight = FontWeight.SemiBold) },
-                    description = if (link.labelRes == Res.string.credits_license_name) {
-                        { Text(stringResource(Res.string.credits_license_desc)) }
-                    } else null,
                     onClick = { uriHandler.openUri(link.url) }
                 )
             }

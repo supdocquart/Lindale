@@ -40,4 +40,7 @@
     <string name="color_palette">Renk paleti</string>
     <string name="use_system_colors">Sistem renklerini kullan</string>
     <string name="search_in_app">Lindale\'de ara…</string>
+    <string name="about_based_on">Lindale, Metrolist\'in masaüstü portudur. YouTube Music tarafındaki emek aşağıdaki Metrolist ekibine ait, teşekkürler!</string>
+    <string name="about_report_bug">Hata bildir</string>
+    <string name="about_metrolist_section">Metrolist (orijinal uygulama)</string>
 </resources>

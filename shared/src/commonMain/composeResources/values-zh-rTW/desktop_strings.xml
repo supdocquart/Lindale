@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">重設</string>
     <string name="lyrics_sync_done">完成</string>
     <string name="search_in_app">在 Lindale 中搜尋…</string>
+    <string name="about_based_on">Lindale 是 Metrolist 的桌面版。YouTube Music 部分是下方 Metrolist 團隊的成果，感謝他們！</string>
+    <string name="about_report_bug">回報問題</string>
+    <string name="about_metrolist_section">Metrolist（原版應用程式）</string>
 </resources>

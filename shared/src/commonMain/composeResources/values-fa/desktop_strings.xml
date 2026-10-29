@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">بازنشانی</string>
     <string name="lyrics_sync_done">انجام شد</string>
     <string name="search_in_app">جستجو در Lindale…</string>
+    <string name="about_based_on">Lindale نسخه دسکتاپ Metrolist است. بخش YouTube Music حاصل کار تیم Metrolist در پایین است، سپاس!</string>
+    <string name="about_report_bug">گزارش اشکال</string>
+    <string name="about_metrolist_section">Metrolist (برنامه اصلی)</string>
 </resources>

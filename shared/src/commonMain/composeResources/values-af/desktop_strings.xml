@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Stel terug</string>
     <string name="lyrics_sync_done">Klaar</string>
     <string name="search_in_app">Soek in Lindale…</string>
+    <string name="about_based_on">Lindale is \'n rekenaarweergawe van Metrolist. Die YouTube Music-kant is die werk van die Metrolist-span hieronder, dankie!</string>
+    <string name="about_report_bug">Rapporteer \'n fout</string>
+    <string name="about_metrolist_section">Metrolist (oorspronklike toep)</string>
 </resources>

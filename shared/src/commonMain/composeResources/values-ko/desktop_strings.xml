@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">초기화</string>
     <string name="lyrics_sync_done">완료</string>
     <string name="search_in_app">Lindale에서 검색…</string>
+    <string name="about_based_on">Lindale은 Metrolist의 데스크톱 버전입니다. YouTube Music 부분은 아래 Metrolist 팀의 작업입니다. 감사합니다!</string>
+    <string name="about_report_bug">버그 신고</string>
+    <string name="about_metrolist_section">Metrolist (원본 앱)</string>
 </resources>

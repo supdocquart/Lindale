@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Réinitialiser</string>
     <string name="lyrics_sync_done">Terminé</string>
     <string name="search_in_app">Rechercher dans Lindale…</string>
+    <string name="about_based_on">Lindale est un portage de Metrolist pour ordinateur. La partie YouTube Music est l\'œuvre de l\'équipe Metrolist ci-dessous, merci !</string>
+    <string name="about_report_bug">Signaler un bug</string>
+    <string name="about_metrolist_section">Metrolist (application d\'origine)</string>
 </resources>

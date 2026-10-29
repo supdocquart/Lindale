@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">রিসেট করুন</string>
     <string name="lyrics_sync_done">সম্পন্ন</string>
     <string name="search_in_app">Lindale-এ খুঁজুন…</string>
+    <string name="about_based_on">Lindale হলো Metrolist-এর ডেস্কটপ সংস্করণ। YouTube Music-এর অংশটি নিচের Metrolist দলের কাজ, ধন্যবাদ!</string>
+    <string name="about_report_bug">বাগ রিপোর্ট করুন</string>
+    <string name="about_metrolist_section">Metrolist (মূল অ্যাপ)</string>
 </resources>

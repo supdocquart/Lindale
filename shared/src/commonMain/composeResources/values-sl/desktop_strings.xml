@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Ponastavi</string>
     <string name="lyrics_sync_done">Končano</string>
     <string name="search_in_app">Iskanje v Lindale…</string>
+    <string name="about_based_on">Lindale je namizna različica Metroliste. Del za YouTube Music je delo ekipe Metrolist spodaj, hvala!</string>
+    <string name="about_report_bug">Prijavi napako</string>
+    <string name="about_metrolist_section">Metrolist (izvirna aplikacija)</string>
 </resources>

@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Obnovit</string>
     <string name="lyrics_sync_done">Hotovo</string>
     <string name="search_in_app">Hledat v Lindale…</string>
+    <string name="about_based_on">Lindale je desktopová verze Metrolistu. Část YouTube Music je dílem týmu Metrolist níže, děkujeme!</string>
+    <string name="about_report_bug">Nahlásit chybu</string>
+    <string name="about_metrolist_section">Metrolist (původní aplikace)</string>
 </resources>

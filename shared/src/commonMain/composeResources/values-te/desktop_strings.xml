@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">రీసెట్ చేయి</string>
     <string name="lyrics_sync_done">పూర్తయింది</string>
     <string name="search_in_app">Lindaleలో వెతకండి…</string>
+    <string name="about_based_on">Lindale అనేది Metrolist యొక్క డెస్క్‌టాప్ వెర్షన్. YouTube Music భాగం కింద ఉన్న Metrolist బృందం కృషి, ధన్యవాదాలు!</string>
+    <string name="about_report_bug">బగ్‌ను నివేదించండి</string>
+    <string name="about_metrolist_section">Metrolist (అసలు యాప్)</string>
 </resources>

@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">I-reset</string>
     <string name="lyrics_sync_done">Tapos na</string>
     <string name="search_in_app">Maghanap sa Lindale…</string>
+    <string name="about_based_on">Ang Lindale ay desktop na bersyon ng Metrolist. Ang bahagi ng YouTube Music ay gawa ng Metrolist team sa ibaba, salamat!</string>
+    <string name="about_report_bug">Mag-ulat ng bug</string>
+    <string name="about_metrolist_section">Metrolist (orihinal na app)</string>
 </resources>

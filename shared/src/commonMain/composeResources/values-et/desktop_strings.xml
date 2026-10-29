@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Lähtesta</string>
     <string name="lyrics_sync_done">Valmis</string>
     <string name="search_in_app">Otsi Lindale\'ist…</string>
+    <string name="about_based_on">Lindale on Metrolisti lauaarvutiversioon. YouTube Musicu osa on allpool oleva Metrolisti meeskonna töö, aitäh!</string>
+    <string name="about_report_bug">Teata veast</string>
+    <string name="about_metrolist_section">Metrolist (algne rakendus)</string>
 </resources>

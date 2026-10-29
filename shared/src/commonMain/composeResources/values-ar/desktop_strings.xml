@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">إعادة تعيين</string>
     <string name="lyrics_sync_done">تم</string>
     <string name="search_in_app">ابحث في Lindale…</string>
+    <string name="about_based_on">Lindale نسخة سطح مكتب من Metrolist. جانب YouTube Music هو عمل فريق Metrolist أدناه، شكرًا لهم!</string>
+    <string name="about_report_bug">الإبلاغ عن خطأ</string>
+    <string name="about_metrolist_section">Metrolist (التطبيق الأصلي)</string>
 </resources>

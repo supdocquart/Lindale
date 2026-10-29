@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">ਰੀਸੈੱਟ ਕਰੋ</string>
     <string name="lyrics_sync_done">ਹੋ ਗਿਆ</string>
     <string name="search_in_app">Lindale ਵਿੱਚ ਖੋਜੋ…</string>
+    <string name="about_based_on">Lindale, Metrolist ਦਾ ਡੈਸਕਟਾਪ ਸੰਸਕਰਨ ਹੈ। YouTube Music ਵਾਲਾ ਹਿੱਸਾ ਹੇਠਾਂ ਦਿੱਤੀ Metrolist ਟੀਮ ਦਾ ਕੰਮ ਹੈ, ਧੰਨਵਾਦ!</string>
+    <string name="about_report_bug">ਬੱਗ ਦੀ ਰਿਪੋਰਟ ਕਰੋ</string>
+    <string name="about_metrolist_section">Metrolist (ਮੂਲ ਐਪ)</string>
 </resources>

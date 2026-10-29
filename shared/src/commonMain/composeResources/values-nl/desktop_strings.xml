@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">Herstellen</string>
     <string name="lyrics_sync_done">Klaar</string>
     <string name="search_in_app">Zoeken in Lindale…</string>
+    <string name="about_based_on">Lindale is een desktopversie van Metrolist. De YouTube Music-kant is het werk van het Metrolist-team hieronder, bedankt!</string>
+    <string name="about_report_bug">Bug melden</string>
+    <string name="about_metrolist_section">Metrolist (originele app)</string>
 </resources>

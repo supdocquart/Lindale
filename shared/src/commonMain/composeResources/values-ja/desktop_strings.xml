@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">リセット</string>
     <string name="lyrics_sync_done">完了</string>
     <string name="search_in_app">Lindale で検索…</string>
+    <string name="about_based_on">Lindale は Metrolist のデスクトップ版です。YouTube Music 部分は下記の Metrolist チームによるものです。ありがとう！</string>
+    <string name="about_report_bug">不具合を報告</string>
+    <string name="about_metrolist_section">Metrolist（元のアプリ）</string>
 </resources>

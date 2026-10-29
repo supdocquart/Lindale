@@ -29,4 +29,7 @@
     <string name="lyrics_sync_reset">மீட்டமை</string>
     <string name="lyrics_sync_done">முடிந்தது</string>
     <string name="search_in_app">Lindale-இல் தேடு…</string>
+    <string name="about_based_on">Lindale என்பது Metrolist-இன் டெஸ்க்டாப் பதிப்பு. YouTube Music பகுதி கீழே உள்ள Metrolist குழுவின் உழைப்பு, நன்றி!</string>
+    <string name="about_report_bug">பிழையைப் புகாரளி</string>
+    <string name="about_metrolist_section">Metrolist (அசல் செயலி)</string>
 </resources>
