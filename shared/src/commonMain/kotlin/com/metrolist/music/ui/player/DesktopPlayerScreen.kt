@@ -62,6 +62,9 @@ import metrolist.shared.generated.resources.expand_more
 import metrolist.shared.generated.resources.favorite
 import metrolist.shared.generated.resources.favorite_border
 import metrolist.shared.generated.resources.lyrics
+import metrolist.shared.generated.resources.lyrics_source_title
+import metrolist.shared.generated.resources.lyrics_sync_title
+import metrolist.shared.generated.resources.sync
 import metrolist.shared.generated.resources.more_vert
 import metrolist.shared.generated.resources.now_playing
 import metrolist.shared.generated.resources.queue
@@ -87,6 +90,7 @@ fun DesktopPlayerScreen(
     val bottomSheetPageState = LocalBottomSheetPageState.current
     val metadata = mediaMetadata ?: return
     var tab by rememberSaveable { mutableIntStateOf(0) }
+    var showLyricsSource by remember { mutableStateOf(false) }
     val dim = MaterialTheme.colorScheme.onSurfaceVariant
 
     // Building lyrics/queue in the same frame the sheet starts moving made the open animation
@@ -198,9 +202,33 @@ fun DesktopPlayerScreen(
             }
 
             Column(Modifier.weight(1f).widthIn(max = 640.dp).fillMaxHeight()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     TabPill(stringResource(Res.string.lyrics), tab == 0) { tab = 0 }
                     TabPill(stringResource(Res.string.queue), tab == 1) { tab = 1 }
+                    if (tab == 0) {
+                        // DESKTOP: the lyrics source picker and tap-to-sync live in LyricsMenu, which the
+                        // desktop player never opened; offer them right above the lyrics.
+                        Spacer(Modifier.weight(1f))
+                        LyricsToolButton(Res.drawable.lyrics, stringResource(Res.string.lyrics_source_title)) { showLyricsSource = true }
+                        LyricsToolButton(Res.drawable.sync, stringResource(Res.string.lyrics_sync_title)) {
+                            com.metrolist.music.ui.component.LyricsSync.active.value = true
+                        }
+                    }
+                }
+                if (showLyricsSource) {
+                    val database = com.metrolist.music.LocalDatabase.current
+                    val currentLyrics by playerConnection.currentLyrics.collectAsStateWithLifecycle()
+                    com.metrolist.music.ui.component.LyricsSourceDialog(
+                        mediaMetadata = metadata,
+                        currentProvider = currentLyrics?.provider,
+                        onDismiss = { showLyricsSource = false },
+                        onPick = { providerName, lyrics ->
+                            database.query {
+                                upsert(com.metrolist.music.db.entities.LyricsEntity(id = metadata.id, lyrics = lyrics, provider = providerName))
+                            }
+                            showLyricsSource = false
+                        },
+                    )
                 }
                 Spacer(Modifier.height(12.dp))
                 Box(
@@ -231,6 +259,22 @@ fun DesktopPlayerScreen(
             durationState = durationState,
             onExpand = { state.collapseSoft() },
         )
+    }
+}
+
+@Composable
+private fun LyricsToolButton(icon: org.jetbrains.compose.resources.DrawableResource, label: String, onClick: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+    ) {
+        Icon(painterResource(icon), contentDescription = null, modifier = Modifier.size(18.dp), tint = colors.onSurfaceVariant)
+        Text(label, style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant)
     }
 }
 
