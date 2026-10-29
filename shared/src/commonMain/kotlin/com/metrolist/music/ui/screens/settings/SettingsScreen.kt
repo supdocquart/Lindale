@@ -116,11 +116,7 @@ fun SettingsScreen(
                     },
                     onClick = { showAccountDialog = true }
                 ),
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.integration),
-                    title = { Text(stringResource(Res.string.integrations)) },
-                    onClick = { navController.navigate("settings/integrations") }
-                )
+                // DESKTOP: Integrations (Discord, Last.fm) live on the account page now.
             )
         )
 

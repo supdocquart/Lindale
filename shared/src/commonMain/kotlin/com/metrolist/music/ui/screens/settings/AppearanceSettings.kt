@@ -965,6 +965,7 @@ fun AppearanceSettings(
                             Material3SettingsItem(
                                 icon = painterResource(Res.drawable.palette),
                                 title = { Text(stringResource(Res.string.enable_dynamic_theme)) },
+                                description = { Text(stringResource(Res.string.appearance_dynamic_theme_desc)) },
                                 trailingContent = {
                                     Switch(
                                         checked = dynamicTheme,
@@ -1107,8 +1108,8 @@ fun AppearanceSettings(
         Material3SettingsGroup(
             title = stringResource(Res.string.player),
             items =
-                listOf(
-                    Material3SettingsItem(
+                listOfNotNull(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.palette),
                         title = { Text(stringResource(Res.string.new_player_design)) },
                         trailingContent = {
@@ -1127,7 +1128,7 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onUseNewPlayerDesignChange(!useNewPlayerDesign) },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.gradient),
                         title = { Text(stringResource(Res.string.player_background_style)) },
@@ -1142,7 +1143,7 @@ fun AppearanceSettings(
                         },
                         onClick = { showPlayerBackgroundDialog = true },
                     ),
-                    Material3SettingsItem(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.hide_image),
                         title = { Text(stringResource(Res.string.hide_player_thumbnail)) },
                         description = { Text(stringResource(Res.string.hide_player_thumbnail_desc)) },
@@ -1162,7 +1163,7 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onHidePlayerThumbnailChange(!hidePlayerThumbnail) },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.crop),
                         title = { Text(stringResource(Res.string.crop_album_art)) },
@@ -1184,7 +1185,7 @@ fun AppearanceSettings(
                         },
                         onClick = { onCropAlbumArtChange(!cropAlbumArt) },
                     ),
-                    Material3SettingsItem(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.palette),
                         title = { Text(stringResource(Res.string.player_buttons_style)) },
                         description = {
@@ -1197,8 +1198,8 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { showPlayerButtonsStyleDialog = true },
-                    ),
-                    Material3SettingsItem(
+                    ) else null) /* DESKTOP: no effect on desktop */,
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.sliders),
                         title = { Text(stringResource(Res.string.player_slider_style)) },
                         description = {
@@ -1225,8 +1226,8 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { showSliderOptionDialog = true },
-                    ),
-                    Material3SettingsItem(
+                    ) else null) /* DESKTOP: no effect on desktop */,
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.swipe),
                         title = { Text(stringResource(Res.string.enable_swipe_thumbnail)) },
                         trailingContent = {
@@ -1245,11 +1246,11 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onSwipeThumbnailChange(!swipeThumbnail) },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                 ) +
                     if (swipeThumbnail) {
-                        listOf(
-                            Material3SettingsItem(
+                        listOfNotNull(
+                            (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                                 icon = painterResource(Res.drawable.tune),
                                 title = { Text(stringResource(Res.string.swipe_sensitivity)) },
                                 description = {
@@ -1261,7 +1262,7 @@ fun AppearanceSettings(
                                     )
                                 },
                                 onClick = { showSensitivityDialog = true },
-                            ),
+                            ) else null) /* DESKTOP: no effect on desktop */,
                         )
                     } else {
                         emptyList()
@@ -1482,6 +1483,7 @@ fun AppearanceSettings(
                         Material3SettingsItem(
                             icon = painterResource(Res.drawable.lyrics),
                             title = { Text(stringResource(Res.string.lyrics_click_change)) },
+                            description = { Text(stringResource(Res.string.appearance_lyrics_click_desc)) },
                             trailingContent = {
                                 Switch(
                                     checked = lyricsClick,
@@ -1504,6 +1506,7 @@ fun AppearanceSettings(
                         Material3SettingsItem(
                             icon = painterResource(Res.drawable.lyrics),
                             title = { Text(stringResource(Res.string.lyrics_auto_scroll)) },
+                            description = { Text(stringResource(Res.string.appearance_lyrics_scroll_desc)) },
                             trailingContent = {
                                 Switch(
                                     checked = lyricsScroll,
@@ -1522,6 +1525,8 @@ fun AppearanceSettings(
                             onClick = { onLyricsScrollChange(!lyricsScroll) },
                         ),
                     )
+                    // DESKTOP: no effect on the desktop player or layout
+                    if (SHOW_ANDROID_ONLY_SETTINGS) {
                     add(
                         Material3SettingsItem(
                             icon = painterResource(Res.drawable.lyrics),
@@ -1545,6 +1550,7 @@ fun AppearanceSettings(
                             onClick = { onHideStatusBarOnFullscreenChange(!hideStatusBarOnFullscreen) },
                         ),
                     )
+                    }
                 },
         )
 
@@ -1553,8 +1559,8 @@ fun AppearanceSettings(
         Material3SettingsGroup(
             title = stringResource(Res.string.misc),
             items =
-                listOf(
-                    Material3SettingsItem(
+                listOfNotNull(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.nav_bar),
                         title = { Text(stringResource(Res.string.default_open_tab)) },
                         description = {
@@ -1567,7 +1573,7 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { showDefaultOpenTabDialog = true },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.tab),
                         title = { Text(stringResource(Res.string.default_lib_chips)) },
@@ -1625,7 +1631,7 @@ fun AppearanceSettings(
                         },
                         onClick = { onSwipeToRemoveSongChange(!swipeToRemoveSong) },
                     ),
-                    Material3SettingsItem(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.nav_bar),
                         title = { Text(stringResource(Res.string.force_bottom_navbar)) },
                         trailingContent = {
@@ -1644,8 +1650,8 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onForceBottomNavChange(!forceBottomNav) },
-                    ),
-                    Material3SettingsItem(
+                    ) else null) /* DESKTOP: no effect on desktop */,
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.nav_bar),
                         title = { Text(stringResource(Res.string.slim_navbar)) },
                         trailingContent = {
@@ -1664,8 +1670,8 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onSlimNavChange(!slimNav) },
-                    ),
-                    Material3SettingsItem(
+                    ) else null) /* DESKTOP: no effect on desktop */,
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.group_outlined),
                         title = { Text(stringResource(Res.string.listen_together_in_top_bar)) },
                         description = { Text(stringResource(Res.string.listen_together_in_top_bar_desc)) },
@@ -1685,7 +1691,7 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onListenTogetherInTopBarChange(!listenTogetherInTopBar) },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.grid_view),
                         title = { Text(stringResource(Res.string.grid_cell_size)) },
@@ -1699,14 +1705,14 @@ fun AppearanceSettings(
                         },
                         onClick = { showGridSizeDialog = true },
                     ),
-                    Material3SettingsItem(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.grid_view),
                         title = { Text(stringResource(Res.string.display_density)) },
                         description = {
                             Text(DensityScale.fromValue(densityScale).label)
                         },
                         onClick = { showDensityScaleDialog = true },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                 ),
         )
 
@@ -1715,10 +1721,11 @@ fun AppearanceSettings(
         Material3SettingsGroup(
             title = stringResource(Res.string.auto_playlists),
             items =
-                listOf(
+                listOfNotNull(
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.favorite),
                         title = { Text(stringResource(Res.string.show_liked_playlist)) },
+                        description = { Text(stringResource(Res.string.appearance_library_playlist_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = showLikedPlaylist,
@@ -1739,6 +1746,7 @@ fun AppearanceSettings(
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.offline),
                         title = { Text(stringResource(Res.string.show_downloaded_playlist)) },
+                        description = { Text(stringResource(Res.string.appearance_library_playlist_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = showDownloadedPlaylist,
@@ -1759,6 +1767,7 @@ fun AppearanceSettings(
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.trending_up),
                         title = { Text(stringResource(Res.string.show_top_playlist)) },
+                        description = { Text(stringResource(Res.string.appearance_library_playlist_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = showTopPlaylist,
@@ -1776,7 +1785,7 @@ fun AppearanceSettings(
                         },
                         onClick = { onShowTopPlaylistChange(!showTopPlaylist) },
                     ),
-                    Material3SettingsItem(
+                    (if (SHOW_ANDROID_ONLY_SETTINGS) Material3SettingsItem(
                         icon = painterResource(Res.drawable.cached),
                         title = { Text(stringResource(Res.string.show_cached_playlist)) },
                         trailingContent = {
@@ -1795,10 +1804,11 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { onShowCachedPlaylistChange(!showCachedPlaylist) },
-                    ),
+                    ) else null) /* DESKTOP: no effect on desktop */,
                     Material3SettingsItem(
                         icon = painterResource(Res.drawable.backup),
                         title = { Text(stringResource(Res.string.show_uploaded_playlist)) },
+                        description = { Text(stringResource(Res.string.appearance_library_playlist_desc)) },
                         trailingContent = {
                             Switch(
                                 checked = showUploadedPlaylist,
