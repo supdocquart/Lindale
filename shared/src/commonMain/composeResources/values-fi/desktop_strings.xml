@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Napsauta riviä, jota lauletaan juuri nyt. Hienosäädä painikkeilla tarvittaessa.</string>
     <string name="lyrics_sync_reset">Nollaa</string>
     <string name="lyrics_sync_done">Valmis</string>
+    <string name="search_in_app">Hae Lindalesta…</string>
 </resources>

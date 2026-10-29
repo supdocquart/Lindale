@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">今歌われている行をクリックしてください。必要に応じてボタンで微調整します。</string>
     <string name="lyrics_sync_reset">リセット</string>
     <string name="lyrics_sync_done">完了</string>
+    <string name="search_in_app">Lindale で検索…</string>
 </resources>

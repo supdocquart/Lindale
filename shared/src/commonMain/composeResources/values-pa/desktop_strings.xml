@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">ਜੋ ਲਾਈਨ ਹੁਣ ਗਾਈ ਜਾ ਰਹੀ ਹੈ ਉਸ \'ਤੇ ਕਲਿੱਕ ਕਰੋ। ਲੋੜ ਹੋਵੇ ਤਾਂ ਬਟਨਾਂ ਨਾਲ ਬਾਰੀਕੀ ਨਾਲ ਠੀਕ ਕਰੋ।</string>
     <string name="lyrics_sync_reset">ਰੀਸੈੱਟ ਕਰੋ</string>
     <string name="lyrics_sync_done">ਹੋ ਗਿਆ</string>
+    <string name="search_in_app">Lindale ਵਿੱਚ ਖੋਜੋ…</string>
 </resources>

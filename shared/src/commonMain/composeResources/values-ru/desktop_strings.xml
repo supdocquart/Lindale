@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Нажмите на строку, которая звучит прямо сейчас. При необходимости подстройте кнопками.</string>
     <string name="lyrics_sync_reset">Сбросить</string>
     <string name="lyrics_sync_done">Готово</string>
+    <string name="search_in_app">Поиск в Lindale…</string>
 </resources>

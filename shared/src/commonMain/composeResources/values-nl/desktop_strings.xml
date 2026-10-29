@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Klik op de regel die nu gezongen wordt. Stel zo nodig fijn af met de knoppen.</string>
     <string name="lyrics_sync_reset">Herstellen</string>
     <string name="lyrics_sync_done">Klaar</string>
+    <string name="search_in_app">Zoeken in Lindale…</string>
 </resources>

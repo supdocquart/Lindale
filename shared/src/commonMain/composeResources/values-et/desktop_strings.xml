@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Klõpsake real, mida praegu lauldakse. Vajadusel täpsustage nuppudega.</string>
     <string name="lyrics_sync_reset">Lähtesta</string>
     <string name="lyrics_sync_done">Valmis</string>
+    <string name="search_in_app">Otsi Lindale\'ist…</string>
 </resources>

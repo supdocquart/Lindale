@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Kliknij wiersz, który jest teraz śpiewany. W razie potrzeby dostrój przyciskami.</string>
     <string name="lyrics_sync_reset">Resetuj</string>
     <string name="lyrics_sync_done">Gotowe</string>
+    <string name="search_in_app">Szukaj w Lindale…</string>
 </resources>

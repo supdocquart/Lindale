@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Щракнете върху реда, който се пее в момента. При нужда прецизирайте с бутоните.</string>
     <string name="lyrics_sync_reset">Нулиране</string>
     <string name="lyrics_sync_done">Готово</string>
+    <string name="search_in_app">Търсене в Lindale…</string>
 </resources>

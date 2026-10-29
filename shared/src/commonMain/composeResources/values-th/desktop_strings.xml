@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">คลิกบรรทัดที่กำลังร้องอยู่ ปรับละเอียดด้วยปุ่มหากจำเป็น</string>
     <string name="lyrics_sync_reset">รีเซ็ต</string>
     <string name="lyrics_sync_done">เสร็จสิ้น</string>
+    <string name="search_in_app">ค้นหาใน Lindale…</string>
 </resources>

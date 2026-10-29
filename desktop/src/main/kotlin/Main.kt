@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
+
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.isAltPressed
@@ -163,10 +165,15 @@ private fun runApp() = application {
             java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(listener, java.awt.AWTEvent.MOUSE_EVENT_MASK)
             onDispose { java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(listener) }
         }
-        MetrolistApp(
-            database = database,
-            playerConnection = playerConnection,
-        )
+        // DESKTOP: counts open text input sessions, so typing never triggers player shortcuts.
+        androidx.compose.ui.platform.InterceptPlatformTextInput(
+            interceptor = TextInputTracker,
+        ) {
+            MetrolistApp(
+                database = database,
+                playerConnection = playerConnection,
+            )
+        }
     }
 }
 
@@ -174,8 +181,28 @@ private fun runApp() = application {
  * Spotify-style shortcuts. The window only sees keys nothing focused consumed, so typing a space
  * in the search box never toggles playback.
  */
+private object TextInputTracker : androidx.compose.ui.platform.PlatformTextInputInterceptor {
+    private val sessions = java.util.concurrent.atomic.AtomicInteger()
+    val typing: Boolean get() = sessions.get() > 0
+
+    override suspend fun interceptStartInputMethod(
+        request: androidx.compose.ui.platform.PlatformTextInputMethodRequest,
+        nextHandler: androidx.compose.ui.platform.PlatformTextInputSession,
+    ): Nothing {
+        sessions.incrementAndGet()
+        try {
+            nextHandler.startInputMethod(request)
+        } finally {
+            sessions.decrementAndGet()
+        }
+    }
+}
+
 private fun handlePlayerShortcut(event: KeyEvent, player: DesktopPlayerConnection): Boolean {
     if (event.isAltPressed) return false
+    // In a text field Space, arrows and Ctrl+arrows edit text; only the media keys stay global.
+    val mediaKey = event.key == Key.MediaPlayPause || event.key == Key.MediaNext || event.key == Key.MediaPrevious
+    if (TextInputTracker.typing && !mediaKey) return false
     val ctrl = event.isCtrlPressed
     val shift = event.isShiftPressed
     fun changeVolume(delta: Float) {

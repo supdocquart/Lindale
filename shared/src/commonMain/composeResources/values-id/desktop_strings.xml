@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Klik baris yang sedang dinyanyikan. Sesuaikan dengan tombol jika perlu.</string>
     <string name="lyrics_sync_reset">Atur ulang</string>
     <string name="lyrics_sync_done">Selesai</string>
+    <string name="search_in_app">Cari di Lindale…</string>
 </resources>

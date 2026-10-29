@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Fai clic sulla riga cantata in questo momento. Regola con i pulsanti se necessario.</string>
     <string name="lyrics_sync_reset">Reimposta</string>
     <string name="lyrics_sync_done">Fatto</string>
+    <string name="search_in_app">Cerca in Lindale…</string>
 </resources>

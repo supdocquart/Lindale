@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Egin klik orain abesten ari den lerroan. Doitu botoiekin behar izanez gero.</string>
     <string name="lyrics_sync_reset">Berrezarri</string>
     <string name="lyrics_sync_done">Eginda</string>
+    <string name="search_in_app">Bilatu Lindalen…</string>
 </resources>

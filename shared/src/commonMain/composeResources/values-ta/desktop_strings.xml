@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">இப்போது பாடப்படும் வரியைக் கிளிக் செய்யவும். தேவைப்பட்டால் பொத்தான்களால் நுணுக்கமாகச் சரிசெய்யவும்.</string>
     <string name="lyrics_sync_reset">மீட்டமை</string>
     <string name="lyrics_sync_done">முடிந்தது</string>
+    <string name="search_in_app">Lindale-இல் தேடு…</string>
 </resources>

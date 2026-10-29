@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">انقر على السطر الذي يُغنّى الآن. اضبط بدقة بالأزرار عند الحاجة.</string>
     <string name="lyrics_sync_reset">إعادة تعيين</string>
     <string name="lyrics_sync_done">تم</string>
+    <string name="search_in_app">ابحث في Lindale…</string>
 </resources>

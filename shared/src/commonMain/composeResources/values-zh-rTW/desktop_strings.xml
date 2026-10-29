@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">點選正在演唱的那一行。必要時用按鈕微調。</string>
     <string name="lyrics_sync_reset">重設</string>
     <string name="lyrics_sync_done">完成</string>
+    <string name="search_in_app">在 Lindale 中搜尋…</string>
 </resources>

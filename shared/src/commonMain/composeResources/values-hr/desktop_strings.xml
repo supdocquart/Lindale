@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Kliknite redak koji se sada pjeva. Po potrebi fino podesite gumbima.</string>
     <string name="lyrics_sync_reset">Poništi</string>
     <string name="lyrics_sync_done">Gotovo</string>
+    <string name="search_in_app">Pretraži Lindale…</string>
 </resources>

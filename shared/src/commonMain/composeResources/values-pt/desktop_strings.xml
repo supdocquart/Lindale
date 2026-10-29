@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Clique na linha que está a ser cantada agora. Ajuste com os botões se necessário.</string>
     <string name="lyrics_sync_reset">Repor</string>
     <string name="lyrics_sync_done">Concluído</string>
+    <string name="search_in_app">Pesquisar no Lindale…</string>
 </resources>

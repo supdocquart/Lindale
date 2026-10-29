@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">روی خطی که الان خوانده می‌شود کلیک کنید. در صورت نیاز با دکمه‌ها دقیق تنظیم کنید.</string>
     <string name="lyrics_sync_reset">بازنشانی</string>
     <string name="lyrics_sync_done">انجام شد</string>
+    <string name="search_in_app">جستجو در Lindale…</string>
 </resources>

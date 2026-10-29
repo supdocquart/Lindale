@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">I-click ang linyang kinakanta ngayon. Ayusin gamit ang mga button kung kailangan.</string>
     <string name="lyrics_sync_reset">I-reset</string>
     <string name="lyrics_sync_done">Tapos na</string>
+    <string name="search_in_app">Maghanap sa Lindale…</string>
 </resources>

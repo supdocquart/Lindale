@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Kattints az éppen énekelt sorra. Szükség esetén finomhangolj a gombokkal.</string>
     <string name="lyrics_sync_reset">Visszaállítás</string>
     <string name="lyrics_sync_done">Kész</string>
+    <string name="search_in_app">Keresés a Lindale-ben…</string>
 </resources>

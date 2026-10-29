@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Spustelėkite eilutę, kuri dainuojama dabar. Jei reikia, tiksliai sureguliuokite mygtukais.</string>
     <string name="lyrics_sync_reset">Atkurti</string>
     <string name="lyrics_sync_done">Atlikta</string>
+    <string name="search_in_app">Ieškoti Lindale…</string>
 </resources>

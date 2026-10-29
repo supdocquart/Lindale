@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">לחץ על השורה שמושרת עכשיו. כוונן בעזרת הכפתורים לפי הצורך.</string>
     <string name="lyrics_sync_reset">איפוס</string>
     <string name="lyrics_sync_done">סיום</string>
+    <string name="search_in_app">חיפוש ב-Lindale…</string>
 </resources>

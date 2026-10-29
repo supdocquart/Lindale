@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Fai clic na liña que se está cantando agora. Axusta cos botóns se fai falla.</string>
     <string name="lyrics_sync_reset">Restablecer</string>
     <string name="lyrics_sync_done">Feito</string>
+    <string name="search_in_app">Buscar en Lindale…</string>
 </resources>

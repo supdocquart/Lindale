@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 import metrolist.shared.generated.resources.Res
 import metrolist.shared.generated.resources.close
 import metrolist.shared.generated.resources.search
-import metrolist.shared.generated.resources.search_yt_music
+import metrolist.shared.generated.resources.search_in_app
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -126,7 +126,7 @@ fun DesktopSearchField(
             Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
                 if (value.text.isEmpty()) {
                     Text(
-                        text = stringResource(Res.string.search_yt_music),
+                        text = stringResource(Res.string.search_in_app),
                         style = TextStyle(fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant),
                     )
                 }

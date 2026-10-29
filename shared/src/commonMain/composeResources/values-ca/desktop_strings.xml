@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Fes clic a la línia que s\'està cantant ara. Ajusta-ho amb els botons si cal.</string>
     <string name="lyrics_sync_reset">Restableix</string>
     <string name="lyrics_sync_done">Fet</string>
+    <string name="search_in_app">Cerca a Lindale…</string>
 </resources>

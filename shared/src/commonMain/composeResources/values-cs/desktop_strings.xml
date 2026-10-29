@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Klikněte na řádek, který se právě zpívá. V případě potřeby dolaďte tlačítky.</string>
     <string name="lyrics_sync_reset">Obnovit</string>
     <string name="lyrics_sync_done">Hotovo</string>
+    <string name="search_in_app">Hledat v Lindale…</string>
 </resources>

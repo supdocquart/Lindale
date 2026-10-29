@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">Nhấp vào dòng đang được hát. Tinh chỉnh bằng các nút nếu cần.</string>
     <string name="lyrics_sync_reset">Đặt lại</string>
     <string name="lyrics_sync_done">Xong</string>
+    <string name="search_in_app">Tìm trong Lindale…</string>
 </resources>

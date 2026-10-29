@@ -187,6 +187,11 @@ fun MetrolistApp(
             collapsedBound = if (showRail) DesktopPlayerBarHeight else (DesktopPlayerBarHeight + NavigationBarHeight),
             expandedBound = maxHeight - titleBarHeight,
         )
+        // DESKTOP: search results and suggestions draw under the expanded player, so fold it away.
+        LaunchedEffect(searchOpen, currentRoute) {
+            val onSearchPage = currentRoute?.startsWith("search") == true
+            if ((searchOpen || onSearchPage) && playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+        }
 
         // DESKTOP: the Home action is shared by the rail, the bottom bar and the title bar.
         val navigateHome: () -> Unit = {

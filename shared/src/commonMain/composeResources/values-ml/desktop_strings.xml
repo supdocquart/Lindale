@@ -28,4 +28,5 @@
     <string name="lyrics_sync_hint">ഇപ്പോൾ പാടുന്ന വരിയിൽ ക്ലിക്ക് ചെയ്യുക. ആവശ്യമെങ്കിൽ ബട്ടണുകൾ ഉപയോഗിച്ച് സൂക്ഷ്മമായി ക്രമീകരിക്കുക.</string>
     <string name="lyrics_sync_reset">പുനഃസജ്ജമാക്കുക</string>
     <string name="lyrics_sync_done">പൂർത്തിയായി</string>
+    <string name="search_in_app">Lindale-ൽ തിരയുക…</string>
 </resources>
