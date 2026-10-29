@@ -1,4 +1,5 @@
 package com.metrolist.music.ui.component
+import com.metrolist.music.platform.AppBrand
 import com.metrolist.music.platform.AppContext
 
 import com.metrolist.music.playback.Download
@@ -73,8 +74,37 @@ object DownloadCenter {
     private val pending = ConcurrentHashMap<String, MediaMetadata>()
     private val perId = ConcurrentHashMap<String, MutableStateFlow<Download?>>()
 
+    // DESKTOP: downloads are ordinary files in the user's Music folder, so other players and Explorer see them.
+    // shortcut: assumes Music is at %USERPROFILE%\Music; read the known-folder path if OneDrive-redirected users complain.
     val directory: File by lazy {
-        File(AppContext().filesDir, "downloads").apply { mkdirs() }
+        File(File(System.getProperty("user.home"), "Music"), AppBrand.NAME).apply {
+            mkdirs()
+            // Earlier versions kept "<id>.<ext>" files in the app data folder; move them over once.
+            File(AppContext().filesDir, "downloads").listFiles()?.filter { it.isFile && !it.name.endsWith(".part") }?.forEach { old ->
+                runCatching { old.copyTo(File(this, old.name), overwrite = false); old.delete() }
+                    .onFailure { timber.log.Timber.w(it, "download: could not move %s", old.name) }
+            }
+        }
+    }
+
+    /** "Artist - Title [id].m4a" -> id; older "<id>.m4a" -> id. Also works for ".part" files. */
+    private fun idOf(f: File): String {
+        val n = f.name.removeSuffix(".part").substringBeforeLast('.')
+        return n.substringAfterLast('[', "").substringBefore(']').ifEmpty { n }
+    }
+
+    private fun filesOf(id: String): List<File> = directory.listFiles { f -> f.isFile && idOf(f) == id }.orEmpty().toList()
+
+    private fun fileName(meta: MediaMetadata, ext: String): String {
+        val label = (meta.artists.joinToString { it.name }.takeIf { it.isNotBlank() }?.let { "$it - " }.orEmpty() + meta.title)
+            .replace(Regex("[\\\\/:*?\"<>|\\p{Cntrl}]"), "_").trim().trimEnd('.').take(120)
+        return "$label [${meta.id}].$ext"
+    }
+
+    fun totalBytes(): Long = directory.listFiles().orEmpty().filter { it.isFile && !it.name.endsWith(".part") }.sumOf { it.length() }
+
+    fun removeAll() {
+        _downloads.value.keys.toList().forEach(::remove)
     }
 
     private val _downloads = MutableStateFlow(scanExisting())
@@ -82,13 +112,12 @@ object DownloadCenter {
 
     private fun scanExisting(): Map<String, Download> =
         directory.listFiles().orEmpty()
-            .filter { it.isFile && !it.name.endsWith(".part") }
-            .associate { it.nameWithoutExtension to Download(it.nameWithoutExtension, Download.STATE_COMPLETED, 1f) }
+            .filter { it.isFile && !it.name.endsWith(".part") && VideoId.isValid(idOf(it)) }
+            .associate { idOf(it) to Download(idOf(it), Download.STATE_COMPLETED, 1f) }
 
     fun localFile(id: String): File? {
         if (!VideoId.isValid(id)) return null
-        return directory.listFiles { f -> f.isFile && f.nameWithoutExtension == id && !f.name.endsWith(".part") }
-            ?.firstOrNull()
+        return filesOf(id).firstOrNull { !it.name.endsWith(".part") }
     }
 
     fun downloadFlow(id: String): StateFlow<Download?> =
@@ -101,7 +130,7 @@ object DownloadCenter {
 
     fun enqueue(meta: MediaMetadata) {
         val id = meta.id
-        // DESKTOP: the id becomes a file name under <app data>/downloads, so reject anything that is not a video id.
+        // DESKTOP: the id becomes part of a file name in the downloads folder, so reject anything that is not a video id.
         if (!VideoId.isValid(id)) {
             timber.log.Timber.w("download: refusing invalid id (length %d)", id.length)
             return
@@ -124,7 +153,7 @@ object DownloadCenter {
         jobs.remove(id)?.cancel()
         pending.remove(id)
         scope.launch {
-            directory.listFiles { f -> f.name.startsWith("$id.") }?.forEach { it.delete() }
+            filesOf(id).forEach { it.delete() }
             setState(id, null)
             runCatching {
                 engine?.markDownloaded(id, false)
@@ -134,7 +163,7 @@ object DownloadCenter {
 
     private suspend fun runDownload(meta: MediaMetadata) {
         val id = meta.id
-        // DESKTOP: same guard as enqueue(), right before the "<id>.<ext>.part" file names are built.
+        // DESKTOP: same guard as enqueue(), right before the file names are built.
         if (!VideoId.isValid(id)) {
             timber.log.Timber.w("download: refusing invalid id (length %d)", id.length)
             setState(id, Download(id, Download.STATE_FAILED, 0f))
@@ -154,9 +183,9 @@ object DownloadCenter {
                 source.mimeType.contains("mpeg") -> "mp3"
                 else -> "audio"
             }
-            val part = File(directory, "$id.$ext.part")
-            val target = File(directory, "$id.$ext")
-            part.delete()
+            val target = File(directory, fileName(meta, ext))
+            val part = File(directory, target.name + ".part")
+            filesOf(id).forEach { it.delete() }
 
             var total = source.contentLength ?: -1L
             var written = 0L
@@ -204,11 +233,11 @@ object DownloadCenter {
             setState(id, Download(id, Download.STATE_COMPLETED, 1f))
             timber.log.Timber.i("download: completed %s (%d bytes)", id, written)
         } catch (e: kotlinx.coroutines.CancellationException) {
-            directory.listFiles { f -> f.name.startsWith("$id.") && f.name.endsWith(".part") }?.forEach { it.delete() }
+            filesOf(id).filter { it.name.endsWith(".part") }.forEach { it.delete() }
             throw e
         } catch (e: Throwable) {
             timber.log.Timber.e(e, "download: failed %s", id)
-            directory.listFiles { f -> f.name.startsWith("$id.") && f.name.endsWith(".part") }?.forEach { it.delete() }
+            filesOf(id).filter { it.name.endsWith(".part") }.forEach { it.delete() }
             setState(id, Download(id, Download.STATE_FAILED, 0f))
         }
     }

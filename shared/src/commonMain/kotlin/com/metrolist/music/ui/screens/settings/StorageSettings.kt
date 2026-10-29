@@ -50,11 +50,12 @@ import coil3.annotation.ExperimentalCoilApi
 import com.metrolist.music.LocalDatabase
 import com.metrolist.music.LocalPlayerAwareWindowInsets
 import com.metrolist.music.LocalPlayerConnection
-import com.metrolist.music.constants.EnableSongCacheKey
 import com.metrolist.music.constants.MaxImageCacheSizeKey
-import com.metrolist.music.constants.MaxSongCacheSizeKey
 import com.metrolist.music.extensions.tryOrNull
 import com.metrolist.music.ui.component.ActionPromptDialog
+import com.metrolist.music.ui.component.DownloadCenter
+import com.metrolist.music.playback.Download
+import androidx.compose.runtime.collectAsState
 import com.metrolist.music.ui.component.IconButton
 import com.metrolist.music.ui.component.Material3SettingsGroup
 import com.metrolist.music.ui.component.Material3SettingsItem
@@ -78,27 +79,15 @@ fun StorageSettings(
     val context = LocalAppContext.current
     val database = LocalDatabase.current
     val imageDiskCache = tryOrNull { coil3.SingletonImageLoader.get(coil3.PlatformContext.INSTANCE).diskCache }
-    val playerCache = LocalPlayerConnection.current?.service?.playerCache
-    val downloadCache = LocalPlayerConnection.current?.service?.downloadCache
 
     val coroutineScope = rememberCoroutineScope()
-    val songCacheString = stringResource(Res.string.song_cache).lowercase()
     val imageCacheString = stringResource(Res.string.image_cache).lowercase()
     val (maxImageCacheSize, onMaxImageCacheSizeChange) = rememberPreference(
         key = MaxImageCacheSizeKey,
         defaultValue = 512
     )
-    val (maxSongCacheSize, onMaxSongCacheSizeChange) = rememberPreference(
-        key = MaxSongCacheSizeKey,
-        defaultValue = 1024
-    )
-    val (enableSongCache, onEnableSongCacheChange) = rememberPreference(
-        key = EnableSongCacheKey,
-        defaultValue = true
-    )
 
     var clearDownloads by remember { mutableStateOf(false) }
-    var clearCacheDialog by remember { mutableStateOf(false) }
     var clearImageCacheDialog by remember { mutableStateOf(false) }
 
     // State for the confirmation dialog
@@ -110,12 +99,9 @@ fun StorageSettings(
     var imageCacheSize by remember {
         androidx.compose.runtime.mutableLongStateOf(tryOrNull { imageDiskCache?.size } ?: 0L)
     }
-    var playerCacheSize by remember {
-        androidx.compose.runtime.mutableLongStateOf(tryOrNull { playerCache?.cacheSpace } ?: 0L)
-    }
-    var downloadCacheSize by remember {
-        mutableLongStateOf(tryOrNull { downloadCache?.cacheSpace } ?: 0L)
-    }
+    // DESKTOP: songs stream without a disk cache, so this screen only covers downloads and images.
+    val downloads by DownloadCenter.downloads.collectAsState()
+    val downloadBytes = remember(downloads) { DownloadCenter.totalBytes() }
     val imageCacheProgress by animateFloatAsState(
         targetValue =
             if (maxImageCacheSize > 0) {
@@ -125,16 +111,6 @@ fun StorageSettings(
             },
         label = "imageCacheProgress",
     )
-    val playerCacheProgress by animateFloatAsState(
-        targetValue =
-            if (maxSongCacheSize > 0) {
-                (playerCacheSize.toFloat() / (maxSongCacheSize * 1024 * 1024L)).coerceIn(0f, 1f)
-            } else {
-                0f
-            },
-        label = "playerCacheProgress",
-    )
-
     LaunchedEffect(maxImageCacheSize) {
         SingletonImageLoader.reset()
         if (maxImageCacheSize == 0) {
@@ -143,16 +119,6 @@ fun StorageSettings(
             }
         }
     }
-    LaunchedEffect(maxSongCacheSize) {
-        if (maxSongCacheSize == 0) {
-            coroutineScope.launch(Dispatchers.IO) {
-                playerCache?.keys?.forEach { key ->
-                    playerCache.removeResource(key)
-                }
-            }
-        }
-    }
-
     LaunchedEffect(imageDiskCache) {
         if (imageDiskCache == null) return@LaunchedEffect
         while (isActive) {
@@ -160,54 +126,17 @@ fun StorageSettings(
             imageCacheSize = tryOrNull { imageDiskCache.size } ?: 0L
         }
     }
-    LaunchedEffect(playerCache) {
-        if (playerCache == null) return@LaunchedEffect
-        while (isActive) {
-            delay(500)
-            playerCacheSize = tryOrNull { playerCache.cacheSpace } ?: 0L
-        }
-    }
-    LaunchedEffect(downloadCache) {
-        if (downloadCache == null) return@LaunchedEffect
-        while (isActive) {
-            delay(500)
-            downloadCacheSize = tryOrNull { downloadCache.cacheSpace } ?: 0L
-        }
-    }
-
     if (clearDownloads) {
         ActionPromptDialog(
             title = stringResource(Res.string.clear_all_downloads),
             onDismiss = { clearDownloads = false },
             onConfirm = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    downloadCache?.keys?.forEach { key ->
-                        downloadCache.removeResource(key)
-                    }
-                }
+                DownloadCenter.removeAll()
                 clearDownloads = false
             },
             onCancel = { clearDownloads = false },
             content = {
                 Text(text = stringResource(Res.string.clear_downloads_dialog))
-            },
-        )
-    }
-    if (clearCacheDialog) {
-        ActionPromptDialog(
-            title = stringResource(Res.string.clear_song_cache),
-            onDismiss = { clearCacheDialog = false },
-            onConfirm = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    playerCache?.keys?.forEach { key ->
-                        playerCache.removeResource(key)
-                    }
-                }
-                clearCacheDialog = false
-            },
-            onCancel = { clearCacheDialog = false },
-            content = {
-                Text(text = stringResource(Res.string.clear_song_cache_dialog))
             },
         )
     }
@@ -311,7 +240,15 @@ fun StorageSettings(
                         icon = painterResource(Res.drawable.storage),
                         title = { Text(stringResource(Res.string.downloaded_songs)) },
                         description = {
-                            Text(text = formatFileSize(downloadCacheSize))
+                            Text(text = "${downloads.count { it.value.state == Download.STATE_COMPLETED }} · ${formatFileSize(downloadBytes)}")
+                        },
+                    ),
+                    Material3SettingsItem(
+                        icon = painterResource(Res.drawable.download),
+                        title = { Text(stringResource(Res.string.download_folder)) },
+                        description = { Text(DownloadCenter.directory.absolutePath) },
+                        onClick = {
+                            runCatching { java.awt.Desktop.getDesktop().open(DownloadCenter.directory) }
                         },
                     ),
                     Material3SettingsItem(
@@ -319,98 +256,6 @@ fun StorageSettings(
                         title = { Text(stringResource(Res.string.clear_all_downloads)) },
                         onClick = {
                             clearDownloads = true
-                        },
-                    ),
-                ),
-        )
-
-        Material3SettingsGroup(
-            title = stringResource(Res.string.song_cache),
-            items = listOf(
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.cached),
-                    title = { Text(stringResource(Res.string.enable_song_cache)) },
-                    description = { Text(stringResource(Res.string.enable_song_cache_desc)) },
-                    trailingContent = {
-                        Switch(
-                            checked = enableSongCache,
-                            onCheckedChange = onEnableSongCacheChange,
-                            thumbContent = {
-                                Icon(
-                                    painter = painterResource(if (enableSongCache) Res.drawable.check else Res.drawable.close
-                                    ),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                                )
-                            }
-                        )
-                    },
-                    onClick = { onEnableSongCacheChange(!enableSongCache) }
-                ),
-                Material3SettingsItem(
-                    icon = painterResource(Res.drawable.cached),
-                    title = { Text(stringResource(Res.string.max_song_cache_size)) },
-                    enabled = enableSongCache,
-                    description = {
-                        val songCacheValues =
-                            remember { listOf(0, 128, 256, 512, 1024, 2048, 4096, 8192, -1) }
-                        Column {
-                            Text(
-                                text = when (maxSongCacheSize) {
-                                    0 -> stringResource(Res.string.disable)
-                                    -1 -> stringResource(Res.string.unlimited)
-                                    else -> formatFileSize(maxSongCacheSize * 1024 * 1024L)
-                                }
-                            )
-                            Slider(
-                                value = songCacheValues.indexOf(maxSongCacheSize).toFloat(),
-                                enabled = enableSongCache,
-                                onValueChange = {
-                                    val newValue = songCacheValues[it.roundToInt()]
-                                    val newLimitInBytes = if (newValue == -1) {
-                                        Long.MAX_VALUE
-                                    } else {
-                                        newValue * 1024 * 1024L
-                                    }
-
-                                        if (newLimitInBytes < playerCacheSize) {
-                                            cacheUsage = playerCacheSize
-                                            cacheType = songCacheString
-                                            onConfirmAction = { onMaxSongCacheSizeChange(newValue) }
-                                            showCacheWarningDialog = true
-                                        } else {
-                                            onMaxSongCacheSizeChange(newValue)
-                                        }
-                                    },
-                                    steps = songCacheValues.size - 2,
-                                    valueRange = 0f..(songCacheValues.size - 1).toFloat(),
-                                )
-                                LinearProgressIndicator(
-                                    progress = { playerCacheProgress },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    strokeCap = StrokeCap.Round,
-                                )
-                                Spacer(modifier = Modifier.padding(2.dp))
-                                Text(
-                                    text =
-                                        if (maxSongCacheSize == -1) {
-                                            formatFileSize(playerCacheSize)
-                                        } else {
-                                            "${formatFileSize(playerCacheSize)} / ${
-                                                formatFileSize(maxSongCacheSize * 1024 * 1024L,
-                                                )
-                                            }"
-                                        },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                )
-                            }
-                        },
-                    ),
-                    Material3SettingsItem(
-                        icon = painterResource(Res.drawable.clear_all),
-                        title = { Text(stringResource(Res.string.clear_song_cache)) },
-                        onClick = {
-                            clearCacheDialog = true
                         },
                     ),
                 ),
