@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale es una versión de escritorio de Metrolist. La parte de YouTube Music es obra del equipo de Metrolist de abajo. ¡Gracias!</string>
     <string name="about_report_bug">Informar de un error</string>
     <string name="about_metrolist_section">Metrolist (aplicación original)</string>
+    <string name="download_folder">Carpeta de descargas (clic para abrir)</string>
+    <string name="hide_from_capture_desc">La ventana de Lindale aparece en negro en capturas, grabaciones y al compartir pantalla (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Los colores siguen la portada de la canción que suena.</string>
+    <string name="appearance_lyrics_click_desc">Haz clic en una línea para saltar a esa parte de la canción.</string>
+    <string name="appearance_lyrics_scroll_desc">Mantiene visible la línea actual mientras suena la canción.</string>
+    <string name="appearance_library_playlist_desc">Se muestra arriba en Biblioteca > Listas.</string>
 </resources>

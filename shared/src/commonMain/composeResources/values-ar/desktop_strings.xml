@@ -32,4 +32,5 @@
     <string name="about_based_on">Lindale نسخة سطح مكتب من Metrolist. جانب YouTube Music هو عمل فريق Metrolist أدناه، شكرًا لهم!</string>
     <string name="about_report_bug">الإبلاغ عن خطأ</string>
     <string name="about_metrolist_section">Metrolist (التطبيق الأصلي)</string>
+    <string name="download_folder">مجلد التنزيلات (انقر للفتح)</string>
 </resources>

@@ -43,4 +43,41 @@
     <string name="about_based_on">Lindale, Metrolist\'in masaüstü portudur. YouTube Music tarafındaki emek aşağıdaki Metrolist ekibine ait, teşekkürler!</string>
     <string name="about_report_bug">Hata bildir</string>
     <string name="about_metrolist_section">Metrolist (orijinal uygulama)</string>
+    <string name="download_folder">İndirme klasörü (açmak için tıkla)</string>
+    <string name="hide_from_capture_desc">Lindale penceresi ekran görüntülerinde, kayıtlarda ve ekran paylaşımında (Discord, Teams, OBS) siyah görünür.</string>
+    <string name="appearance_dynamic_theme_desc">Renkler çalan şarkının albüm kapağına göre değişir.</string>
+    <string name="appearance_lyrics_click_desc">Bir söz satırına tıklayınca şarkı o kısma atlar.</string>
+    <string name="appearance_lyrics_scroll_desc">Şarkı çalarken o anki satır hep görünür kalır.</string>
+    <string name="appearance_library_playlist_desc">Kitaplık > Çalma listeleri\'nin en üstünde gösterilir.</string>
+    <string name="onboarding_welcome_title">Lindalë\'ye hoş geldin</string>
+    <string name="onboarding_welcome_body">Windows için reklamsız bir YouTube Music oynatıcısı. Şarkı ara, çal, indir ve kitaplığını eşitle. Bu adımlar bir dakika sürer, istediğini atlayabilirsin.</string>
+    <string name="onboarding_signin_title">Giriş yap (isteğe bağlı)</string>
+    <string name="onboarding_signin_body">YouTube Music kitaplığın, beğendiğin şarkılar, çalma listelerin ve geçmişin için Google hesabınla giriş yap. Lindale hesapsız da çalışır.</string>
+    <string name="onboarding_signin_button">Google ile giriş yap</string>
+    <string name="onboarding_import_title">Müziğini Spotify\'dan getir</string>
+    <string name="onboarding_import_body">1. Exportify\'ı aç, Spotify ile giriş yap ve bir çalma listesini (ya da hepsini) CSV dosyası olarak dışa aktar.
+2. Buradan içe aktarma ekranını aç ve \"Bir CSV listesi içe aktar\" seçeneğini seç. Lindale her şarkıyı YouTube Music\'te bulup bir çalma listesi oluşturur.
+
+Diğer oynatıcılardan (foobar2000, VLC, iTunes) M3U listeleri de aynı şekilde çalışır.</string>
+    <string name="onboarding_exportify">Exportify\'ı aç</string>
+    <string name="onboarding_import_open">İçe aktarmayı aç</string>
+    <string name="onboarding_keys_title">İşe yarar tuşlar</string>
+    <string name="onboarding_keys_body">Ctrl+K: arama
+Boşluk: çal / duraklat
+Ctrl+← / →: önceki / sonraki şarkı
+Ctrl+↑ / ↓: ses
+Shift+← / →: 5 saniye ileri / geri
+Ctrl+S: karıştır · Ctrl+R: tekrarla · Ctrl+M: sessiz
+
+Klavyendeki medya tuşları ve Windows medya paneli (ses ayarının yanında) de Lindale\'yi kontrol eder.</string>
+    <string name="onboarding_next">İleri</string>
+    <string name="onboarding_back">Geri</string>
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_done">Dinlemeye başla</string>
+    <string name="restore_desc_desktop">Android\'deki Metrolist ile alınmış yedekleri de geri yükler.</string>
+    <string name="import_other_apps">Diğer uygulamalardan aktar</string>
+    <string name="import_spotify_title">Spotify: çalma listelerini dışa aktar</string>
+    <string name="import_spotify_desc">Exportify\'ı açar. Spotify ile giriş yap, listeyi CSV olarak indir, sonra aşağıdaki \"Bir CSV listesi içe aktar\"ı kullan.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes veya MusicBee\'nin kaydettiği listeler (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz veya şarkı adı ve sanatçı sütunu olan herhangi bir CSV. Her şarkı YouTube Music\'te eşleştirilir.</string>
 </resources>

@@ -33,4 +33,41 @@
     <string name="about_based_on">Lindale is a desktop port of Metrolist. The YouTube Music side is the work of the Metrolist team below; thank you!</string>
     <string name="about_report_bug">Report a bug</string>
     <string name="about_metrolist_section">Metrolist (original app)</string>
+    <string name="download_folder">Download folder (click to open)</string>
+    <string name="hide_from_capture_desc">Lindale\'s window shows up black in screenshots, recordings and screen sharing (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Colors follow the album art of the song that is playing.</string>
+    <string name="appearance_lyrics_click_desc">Click a lyrics line to jump to that part of the song.</string>
+    <string name="appearance_lyrics_scroll_desc">Keeps the current line in view while the song plays.</string>
+    <string name="appearance_library_playlist_desc">Shown at the top of Library > Playlists.</string>
+    <string name="onboarding_welcome_title">Welcome to Lindalë</string>
+    <string name="onboarding_welcome_body">An ad-free YouTube Music player for Windows. Search, play, download songs and keep your library in sync. These steps take a minute and you can skip any of them.</string>
+    <string name="onboarding_signin_title">Sign in (optional)</string>
+    <string name="onboarding_signin_body">Sign in with your Google account to get your YouTube Music library, liked songs, playlists and history. Lindale also works without an account.</string>
+    <string name="onboarding_signin_button">Sign in with Google</string>
+    <string name="onboarding_import_title">Bring your music from Spotify</string>
+    <string name="onboarding_import_body">1. Open Exportify, log in with Spotify and export a playlist (or all of them) as a CSV file.
+2. Open the import screen here and choose \"Import a CSV playlist\". Lindale finds each song on YouTube Music and makes a playlist.
+
+M3U playlists from other players (foobar2000, VLC, iTunes) work the same way.</string>
+    <string name="onboarding_exportify">Open Exportify</string>
+    <string name="onboarding_import_open">Open import</string>
+    <string name="onboarding_keys_title">Handy keys</string>
+    <string name="onboarding_keys_body">Ctrl+K: search
+Space: play / pause
+Ctrl+← / →: previous / next song
+Ctrl+↑ / ↓: volume
+Shift+← / →: seek 5 seconds
+Ctrl+S: shuffle · Ctrl+R: repeat · Ctrl+M: mute
+
+Your keyboard\'s media keys and the Windows media panel (next to the volume popup) also control Lindale.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_done">Start listening</string>
+    <string name="restore_desc_desktop">Also restores backups made with Metrolist on Android.</string>
+    <string name="import_other_apps">Import from other apps</string>
+    <string name="import_spotify_title">Spotify: export your playlists</string>
+    <string name="import_spotify_desc">Opens Exportify. Log in with Spotify, download a playlist as CSV, then use \"Import a CSV playlist\" below.</string>
+    <string name="import_m3u_desc">Playlists saved by foobar2000, VLC, Winamp, iTunes or MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz or any CSV with title and artist columns. Each song is matched on YouTube Music.</string>
 </resources>

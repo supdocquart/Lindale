@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale — настольная версия Metrolist. Вся работа с YouTube Music — заслуга команды Metrolist ниже, спасибо!</string>
     <string name="about_report_bug">Сообщить об ошибке</string>
     <string name="about_metrolist_section">Metrolist (оригинальное приложение)</string>
+    <string name="download_folder">Папка загрузок (нажмите, чтобы открыть)</string>
+    <string name="hide_from_capture_desc">Окно Lindale будет чёрным на скриншотах, в записях и при демонстрации экрана (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Цвета подстраиваются под обложку текущего трека.</string>
+    <string name="appearance_lyrics_click_desc">Нажмите на строку, чтобы перейти к этому месту песни.</string>
+    <string name="appearance_lyrics_scroll_desc">Текущая строка всегда остаётся на виду.</string>
+    <string name="appearance_library_playlist_desc">Показывается вверху в Медиатека > Плейлисты.</string>
 </resources>

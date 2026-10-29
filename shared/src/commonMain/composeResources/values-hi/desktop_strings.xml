@@ -32,4 +32,5 @@
     <string name="about_based_on">Lindale, Metrolist का डेस्कटॉप संस्करण है। YouTube Music वाला हिस्सा नीचे दी गई Metrolist टीम की मेहनत है, धन्यवाद!</string>
     <string name="about_report_bug">बग रिपोर्ट करें</string>
     <string name="about_metrolist_section">Metrolist (मूल ऐप)</string>
+    <string name="download_folder">डाउनलोड फ़ोल्डर (खोलने के लिए क्लिक करें)</string>
 </resources>

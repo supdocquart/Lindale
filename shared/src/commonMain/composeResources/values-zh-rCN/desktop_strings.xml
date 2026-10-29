@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale 是 Metrolist 的桌面版。YouTube Music 部分是下方 Metrolist 团队的成果，感谢他们！</string>
     <string name="about_report_bug">报告问题</string>
     <string name="about_metrolist_section">Metrolist（原版应用）</string>
+    <string name="download_folder">下载文件夹（点击打开）</string>
+    <string name="hide_from_capture_desc">在截图、录屏和屏幕共享（Discord、Teams、OBS）中，Lindale 窗口显示为黑色。</string>
+    <string name="appearance_dynamic_theme_desc">颜色跟随正在播放歌曲的专辑封面。</string>
+    <string name="appearance_lyrics_click_desc">点击歌词行即可跳到歌曲的该位置。</string>
+    <string name="appearance_lyrics_scroll_desc">播放时始终显示当前歌词行。</string>
+    <string name="appearance_library_playlist_desc">显示在 媒体库 > 播放列表 顶部。</string>
 </resources>

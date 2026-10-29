@@ -102,6 +102,8 @@ val EnableLyricsPlus = booleanPreferencesKey("enableLyricsPlus")
 val HideExplicitKey = booleanPreferencesKey("hideExplicit")
 // DESKTOP: only removes clean items that also have an explicit twin in the same list.
 val HideCleanDuplicatesKey = booleanPreferencesKey("hideCleanDuplicates")
+// DESKTOP: set once the first-run walkthrough has been finished or skipped.
+val OnboardingDoneKey = booleanPreferencesKey("onboardingDone")
 val HideVideoSongsKey = booleanPreferencesKey("hideVideoSongs")
 val HideYoutubeShortsKey = booleanPreferencesKey("hideYoutubeShorts")
 val ShowArtistDescriptionKey = booleanPreferencesKey("showArtistDescription")

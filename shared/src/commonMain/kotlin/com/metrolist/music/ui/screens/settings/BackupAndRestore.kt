@@ -222,9 +222,26 @@ fun BackupAndRestore(
                                 restoreLauncher.launch(arrayOf("application/octet-stream"))
                             }
                         },
+                        description = { Text(stringResource(Res.string.restore_desc_desktop)) },
+                    ),
+                ),
+        )
+
+        // DESKTOP: playlists from other apps get their own section, with where each file comes from.
+        val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+        Material3SettingsGroup(
+            title = stringResource(Res.string.import_other_apps),
+            items =
+                listOf(
+                    Material3SettingsItem(
+                        title = { Text(stringResource(Res.string.import_spotify_title)) },
+                        description = { Text(stringResource(Res.string.import_spotify_desc)) },
+                        icon = painterResource(Res.drawable.link),
+                        onClick = { uriHandler.openUri("https://exportify.net") },
                     ),
                     Material3SettingsItem(
                         title = { Text(stringResource(Res.string.import_online)) },
+                        description = { Text(stringResource(Res.string.import_m3u_desc)) },
                         icon = painterResource(Res.drawable.playlist_add),
                         onClick = {
                             importM3uLauncherOnline.launch(arrayOf("audio/*"))
@@ -232,6 +249,7 @@ fun BackupAndRestore(
                     ),
                     Material3SettingsItem(
                         title = { Text(stringResource(Res.string.import_csv)) },
+                        description = { Text(stringResource(Res.string.import_csv_desc)) },
                         icon = painterResource(Res.drawable.playlist_add),
                         onClick = {
                             importPlaylistFromCsv.launch(

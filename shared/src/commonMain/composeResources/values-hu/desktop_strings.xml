@@ -32,4 +32,5 @@
     <string name="about_based_on">A Lindale a Metrolist asztali változata. A YouTube Music rész az alábbi Metrolist csapat munkája, köszönjük!</string>
     <string name="about_report_bug">Hiba bejelentése</string>
     <string name="about_metrolist_section">Metrolist (eredeti alkalmazás)</string>
+    <string name="download_folder">Letöltési mappa (kattints a megnyitáshoz)</string>
 </resources>

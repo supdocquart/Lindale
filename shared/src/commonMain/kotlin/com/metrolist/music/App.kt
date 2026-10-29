@@ -68,6 +68,12 @@ import com.metrolist.music.ui.screens.settings.ChangelogScreen
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.utils.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import androidx.datastore.preferences.core.edit
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.constants.OnboardingDoneKey
+import com.metrolist.music.constants.InnerTubeCookieKey
+import com.metrolist.music.ui.component.OnboardingDialog
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import metrolist.shared.generated.resources.*
@@ -473,6 +479,25 @@ fun MetrolistApp(
                             )
                         }
                     }
+                }
+
+                // DESKTOP: first-run walkthrough, only on a fresh install (not signed in, never finished).
+                var showOnboarding by remember { mutableStateOf(false) }
+                val context = com.metrolist.music.platform.LocalAppContext.current
+                val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+                LaunchedEffect(Unit) {
+                    val prefs = context.dataStore.data.first()
+                    showOnboarding = prefs[OnboardingDoneKey] != true && prefs[InnerTubeCookieKey].isNullOrEmpty()
+                }
+                if (showOnboarding) {
+                    OnboardingDialog(
+                        onSignIn = { navController.navigate("login") },
+                        onImport = { navController.navigate("settings/backup_restore") },
+                        onFinish = {
+                            showOnboarding = false
+                            coroutineScope.launch { context.dataStore.edit { it[OnboardingDoneKey] = true } }
+                        },
+                    )
                 }
 
                 if (showChangelog.value) {

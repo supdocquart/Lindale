@@ -32,4 +32,5 @@
     <string name="about_based_on">Lindale este o versiune desktop a Metrolist. Partea YouTube Music este munca echipei Metrolist de mai jos, mulțumim!</string>
     <string name="about_report_bug">Raportează o eroare</string>
     <string name="about_metrolist_section">Metrolist (aplicația originală)</string>
+    <string name="download_folder">Dosar descărcări (clic pentru a deschide)</string>
 </resources>

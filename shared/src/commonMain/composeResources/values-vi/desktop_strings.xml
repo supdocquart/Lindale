@@ -32,4 +32,5 @@
     <string name="about_based_on">Lindale là bản Metrolist cho máy tính. Phần YouTube Music là công sức của nhóm Metrolist bên dưới, xin cảm ơn!</string>
     <string name="about_report_bug">Báo lỗi</string>
     <string name="about_metrolist_section">Metrolist (ứng dụng gốc)</string>
+    <string name="download_folder">Thư mục tải xuống (nhấn để mở)</string>
 </resources>

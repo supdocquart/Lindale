@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale Metrolist-in masaüstü versiyasıdır. YouTube Music hissəsi aşağıdakı Metrolist komandasının əməyidir, təşəkkürlər!</string>
     <string name="about_report_bug">Xəta bildir</string>
     <string name="about_metrolist_section">Metrolist (orijinal tətbiq)</string>
+    <string name="download_folder">Yükləmə qovluğu (açmaq üçün klikləyin)</string>
+    <string name="hide_from_capture_desc">Lindale pəncərəsi ekran şəkillərində, yazılarda və ekran paylaşımında (Discord, Teams, OBS) qara görünür.</string>
+    <string name="appearance_dynamic_theme_desc">Rənglər çalan mahnının albom örtüyünə uyğunlaşır.</string>
+    <string name="appearance_lyrics_click_desc">Söz sətrinə klikləyəndə mahnı o hissəyə keçir.</string>
+    <string name="appearance_lyrics_scroll_desc">Mahnı çalarkən cari sətir həmişə görünür.</string>
+    <string name="appearance_library_playlist_desc">Kitabxana > Pleylistlər bölməsinin yuxarısında göstərilir.</string>
 </resources>

@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale은 Metrolist의 데스크톱 버전입니다. YouTube Music 부분은 아래 Metrolist 팀의 작업입니다. 감사합니다!</string>
     <string name="about_report_bug">버그 신고</string>
     <string name="about_metrolist_section">Metrolist (원본 앱)</string>
+    <string name="download_folder">다운로드 폴더 (클릭하여 열기)</string>
+    <string name="hide_from_capture_desc">스크린샷, 녹화, 화면 공유(Discord, Teams, OBS)에서 Lindale 창이 검게 표시됩니다.</string>
+    <string name="appearance_dynamic_theme_desc">재생 중인 곡의 앨범 아트에 맞춰 색상이 바뀝니다.</string>
+    <string name="appearance_lyrics_click_desc">가사 줄을 클릭하면 해당 부분으로 이동합니다.</string>
+    <string name="appearance_lyrics_scroll_desc">재생 중인 줄이 항상 보이도록 스크롤합니다.</string>
+    <string name="appearance_library_playlist_desc">보관함 > 재생목록 맨 위에 표시됩니다.</string>
 </resources>

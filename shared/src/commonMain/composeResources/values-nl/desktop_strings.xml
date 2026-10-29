@@ -32,4 +32,10 @@
     <string name="about_based_on">Lindale is een desktopversie van Metrolist. De YouTube Music-kant is het werk van het Metrolist-team hieronder, bedankt!</string>
     <string name="about_report_bug">Bug melden</string>
     <string name="about_metrolist_section">Metrolist (originele app)</string>
+    <string name="download_folder">Downloadmap (klik om te openen)</string>
+    <string name="hide_from_capture_desc">Het Lindale-venster is zwart in schermafbeeldingen, opnames en bij scherm delen (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Kleuren volgen de albumhoes van het nummer dat speelt.</string>
+    <string name="appearance_lyrics_click_desc">Klik op een regel om naar dat deel van het nummer te gaan.</string>
+    <string name="appearance_lyrics_scroll_desc">Houdt de huidige regel in beeld tijdens het afspelen.</string>
+    <string name="appearance_library_playlist_desc">Bovenaan in Bibliotheek > Afspeellijsten.</string>
 </resources>

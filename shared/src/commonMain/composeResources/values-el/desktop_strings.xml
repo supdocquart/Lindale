@@ -32,4 +32,5 @@
     <string name="about_based_on">Το Lindale είναι μεταφορά του Metrolist για υπολογιστή. Το κομμάτι του YouTube Music είναι έργο της ομάδας Metrolist παρακάτω, ευχαριστούμε!</string>
     <string name="about_report_bug">Αναφορά σφάλματος</string>
     <string name="about_metrolist_section">Metrolist (αρχική εφαρμογή)</string>
+    <string name="download_folder">Φάκελος λήψεων (κάντε κλικ για άνοιγμα)</string>
 </resources>
