@@ -1,0 +1,35 @@
+# Points an existing release tag at another commit (default: the tip of main) without touching the
+# release itself or its files. Used after history cleanups so the release matches the branch.
+name: Move release tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to move (e.g. v0.1.0-beta)"
+        required: true
+      ref:
+        description: "Commit or branch to point it at"
+        required: false
+        default: "main"
+
+permissions:
+  contents: write
+
+jobs:
+  move:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.ref }}
+      - name: Move tag
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f -a "$TAG" -m "Lindale ${TAG#v}" HEAD
+          git push -f origin "refs/tags/$TAG"
+          git ls-remote origin "refs/tags/$TAG*"
