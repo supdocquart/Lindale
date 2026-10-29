@@ -67,6 +67,11 @@ private fun runApp() = application {
         }
     }
 
+    remember(playerConnection) {
+        com.metrolist.music.platform.StartupTrace.span("media_session_start") {
+            WindowsMediaSession(playerConnection).also { it.start() }
+        }
+
     Window(
         onCloseRequest = {
             // DESKTOP: Persist the window geometry before the player shuts down.

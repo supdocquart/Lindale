@@ -33,6 +33,8 @@ dependencies {
 
     // DESKTOP: thin interface jar for com.jetbrains.JBR; the implementation ships inside the JBR.
     implementation(libs.jbr.api)
+    // DESKTOP: Windows media overlay and keyboard media keys (SMTC). MIT.
+    implementation("dev.nucleusframework:nucleus.media-control:2.5.18")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
