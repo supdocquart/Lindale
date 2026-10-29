@@ -2,8 +2,8 @@ package com.metrolist.music
 
 object BuildConfig {
     const val DEBUG = true
-    const val VERSION_NAME = "0.1.0-beta"
-    const val BASE_VERSION_NAME = "0.1.0-beta"
+    const val VERSION_NAME = "0.1.1-beta"
+    const val BASE_VERSION_NAME = "0.1.1-beta"
     const val VERSION_CODE = 1
     const val FLAVOR = "foss"
     const val ARCHITECTURE = "universal"
