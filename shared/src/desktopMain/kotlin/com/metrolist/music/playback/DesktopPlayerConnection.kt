@@ -1619,7 +1619,7 @@ class DesktopPlayerConnection(
                 }
 
                 val info = resolvedStreams[videoId]?.takeIf { !it.isExpired() }
-                    ?: runBlocking(Dispatchers.IO) { resolveStream(videoId, mediaMetadata.value).getOrNull() }
+                    ?: runBlocking(Dispatchers.IO) { resolveStream(videoId, mediaMetadata.value?.takeIf { it.id == videoId }).getOrNull() }
                         ?.also { resolvedStreams[videoId] = it }
 
                 if (info == null) {
