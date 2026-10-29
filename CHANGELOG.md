@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0-beta (unreleased)
+
+- Windows media panel and keyboard media keys control Lindale
+- Downloads are saved as normal music files ("Artist - Title") in Music\Lindale; existing downloads move there
+- Storage screen shows download count, size and folder; the unused song cache section is gone
+- "Disable screenshot" hides the window from screenshots, recordings and screen sharing
+- Appearance hides settings that do nothing on desktop and explains the rest
+- Integrations moved under Account
+- First-run walkthrough: sign in, import from Spotify, shortcuts
+- Backup & Restore: new "Import from other apps" section (Spotify via Exportify, M3U, CSV)
+
 ## 0.1.1-beta
 
 - Space, arrows and other shortcuts no longer act on the player while you type in a text field
