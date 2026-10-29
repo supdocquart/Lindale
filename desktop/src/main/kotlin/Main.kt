@@ -87,14 +87,22 @@ private fun runApp() = application {
             when {
                 event.type != KeyEventType.KeyDown -> false
                 event.key == Key.Escape -> BackDispatcher.dispatch()
-                event.isCtrlPressed && (event.key == Key.K || event.key == Key.F) -> {
-                    GlobalSearch.focus()
-                    true
-                }
-                else -> handlePlayerShortcut(event, playerConnection)
+                else -> false
             }
         },
     ) {
+        // DESKTOP: shortcuts are read before Compose focus handling; Window.onKeyEvent only saw keys
+        // when a Compose element held focus, so most of them seemed dead.
+        DisposableEffect(window) {
+            val dispatcher = java.awt.KeyEventDispatcher { e ->
+                e.id == java.awt.event.KeyEvent.KEY_PRESSED &&
+                    javax.swing.SwingUtilities.getWindowAncestor(e.component) === window &&
+                    handleShortcut(e, playerConnection)
+            }
+            val kfm = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            kfm.addKeyEventDispatcher(dispatcher)
+            onDispose { kfm.removeKeyEventDispatcher(dispatcher) }
+        }
         // Title bar follows the app theme (see WindowChrome / WindowsTitleBar / JbrTitleBar).
         DisposableEffect(window) {
             // DESKTOP: dark fill behind Compose until the first frame (instead of white).
@@ -177,10 +185,6 @@ private fun runApp() = application {
     }
 }
 
-/**
- * Spotify-style shortcuts. The window only sees keys nothing focused consumed, so typing a space
- * in the search box never toggles playback.
- */
 private object TextInputTracker : androidx.compose.ui.platform.PlatformTextInputInterceptor {
     private val sessions = java.util.concurrent.atomic.AtomicInteger()
     val typing: Boolean get() = sessions.get() > 0
@@ -198,13 +202,18 @@ private object TextInputTracker : androidx.compose.ui.platform.PlatformTextInput
     }
 }
 
-private fun handlePlayerShortcut(event: KeyEvent, player: DesktopPlayerConnection): Boolean {
-    if (event.isAltPressed) return false
-    // In a text field Space, arrows and Ctrl+arrows edit text; only the media keys stay global.
-    val mediaKey = event.key == Key.MediaPlayPause || event.key == Key.MediaNext || event.key == Key.MediaPrevious
-    if (TextInputTracker.typing && !mediaKey) return false
-    val ctrl = event.isCtrlPressed
-    val shift = event.isShiftPressed
+/** Spotify-style shortcuts. Returns true when the key was used (so Compose does not also get it). */
+private fun handleShortcut(e: java.awt.event.KeyEvent, player: DesktopPlayerConnection): Boolean {
+    if (e.isAltDown || e.isMetaDown) return false
+    val ctrl = e.isControlDown
+    val shift = e.isShiftDown
+    val code = e.keyCode
+    if (ctrl && !shift && (code == java.awt.event.KeyEvent.VK_K || code == java.awt.event.KeyEvent.VK_F)) {
+        GlobalSearch.focus()
+        return true
+    }
+    // In a text field Space, arrows, Ctrl+arrows and Ctrl+S/R/M are editing keys.
+    if (TextInputTracker.typing) return false
     fun changeVolume(delta: Float) {
         val volume = player.service.playerVolume
         if (player.isMuted.value) player.setMuted(false)
@@ -215,19 +224,16 @@ private fun handlePlayerShortcut(event: KeyEvent, player: DesktopPlayerConnectio
         player.seekTo((player.player.currentPosition + deltaMs).coerceIn(0L, duration))
     }
     when {
-        event.key == Key.MediaPlayPause -> player.togglePlayPause()
-        event.key == Key.MediaNext -> player.seekToNext()
-        event.key == Key.MediaPrevious -> player.seekToPrevious()
-        event.key == Key.Spacebar && !ctrl && !shift -> player.togglePlayPause()
-        ctrl && !shift && event.key == Key.DirectionRight -> player.seekToNext()
-        ctrl && !shift && event.key == Key.DirectionLeft -> player.seekToPrevious()
-        ctrl && !shift && event.key == Key.DirectionUp -> changeVolume(0.1f)
-        ctrl && !shift && event.key == Key.DirectionDown -> changeVolume(-0.1f)
-        shift && !ctrl && event.key == Key.DirectionRight -> seekBy(5_000)
-        shift && !ctrl && event.key == Key.DirectionLeft -> seekBy(-5_000)
-        ctrl && !shift && event.key == Key.S -> player.player.shuffleModeEnabled = !player.player.shuffleModeEnabled
-        ctrl && !shift && event.key == Key.R -> player.toggleRepeatMode()
-        ctrl && !shift && event.key == Key.M -> player.toggleMute()
+        code == java.awt.event.KeyEvent.VK_SPACE && !ctrl && !shift -> player.togglePlayPause()
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_RIGHT -> player.seekToNext()
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_LEFT -> player.seekToPrevious()
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_UP -> changeVolume(0.1f)
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_DOWN -> changeVolume(-0.1f)
+        shift && !ctrl && code == java.awt.event.KeyEvent.VK_RIGHT -> seekBy(5_000)
+        shift && !ctrl && code == java.awt.event.KeyEvent.VK_LEFT -> seekBy(-5_000)
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_S -> player.player.shuffleModeEnabled = !player.player.shuffleModeEnabled
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_R -> player.toggleRepeatMode()
+        ctrl && !shift && code == java.awt.event.KeyEvent.VK_M -> player.toggleMute()
         else -> return false
     }
     return true
