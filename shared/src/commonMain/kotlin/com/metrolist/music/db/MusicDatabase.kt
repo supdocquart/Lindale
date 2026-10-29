@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
         SortedSongAlbumMap::class,
         PlaylistSongMapPreview::class
     ],
-    version = 36,
+    version = 38, // DESKTOP: same as upstream 13.7.0, so its Android backups restore
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -76,7 +76,10 @@ class MusicDatabase(
 
     companion object {
         const val DB_NAME = "music.db"
-        const val DB_VERSION = 36
+        const val DB_VERSION = 38
+
+        // DESKTOP: oldest backup schema the desktop migrations (MusicDatabase.desktop.kt) can upgrade.
+        const val MIN_RESTORE_DB_VERSION = 36
 
         fun readDatabaseVersion(dbPath: String): Int {
             return try {
