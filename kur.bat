@@ -37,8 +37,8 @@ timeout /t 1 /nobreak >nul
 rem VLC eklentileri her derlemede yeni tarihle uretiliyor; hepsini yeniden kopyalamak Windows Defender
 rem taramasina yol aciyor ve ilk acilisi ~12 sn yavaslatiyordu. VLC klasorunde sadece eksik dosyalar kopyalanir
 rem (VLC surumu degisirse kurulu app\resources\vlc klasorunu silip tekrar kurun).
-rem logs, cache ve vlc klasorleri uygulama verisi; /MIR bunlari silmesin.
-robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" "%DEST%\logs" "%DEST%\cache" "%DEST%\vlc" /XF *.jsa /NFL /NDL /NJH /NJS /NP >> %LOG%
+rem logs, cache, vlc ve mpv klasorleri uygulama verisi; /MIR bunlari silmesin.
+robocopy "%SRC%" "%DEST%" /MIR /XD "%SRC%\app\resources\vlc" "%DEST%\logs" "%DEST%\cache" "%DEST%\vlc" "%DEST%\mpv" /XF *.jsa /NFL /NDL /NJH /NJS /NP >> %LOG%
 set RC=%ERRORLEVEL%
 robocopy "%SRC%\app\resources\vlc" "%DEST%\app\resources\vlc" /MIR /XO /XN /NFL /NDL /NJH /NJS /NP >> %LOG%
 if %RC% LSS %ERRORLEVEL% set RC=%ERRORLEVEL%

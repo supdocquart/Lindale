@@ -379,7 +379,12 @@ class DesktopPlayerConnection(
     }
 
     private fun initEngine() {
-        val created = VlcEngine.create(EngineListener(), playbackParams.speed, playbackParams.pitch) ?: return
+        // Experimental: tools/mpv-dene.bat starts Lindale with LINDALE_ENGINE=mpv; VLC stays the fallback.
+        val wantMpv = System.getenv("LINDALE_ENGINE").equals("mpv", ignoreCase = true)
+        val created = (if (wantMpv) MpvEngine.create(EngineListener(), playbackParams.speed, playbackParams.pitch) else null)
+            ?: VlcEngine.create(EngineListener(), playbackParams.speed, playbackParams.pitch)
+            ?: return
+        Timber.i("Audio engine: %s", created.name)
         engine = created
         com.metrolist.music.ui.component.DownloadCenter.engine = createDownloadEngine()
         created.equalizer?.let { eq ->

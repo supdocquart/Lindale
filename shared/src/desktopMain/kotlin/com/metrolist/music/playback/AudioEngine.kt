@@ -3,9 +3,9 @@ package com.metrolist.music.playback
 import com.metrolist.music.eq.EqualizerBackend
 
 /**
- * DESKTOP: the native audio player behind [DesktopPlayerConnection]. Today the only implementation is
- * [VlcEngine] (libVLC); a libmpv engine can be added behind this same interface without touching the
- * queue, streaming or UI code. Listener callbacks arrive on the engine's own thread.
+ * DESKTOP: the native audio player behind [DesktopPlayerConnection]: [VlcEngine] (libVLC, the default)
+ * or the experimental [MpvEngine] (only with LINDALE_ENGINE=mpv). Listener callbacks arrive on the
+ * engine's own thread.
  */
 interface AudioEngine {
     interface Listener {
