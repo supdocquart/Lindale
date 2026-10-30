@@ -68,6 +68,10 @@ import com.metrolist.music.ui.screens.settings.ChangelogScreen
 import com.metrolist.music.ui.theme.MetrolistTheme
 import com.metrolist.music.utils.*
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.runtime.SideEffect
 import kotlinx.coroutines.flow.first
 import androidx.datastore.preferences.core.edit
 import com.metrolist.music.utils.dataStore
@@ -157,6 +161,8 @@ fun MetrolistApp(
     val submitSearch = rememberSearchSubmit(navController, database, playerConnection)
     val closeSearch = {
         searchOpen = false
+        // A query left in the field without its suggestions looks broken, so start fresh next time.
+        searchText = TextFieldValue()
         focusManager.clearFocus()
     }
     val onSearchSubmit: (String) -> Unit = { query ->
@@ -167,10 +173,11 @@ fun MetrolistApp(
         }
     }
     LaunchedEffect(currentRoute) { searchOpen = false }
-    val hasSearchBar by rememberUpdatedState(currentTitleRes != null)
+    // DESKTOP: whether the title bar shows its search field right now (also over the open player).
+    val titleSearchShown = remember { mutableStateOf(false) }
     DisposableEffect(navController) {
         GlobalSearch.focusHandler = {
-            if (hasSearchBar) {
+            if (titleSearchShown.value) {
                 searchOpen = true
                 runCatching { searchFocusRequester.requestFocus() }
             } else {
@@ -204,6 +211,7 @@ fun MetrolistApp(
         // isExpanded needs an exact match with the top bound, which a window resize can break; progress cannot.
         val playerOpen = playerBottomSheetState.progress > 0.5f
         val showTitleSearch = currentTitleRes != null || playerOpen || searchOpen
+        SideEffect { titleSearchShown.value = showTitleSearch }
 
         // DESKTOP: the Home action is shared by the rail, the bottom bar and the title bar.
         val navigateHome: () -> Unit = {
@@ -446,22 +454,27 @@ fun MetrolistApp(
                             // DESKTOP: drawn after the player so suggestions also show over the full-screen player.
                             if (showTitleSearch) {
                             if (searchOpen) {
+                                var panelBounds by remember { mutableStateOf(androidx.compose.ui.geometry.Rect.Zero) }
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(top = if (customTitleBar) 0.dp else 64.dp)
-                                        .clickable(
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null,
-                                            onClick = closeSearch,
-                                        ),
+                                        // A press outside the panel closes it but still reaches what is underneath
+                                        // (e.g. the player bar), instead of being swallowed.
+                                        .pointerInput(Unit) {
+                                            awaitEachGesture {
+                                                val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                                                if (!panelBounds.contains(down.position)) closeSearch()
+                                            }
+                                        },
                                 ) {
                                     DesktopSearchPanel(
                                         value = searchText,
                                         onValueChange = { searchText = it },
                                         onSubmit = submitSearchFromBar,
                                         pureBlack = pureBlack,
-                                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp, start = 16.dp, end = 16.dp)
+                                            .onGloballyPositioned { panelBounds = it.boundsInParent() },
                                     )
                                 }
                             }
