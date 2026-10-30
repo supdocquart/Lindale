@@ -43,7 +43,6 @@ import com.metrolist.music.utils.VideoId
 import com.metrolist.music.utils.dataStore
 import com.metrolist.music.utils.get
 import com.metrolist.music.utils.normalizationGainMb
-import com.sun.jna.NativeLibrary
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import kotlinx.coroutines.CoroutineScope
@@ -66,10 +65,6 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil
-import uk.co.caprica.vlcj.factory.MediaPlayerFactory
-import uk.co.caprica.vlcj.player.base.MediaPlayer
-import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
