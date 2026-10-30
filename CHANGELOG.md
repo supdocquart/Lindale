@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.2.0-beta (unreleased)
+## 0.2.0-beta
 
-- Windows media panel and keyboard media keys control Lindale
+- Windows knows Lindale as a music app: the volume/lock-screen media panel shows the song, and keyboard and headset media keys control it
 - Downloads are saved as normal music files ("Artist - Title") in Music\Lindale; existing downloads move there
 - Storage screen shows download count, size and folder; the unused song cache section is gone
 - "Disable screenshot" hides the window from screenshots, recordings and screen sharing
@@ -10,6 +10,8 @@
 - Integrations moved under Account
 - First-run walkthrough: sign in, import from Spotify, shortcuts
 - Backup & Restore: new "Import from other apps" section (Spotify via Exportify, M3U, CSV)
+- Search suggestions show over the full-screen player; clicking outside closes them without losing the click
+- Under the hood: playback goes through an engine interface (groundwork for mpv), player code split into smaller files
 
 ## 0.1.1-beta
 
