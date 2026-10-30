@@ -1,4 +1,3 @@
-import com.metrolist.music.platform.AppBrand
 import com.metrolist.music.playback.PlayerConnection
 import dev.nucleusframework.media.control.MediaControlEvent
 import dev.nucleusframework.media.control.MediaControlService
@@ -22,9 +21,15 @@ class WindowsMediaSession(private val connection: PlayerConnection) {
 
     fun start() {
         val ok = runCatching {
-            if (!MediaControlService.isAvailable()) return@runCatching false
-            MediaControlService.configure(AppBrand.NAME.lowercase(), AppBrand.DISPLAY_NAME)
+            if (!MediaControlService.isAvailable()) {
+                Timber.w("media session: native bridge not loaded, Windows media controls disabled")
+                return@runCatching false
+            }
+            // No arguments: on Windows the identity is the app's AppUserModelID, which the library
+            // derives itself; a made-up id is not tied to any Start menu entry and the overlay ignores it.
+            MediaControlService.configure()
             MediaControlService.attach(::onEvent)
+            Timber.i("media session: Windows media controls ready")
             true
         }.onFailure { Timber.w(it, "media session: unavailable") }.getOrDefault(false)
         if (!ok) return
@@ -71,6 +76,7 @@ class WindowsMediaSession(private val connection: PlayerConnection) {
     private fun onEvent(e: MediaControlEvent) = javax.swing.SwingUtilities.invokeLater { handle(e) }
 
     private fun handle(e: MediaControlEvent) {
+        Timber.d("media session: %s", e::class.simpleName)
         when (e) {
             is MediaControlEvent.Play -> connection.play()
             is MediaControlEvent.Pause, is MediaControlEvent.Stop -> connection.pause()
