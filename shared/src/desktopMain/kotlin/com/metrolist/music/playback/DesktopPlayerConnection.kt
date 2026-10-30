@@ -389,7 +389,7 @@ class DesktopPlayerConnection(
     }
 
     private fun initEngine() {
-        val created = VlcEngine.create(engineListener, playbackParams.speed, playbackParams.pitch) ?: return
+        val created = VlcEngine.create(EngineListener(), playbackParams.speed, playbackParams.pitch) ?: return
         engine = created
         com.metrolist.music.ui.component.DownloadCenter.engine = createDownloadEngine()
         created.equalizer?.let { eq ->
@@ -398,7 +398,9 @@ class DesktopPlayerConnection(
         }
     }
 
-    private val engineListener = object : AudioEngine.Listener {
+    // An inner class, not a property: initEngine() runs from init {} (on its own thread) before
+    // properties declared below it are initialised.
+    private inner class EngineListener : AudioEngine.Listener {
         override fun onBuffering() {
             if (!isPlaying.value) {
                 playbackState.value = Player.STATE_BUFFERING
