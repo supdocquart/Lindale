@@ -194,12 +194,16 @@ fun MetrolistApp(
             expandedBound = maxHeight - titleBarHeight,
         )
         // DESKTOP: search results and suggestions draw under the expanded player, so fold it away.
-        LaunchedEffect(searchOpen) {
-            if (searchOpen && playerBottomSheetState.isExpanded) playerBottomSheetState.collapseSoft()
+        // DESKTOP: the suggestions draw over the player; only a submitted search folds it away so results show.
+        val submitSearchFromBar: (String) -> Unit = { query ->
+            if (query.isNotBlank() && playerBottomSheetState.progress > 0.5f) playerBottomSheetState.collapseSoft()
+            onSearchSubmit(query)
         }
         // DESKTOP: the search page's own bar is hidden behind the expanded player, so the title bar
         // keeps a field there too; it stays while its panel is open so the panel has an input.
-        val showTitleSearch = currentTitleRes != null || playerBottomSheetState.isExpanded || searchOpen
+        // isExpanded needs an exact match with the top bound, which a window resize can break; progress cannot.
+        val playerOpen = playerBottomSheetState.progress > 0.5f
+        val showTitleSearch = currentTitleRes != null || playerOpen || searchOpen
 
         // DESKTOP: the Home action is shared by the rail, the bottom bar and the title bar.
         val navigateHome: () -> Unit = {
@@ -304,7 +308,7 @@ fun MetrolistApp(
                                     searchText = it
                                     searchOpen = true
                                 },
-                                onSearchSubmit = onSearchSubmit,
+                                onSearchSubmit = submitSearchFromBar,
                                 onSearchFocus = { searchOpen = true },
                                 searchFocusRequester = searchFocusRequester,
                                 onBack = { BackDispatcher.dispatch() },
@@ -407,26 +411,6 @@ fun MetrolistApp(
                             }
 
                             if (showTitleSearch) {
-                                if (searchOpen) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(top = if (customTitleBar) 0.dp else 64.dp)
-                                            .clickable(
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                indication = null,
-                                                onClick = closeSearch,
-                                            ),
-                                    ) {
-                                        DesktopSearchPanel(
-                                            value = searchText,
-                                            onValueChange = { searchText = it },
-                                            onSubmit = onSearchSubmit,
-                                            pureBlack = pureBlack,
-                                            modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp, start = 16.dp, end = 16.dp),
-                                        )
-                                    }
-                                }
                                 if (!customTitleBar) {
                                     TopAppBar(
                                         title = {
@@ -437,7 +421,7 @@ fun MetrolistApp(
                                                         searchText = it
                                                         searchOpen = true
                                                     },
-                                                    onSubmit = onSearchSubmit,
+                                                    onSubmit = submitSearchFromBar,
                                                     onFocused = { searchOpen = true },
                                                     focusRequester = searchFocusRequester,
                                                 )
@@ -458,6 +442,30 @@ fun MetrolistApp(
                                 navController = navController,
                                 pureBlack = pureBlack,
                             )
+
+                            // DESKTOP: drawn after the player so suggestions also show over the full-screen player.
+                            if (showTitleSearch) {
+                            if (searchOpen) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = if (customTitleBar) 0.dp else 64.dp)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                            onClick = closeSearch,
+                                        ),
+                                ) {
+                                    DesktopSearchPanel(
+                                        value = searchText,
+                                        onValueChange = { searchText = it },
+                                        onSubmit = submitSearchFromBar,
+                                        pureBlack = pureBlack,
+                                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 4.dp, start = 16.dp, end = 16.dp),
+                                    )
+                                }
+                            }
+                            }
                         }
                     }
                 }
