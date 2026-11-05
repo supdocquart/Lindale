@@ -38,11 +38,12 @@ object Updater {
     // DESKTOP: Lindale's own releases, not upstream's Android ones.
     private const val GITHUB_API_BASE = com.metrolist.music.platform.AppBrand.REPO_API
 
+    /** "v0.2.0-beta" vs "0.1.1": numbers first; with equal numbers a final release beats a "-beta". */
     fun compareVersions(v1: String, v2: String): Int {
-        val v1Parts = v1.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
-        val v2Parts = v2.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
+        fun numbers(v: String) = v.trim().removePrefix("v").substringBefore('-').split(".").map { it.toIntOrNull() ?: 0 }
+        val v1Parts = numbers(v1)
+        val v2Parts = numbers(v2)
         val maxLength = maxOf(v1Parts.size, v2Parts.size)
-        
         for (i in 0 until maxLength) {
             val part1 = v1Parts.getOrNull(i) ?: 0
             val part2 = v2Parts.getOrNull(i) ?: 0
@@ -51,17 +52,17 @@ object Updater {
                 part1 < part2 -> return -1
             }
         }
-        return 0
+        val pre1 = v1.contains('-')
+        val pre2 = v2.contains('-')
+        return when {
+            pre1 == pre2 -> 0
+            pre1 -> -1
+            else -> 1
+        }
     }
 
     fun isUpdateAvailable(currentVersion: String, latestVersion: String): Boolean {
         return compareVersions(latestVersion, currentVersion) > 0
-    }
-
-    private fun getCurrentAppVariant(): Pair<String, String> {
-        val architecture = BuildConfig.ARCHITECTURE
-        val variant = if (BuildConfig.CAST_AVAILABLE) "gms" else "foss"
-        return architecture to variant
     }
 
     private fun parseAssets(assetsArray: JSONArray): List<ReleaseAsset> {
@@ -108,18 +109,24 @@ object Updater {
                     return@runCatching cachedReleaseInfo!!
                 }
                 
-                val response = client.get("$GITHUB_API_BASE/releases/latest")
+                // DESKTOP: /releases/latest skips pre-releases, and every Lindale release so far is one,
+                // so take the newest published release from the list instead.
+                val response = client.get("$GITHUB_API_BASE/releases?per_page=10")
                     .bodyAsText()
-                val json = JSONObject(response)
-                
+                val list = JSONArray(response)
+                val json = (0 until list.length()).map { list.getJSONObject(it) }
+                    .filter { !it.optBoolean("draft") }
+                    .maxWithOrNull { a, b -> compareVersions(a.getString("tag_name"), b.getString("tag_name")) }
+                    ?: error("no releases")
+
                 val releaseInfo = ReleaseInfo(
                     tagName = json.getString("tag_name"),
-                    versionName = json.getString("name"),
-                    description = json.getString("body"),
-                    releaseDate = json.getString("published_at"),
+                    versionName = json.getString("tag_name").removePrefix("v"),
+                    description = json.optString("body"),
+                    releaseDate = json.optString("published_at"),
                     assets = parseAssets(json.getJSONArray("assets"))
                 )
-                
+
                 cachedReleaseInfo = releaseInfo
                 lastCheckTime = System.currentTimeMillis()
                 releaseInfo
@@ -166,13 +173,9 @@ object Updater {
             }
         }
 
-    fun getDownloadUrlForCurrentVariant(releaseInfo: ReleaseInfo): String? {
-        val (currentArch, currentVariant) = getCurrentAppVariant()
-        
-        return releaseInfo.assets
-            .find { it.architecture == currentArch && it.variant == currentVariant }
-            ?.downloadUrl
-    }
+    /** DESKTOP: the release page, where Windows and Linux users each pick their download. */
+    fun getDownloadUrlForCurrentVariant(releaseInfo: ReleaseInfo): String? =
+        "${com.metrolist.music.platform.AppBrand.REPO_URL}/releases/tag/${releaseInfo.tagName}"
 
     suspend fun checkForUpdate(forceRefresh: Boolean = false): Result<Pair<ReleaseInfo?, Boolean>> =
         withContext(Dispatchers.IO) {
@@ -203,4 +206,7 @@ object Updater {
         }
 
     fun getCachedLatestRelease(): ReleaseInfo? = cachedReleaseInfo
+
+    /** DESKTOP: newest release found by the start-up check (the running version when there is none). */
+    val latestVersion = kotlinx.coroutines.flow.MutableStateFlow(BuildConfig.BASE_VERSION_NAME)
 }

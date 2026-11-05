@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.screens
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.dialog
 import metrolist.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -350,7 +351,9 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable("settings") {
-        SettingsScreen(navController, latestVersionName)
+        // DESKTOP: read live; this builder runs once, so a parameter would keep the start-up value.
+        val latest by com.metrolist.music.utils.Updater.latestVersion.collectAsState()
+        SettingsScreen(navController, latest)
     }
 
     composable("settings/appearance") {

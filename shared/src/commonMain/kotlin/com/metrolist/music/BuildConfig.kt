@@ -9,7 +9,7 @@ object BuildConfig {
     const val ARCHITECTURE = "universal"
     const val CAST_AVAILABLE = false
     // DESKTOP: Updater now reads Lindale's releases; switched on after the first release is tested.
-    const val UPDATER_AVAILABLE = false
+    const val UPDATER_AVAILABLE = true
     const val LASTFM_API_KEY = ""
     const val LASTFM_SECRET = ""
     const val DISCORD_APP_ID = 1564541685365612594L // DESKTOP: Lindale's own Discord application

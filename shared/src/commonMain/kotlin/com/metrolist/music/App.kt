@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -154,6 +155,16 @@ fun MetrolistApp(
         }
     }
 
+    // DESKTOP: one update check per start (Settings > Updater can turn it off); a newer release shows a
+    // "new version available" entry in Settings that opens its download page.
+    val latestVersionName by com.metrolist.music.utils.Updater.latestVersion.collectAsState()
+    val updateContext = com.metrolist.music.platform.LocalAppContext.current
+    LaunchedEffect(Unit) {
+        if (updateContext.dataStore.data.first()[com.metrolist.music.constants.CheckForUpdatesKey] == false) return@LaunchedEffect
+        com.metrolist.music.utils.Updater.checkForUpdate(forceRefresh = true).onSuccess { (info, hasUpdate) ->
+            if (hasUpdate && info != null) com.metrolist.music.utils.Updater.latestVersion.value = info.versionName
+        }.onFailure { timber.log.Timber.w("update check failed: %s", it.message) }
+    }
     var searchText by remember { mutableStateOf(TextFieldValue()) }
     var searchOpen by remember { mutableStateOf(false) }
     val searchFocusRequester = remember { FocusRequester() }
@@ -413,7 +424,7 @@ fun MetrolistApp(
                                 navigationBuilder(
                                     navController = navController,
                                     scrollBehavior = topAppBarScrollBehavior,
-                                    latestVersionName = "1.0.0-desktop",
+                                    latestVersionName = latestVersionName,
                                     snackbarHostState = snackbarHostState,
                                 )
                             }
@@ -496,7 +507,7 @@ fun MetrolistApp(
                             AccountSettings(
                                 navController = navController,
                                 onClose = { showAccountDialog = false },
-                                latestVersionName = "1.0.0-desktop",
+                                latestVersionName = latestVersionName,
                             )
                         }
                     }

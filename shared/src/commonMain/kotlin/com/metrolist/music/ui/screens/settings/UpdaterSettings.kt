@@ -70,6 +70,7 @@ fun UpdaterScreen(
     val failedToCheckUpdatesTemplate = stringResource(Res.string.failed_to_check_updates)
 
     val coroutineScope = rememberCoroutineScope()
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
 
     fun performManualCheck() {
         coroutineScope.launch {
@@ -123,9 +124,7 @@ fun UpdaterScreen(
                             Text(stringResource(Res.string.version_format, BuildConfig.VERSION_NAME))
                         },
                         description = {
-                            val arch = BuildConfig.ARCHITECTURE
-                            val variant = if (BuildConfig.CAST_AVAILABLE) "GMS" else "FOSS"
-                            Text("$arch - $variant")
+                            Text("${System.getProperty("os.name")} · ${System.getProperty("os.arch")}")
                         },
                     ),
                 ),
@@ -151,7 +150,8 @@ fun UpdaterScreen(
                         ),
                     )
 
-                    if (checkForUpdates) {
+                    // DESKTOP: there are no system update notifications on desktop.
+                    if (false && checkForUpdates) {
                         add(
                             Material3SettingsItem(
                                 title = { Text(stringResource(Res.string.update_notifications)) },
@@ -200,7 +200,12 @@ fun UpdaterScreen(
                                 )
                             }
                         },
-                        onClick = { if (!isChecking) performManualCheck() },
+                        onClick = {
+                            // DESKTOP: once a newer release is found, the same row opens its download page.
+                            val page = Updater.getCachedLatestRelease()?.let { Updater.getDownloadUrlForCurrentVariant(it) }
+                            if (updateAvailable && page != null) uriHandler.openUri(page)
+                            else if (!isChecking) performManualCheck()
+                        },
                     ),
                 ),
         )
