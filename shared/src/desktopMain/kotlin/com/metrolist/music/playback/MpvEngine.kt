@@ -29,9 +29,9 @@ internal interface MpvLib : Library {
 }
 
 /**
- * DESKTOP: experimental audio engine on libmpv (one `libmpv-2.dll`). Not shipped: it is only used when
- * Lindale is started with LINDALE_ENGINE=mpv (tools/mpv-dene.bat) and the DLL is in
- * %LOCALAPPDATA%\Lindale\mpv. Compared to libVLC it starts faster, changes pitch live and keeps tempo
+ * DESKTOP: experimental audio engine on libmpv. Only used when Lindale is started with
+ * LINDALE_ENGINE=mpv: on Windows via tools/mpv-dene.bat with libmpv-2.dll in %LOCALAPPDATA%\Lindale\mpv,
+ * on Linux with the distribution's libmpv (package libmpv2). Compared to libVLC it starts faster, changes pitch live and keeps tempo
  * changes artefact-free (rubberband).
  */
 class MpvEngine private constructor(
