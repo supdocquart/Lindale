@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- **Linux** (preview): .deb package and `kur.sh`; system VLC for playback, MPRIS media controls, Discord Rich Presence over unix sockets (regular, Flatpak and Snap Discord), Google sign-in window, XDG folders readable only by the user
+- **System tray**: play/pause, next, previous, show and quit; optional "keep playing in the tray when closed"
+- **Mini player**: small always-on-top window with cover, title, controls and progress
+- **Update check**: finds new (pre-)releases, shows "new version available" with formatted release notes and opens the download page
+- "Download on like" and "Remember shuffle and repeat" now work on desktop
+- Welcome guide, import, tray and other new texts translated into all 52 languages
+- Experimental mpv engine (`tools\mpv-dene.bat`), VLC stays the default
+- Removed ~1,250 lines of unused phone player code
+- Linux end-to-end UI test (`tools/ui-test/run.sh`)
+
 ## 0.2.0-beta
 
 - Windows knows Lindale as a music app: the volume/lock-screen media panel shows the song, and keyboard and headset media keys control it
