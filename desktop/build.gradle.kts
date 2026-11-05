@@ -134,6 +134,9 @@ fun copyJcefFiles(runtimeDir: File, log: org.gradle.api.logging.Logger) {
                 file.copyTo(target)
                 copied++
             }
+            // Linux: jcef_helper, cef_server and chrome-sandbox must be executable, but both jlink and
+            // copyTo drop the bit, and the sign-in window then dies with "failed to execvp".
+            if (file.canExecute() && !target.canExecute()) target.setExecutable(true, false)
         }
     }
     log.lifecycle("JCEF: copied $copied missing file(s) into ${runtimeDir.name}")
