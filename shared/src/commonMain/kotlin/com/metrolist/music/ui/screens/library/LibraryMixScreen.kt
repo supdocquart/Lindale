@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.screens.library
 import androidx.compose.foundation.layout.Row
+import com.metrolist.music.ui.utils.ignoreWheelPullToRefresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -449,7 +450,9 @@ fun LibraryMixScreen(
                     state = pullRefreshState,
                     isRefreshing = isRefreshing,
                     onRefresh = viewModel::refresh,
-                ),
+                )
+                // DESKTOP: wheel overscroll left the refresh indicator stuck (see ignoreWheelPullToRefresh).
+                .ignoreWheelPullToRefresh(),
     ) {
         when (viewType) {
             LibraryViewType.LIST -> {

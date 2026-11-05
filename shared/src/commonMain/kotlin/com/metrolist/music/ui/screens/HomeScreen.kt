@@ -6,6 +6,7 @@
 package com.metrolist.music.ui.screens
 
 import androidx.compose.ui.unit.Dp
+import com.metrolist.music.ui.utils.ignoreWheelPullToRefresh
 
 import com.metrolist.music.ui.component.PagerArrows
 import androidx.compose.foundation.hoverable
@@ -1169,7 +1170,8 @@ fun HomeScreen(
         },
     ) {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize(),
+            // DESKTOP: wheel overscroll left the refresh indicator stuck (see ignoreWheelPullToRefresh).
+            modifier = Modifier.fillMaxSize().ignoreWheelPullToRefresh(),
             contentAlignment = Alignment.TopStart,
         ) {
             val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f

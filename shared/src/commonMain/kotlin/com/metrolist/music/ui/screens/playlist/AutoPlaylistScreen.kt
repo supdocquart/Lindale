@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.screens.playlist
 import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.ui.utils.ignoreWheelPullToRefresh
 import com.metrolist.music.ui.component.DownloadCenter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -486,7 +487,9 @@ fun AutoPlaylistScreen(
                     } else {
                         Modifier
                     },
-                ),
+                )
+                // DESKTOP: wheel overscroll left the refresh indicator stuck (see ignoreWheelPullToRefresh).
+                .ignoreWheelPullToRefresh(),
     ) {
         LazyColumn(
             state = state,

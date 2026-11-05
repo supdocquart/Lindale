@@ -5,6 +5,7 @@
 
 package com.metrolist.music.ui.screens.library
 import com.metrolist.music.platform.LocalAppContext
+import com.metrolist.music.ui.utils.ignoreWheelPullToRefresh
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -175,7 +176,9 @@ fun LibraryPodcastsScreen(
                             }
                         }
                     },
-                ),
+                )
+                // DESKTOP: wheel overscroll left the refresh indicator stuck (see ignoreWheelPullToRefresh).
+                .ignoreWheelPullToRefresh(),
     ) {
         // Chip row header — same pattern as LibrarySongsScreen
         val chipsHeader = @Composable {
