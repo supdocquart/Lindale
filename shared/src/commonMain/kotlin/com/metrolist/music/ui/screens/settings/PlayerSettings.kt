@@ -215,6 +215,7 @@ fun PlayerSettings(
         ResumeOnBluetoothConnectKey,
         defaultValue = false
     )
+    val (closeToTray, onCloseToTrayChange) = rememberPreference(com.metrolist.music.constants.CloseToTrayKey, defaultValue = false)
     val (keepScreenOn, onKeepScreenOnChange) = rememberPreference(
         KeepScreenOn,
         defaultValue = false
@@ -1075,6 +1076,26 @@ fun PlayerSettings(
                         )
                     },
                     onClick = { onKeepScreenOnChange(!keepScreenOn) }
+                ))
+                // DESKTOP: only offered where the desktop has a system tray to keep playing in.
+                if (java.awt.SystemTray.isSupported()) add(Material3SettingsItem(
+                    icon = painterResource(Res.drawable.close),
+                    title = { Text(stringResource(Res.string.close_to_tray)) },
+                    description = { Text(stringResource(Res.string.close_to_tray_desc)) },
+                    trailingContent = {
+                        Switch(
+                            checked = closeToTray,
+                            onCheckedChange = onCloseToTrayChange,
+                            thumbContent = {
+                                Icon(
+                                    painter = painterResource(if (closeToTray) Res.drawable.check else Res.drawable.close),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        )
+                    },
+                    onClick = { onCloseToTrayChange(!closeToTray) }
                 ))
             }
         )

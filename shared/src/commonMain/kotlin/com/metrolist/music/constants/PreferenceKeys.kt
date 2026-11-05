@@ -104,6 +104,8 @@ val HideExplicitKey = booleanPreferencesKey("hideExplicit")
 val HideCleanDuplicatesKey = booleanPreferencesKey("hideCleanDuplicates")
 // DESKTOP: set once the first-run walkthrough has been finished or skipped.
 val OnboardingDoneKey = booleanPreferencesKey("onboardingDone")
+// DESKTOP: closing the window keeps Lindale playing in the system tray.
+val CloseToTrayKey = booleanPreferencesKey("closeToTray")
 val HideVideoSongsKey = booleanPreferencesKey("hideVideoSongs")
 val HideYoutubeShortsKey = booleanPreferencesKey("hideYoutubeShorts")
 val ShowArtistDescriptionKey = booleanPreferencesKey("showArtistDescription")

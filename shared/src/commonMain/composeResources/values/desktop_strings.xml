@@ -70,4 +70,11 @@ Your keyboard\'s media keys and your system\'s media controls (the Windows media
     <string name="import_spotify_desc">Opens Exportify. Log in with Spotify, download a playlist as CSV, then use \"Import a CSV playlist\" below.</string>
     <string name="import_m3u_desc">Playlists saved by foobar2000, VLC, Winamp, iTunes or MusicBee (.m3u, .m3u8).</string>
     <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz or any CSV with title and artist columns. Each song is matched on YouTube Music.</string>
+    <string name="close_to_tray">Keep playing in the tray when closed</string>
+    <string name="close_to_tray_desc">Closing the window hides Lindale next to the clock; quit it from the tray icon\'s menu.</string>
+    <string name="tray_play_pause">Play / pause</string>
+    <string name="tray_next">Next song</string>
+    <string name="tray_previous">Previous song</string>
+    <string name="tray_show">Show Lindale</string>
+    <string name="tray_quit">Quit</string>
 </resources>

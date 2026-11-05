@@ -38,4 +38,11 @@
     <string name="appearance_lyrics_click_desc">Cliquez sur une ligne pour aller à ce passage du morceau.</string>
     <string name="appearance_lyrics_scroll_desc">Garde la ligne en cours visible pendant la lecture.</string>
     <string name="appearance_library_playlist_desc">Affichée en haut de Bibliothèque > Playlists.</string>
+    <string name="close_to_tray">Continuer la lecture dans la zone de notification à la fermeture</string>
+    <string name="close_to_tray_desc">Fermer la fenêtre cache Lindale près de l\'horloge ; quittez depuis le menu de l\'icône.</string>
+    <string name="tray_play_pause">Lecture / pause</string>
+    <string name="tray_next">Titre suivant</string>
+    <string name="tray_previous">Titre précédent</string>
+    <string name="tray_show">Afficher Lindale</string>
+    <string name="tray_quit">Quitter</string>
 </resources>

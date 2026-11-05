@@ -38,4 +38,11 @@
     <string name="appearance_lyrics_click_desc">Нажмите на строку, чтобы перейти к этому месту песни.</string>
     <string name="appearance_lyrics_scroll_desc">Текущая строка всегда остаётся на виду.</string>
     <string name="appearance_library_playlist_desc">Показывается вверху в Медиатека > Плейлисты.</string>
+    <string name="close_to_tray">Продолжать играть в трее после закрытия</string>
+    <string name="close_to_tray_desc">Закрытие окна скрывает Lindale возле часов; выйти можно через меню значка.</string>
+    <string name="tray_play_pause">Играть / пауза</string>
+    <string name="tray_next">Следующий трек</string>
+    <string name="tray_previous">Предыдущий трек</string>
+    <string name="tray_show">Показать Lindale</string>
+    <string name="tray_quit">Выход</string>
 </resources>

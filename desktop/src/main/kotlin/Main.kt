@@ -15,6 +15,8 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.metrolist.music.ui.utils.BackDispatcher
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import com.metrolist.music.platform.LindaleTray
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
@@ -72,12 +74,27 @@ private fun runApp() = application {
         }
     }
 
+    // DESKTOP: "close to tray" hides the window instead of quitting; the tray brings it back.
+    var windowShown by remember { androidx.compose.runtime.mutableStateOf(true) }
+    val closeToTray by com.metrolist.music.platform.WindowsTitleBar.closeToTrayPref
+        .collectAsState(initial = false)
+    val quit: () -> Unit = {
+        // DESKTOP: Persist the window geometry before the player shuts down.
+        WindowStateStore.save(windowState)
+        playerConnection.release()
+        exitApplication()
+    }
+    val nowPlaying by playerConnection.mediaMetadata.collectAsState()
+    LindaleTray(
+        player = playerConnection,
+        nowPlaying = nowPlaying?.let { m -> listOf(m.title, m.artists.joinToString { it.name }).filter { it.isNotBlank() }.joinToString(" · ") },
+        onShow = { windowShown = true },
+        onQuit = quit,
+    )
+
     Window(
         onCloseRequest = {
-            // DESKTOP: Persist the window geometry before the player shuts down.
-            WindowStateStore.save(windowState)
-            playerConnection.release()
-            exitApplication()
+            if (closeToTray && java.awt.SystemTray.isSupported()) windowShown = false else quit()
         },
         title = com.metrolist.music.platform.AppBrand.DISPLAY_NAME,
         // DESKTOP: taskbar/title-bar icon (the exe icon comes from desktop/icon.ico via jpackage).
@@ -87,7 +104,7 @@ private fun runApp() = application {
             )
         },
         state = windowState,
-        visible = windowReady,
+        visible = windowReady && windowShown,
         onKeyEvent = { event ->
             when {
                 event.type != KeyEventType.KeyDown -> false

@@ -38,4 +38,11 @@
     <string name="appearance_lyrics_click_desc">Klicke auf eine Zeile, um zu dieser Stelle im Song zu springen.</string>
     <string name="appearance_lyrics_scroll_desc">Hält die aktuelle Zeile beim Abspielen im Blick.</string>
     <string name="appearance_library_playlist_desc">Wird oben in Bibliothek > Playlists angezeigt.</string>
+    <string name="close_to_tray">Beim Schließen im Infobereich weiterspielen</string>
+    <string name="close_to_tray_desc">Das Schließen des Fensters blendet Lindale neben der Uhr aus; beenden über das Menü des Symbols.</string>
+    <string name="tray_play_pause">Wiedergabe / Pause</string>
+    <string name="tray_next">Nächster Titel</string>
+    <string name="tray_previous">Vorheriger Titel</string>
+    <string name="tray_show">Lindale anzeigen</string>
+    <string name="tray_quit">Beenden</string>
 </resources>

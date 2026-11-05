@@ -33,6 +33,12 @@ object WindowsTitleBar {
         if (!isWindows) null else runCatching { Native.load("user32", User32::class.java) }.getOrNull()
     }
 
+    /** Player settings > "Close to tray" preference. */
+    val closeToTrayPref: kotlinx.coroutines.flow.Flow<Boolean>
+        get() = AppContext().dataStore.data
+            .map { it[com.metrolist.music.constants.CloseToTrayKey] ?: false }
+            .distinctUntilChanged()
+
     /** Privacy > "Disable screenshot" preference. */
     val captureHiddenPref: kotlinx.coroutines.flow.Flow<Boolean>
         get() = AppContext().dataStore.data

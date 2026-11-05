@@ -80,4 +80,11 @@ Klavyendeki medya tuşları ve sistemin medya kontrolleri (Windows medya paneli 
     <string name="import_spotify_desc">Exportify\'ı açar. Spotify ile giriş yap, listeyi CSV olarak indir, sonra aşağıdaki \"Bir CSV listesi içe aktar\"ı kullan.</string>
     <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes veya MusicBee\'nin kaydettiği listeler (.m3u, .m3u8).</string>
     <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz veya şarkı adı ve sanatçı sütunu olan herhangi bir CSV. Her şarkı YouTube Music\'te eşleştirilir.</string>
+    <string name="close_to_tray">Kapatınca tepside çalmaya devam et</string>
+    <string name="close_to_tray_desc">Pencereyi kapatınca Lindale saatin yanına gizlenir; tamamen kapatmak için tepsi simgesinin menüsünü kullan.</string>
+    <string name="tray_play_pause">Çal / duraklat</string>
+    <string name="tray_next">Sonraki şarkı</string>
+    <string name="tray_previous">Önceki şarkı</string>
+    <string name="tray_show">Lindale\'yi göster</string>
+    <string name="tray_quit">Çıkış</string>
 </resources>

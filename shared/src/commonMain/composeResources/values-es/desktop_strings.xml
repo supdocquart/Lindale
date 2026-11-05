@@ -38,4 +38,11 @@
     <string name="appearance_lyrics_click_desc">Haz clic en una línea para saltar a esa parte de la canción.</string>
     <string name="appearance_lyrics_scroll_desc">Mantiene visible la línea actual mientras suena la canción.</string>
     <string name="appearance_library_playlist_desc">Se muestra arriba en Biblioteca > Listas.</string>
+    <string name="close_to_tray">Seguir reproduciendo en la bandeja al cerrar</string>
+    <string name="close_to_tray_desc">Al cerrar la ventana, Lindale se oculta junto al reloj; sal desde el menú del icono.</string>
+    <string name="tray_play_pause">Reproducir / pausar</string>
+    <string name="tray_next">Siguiente canción</string>
+    <string name="tray_previous">Canción anterior</string>
+    <string name="tray_show">Mostrar Lindale</string>
+    <string name="tray_quit">Salir</string>
 </resources>
