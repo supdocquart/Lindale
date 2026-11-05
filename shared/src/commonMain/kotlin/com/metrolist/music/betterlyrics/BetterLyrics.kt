@@ -38,7 +38,13 @@ object BetterLyrics {
 
     suspend fun getLyrics(title: String, artist: String, duration: Long): String? {
         val ttml = runCatching { fetchTTML(title, artist, duration) }
-            .onFailure { timber.log.Timber.d(it, "BetterLyrics: request failed") }
+            .onFailure {
+                // DESKTOP: keyless clients get 401 for songs the API has not cached yet; that is just
+                // "no lyrics here", so skip the stack trace that used to fill the log on every lookup.
+                val status = (it as? io.ktor.client.plugins.ClientRequestException)?.response?.status?.value
+                if (status == 401) timber.log.Timber.d("BetterLyrics: not cached for keyless clients")
+                else timber.log.Timber.d(it, "BetterLyrics: request failed")
+            }
             .getOrNull() ?: return null
         val lines = TTMLParser.parseTTML(ttml)
         if (lines.isEmpty()) return null
