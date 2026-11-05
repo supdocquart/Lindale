@@ -79,6 +79,19 @@ def type_text(text):
     for ch in text: key(ch)
 
 
+def wheel(button):
+    xtest.fake_input(d, X.ButtonPress, button); xtest.fake_input(d, X.ButtonRelease, button); d.sync()
+
+
+def grab(box):
+    x0, y0, x1, y1 = box
+    return d.screen().root.get_image(x0, y0, x1 - x0, y1 - y0, X.ZPixmap, 0xffffffff).data
+
+
+def now_playing(since):
+    return re.findall(r"\[UI:NOW_PLAYING\] id=([A-Za-z0-9_-]{11})", log_text()[since:])
+
+
 def rel(x, y):
     w = main_window()
     return (w[1] + x, w[2] + y) if w else (x, y)
@@ -103,6 +116,27 @@ try:
     # 2. Welcome guide: skip it
     click(*rel(436, 544)); time.sleep(1)
 
+    # 2b. Scrolling Home back up with the mouse wheel must not leave the pull-to-refresh indicator behind.
+    time.sleep(4)
+    w = main_window()
+    box = (w[1] + w[3] // 4, w[2] + 40, w[1] + 3 * w[3] // 4, w[2] + 260)
+    xtest.fake_input(d, X.MotionNotify, x=w[1] + w[3] // 2, y=w[2] + w[4] // 2); d.sync()
+    before = grab(box)
+    for _ in range(15):  # wait until Home has finished loading, or a late shelf looks like a failure
+        time.sleep(1)
+        now = grab(box)
+        if now == before:
+            break
+        before = now
+    # The indicator only got stuck when a wheel scroll back up overshot the top, not when already there.
+    for _ in range(4):
+        wheel(5); time.sleep(0.1)
+    time.sleep(1.5)
+    for _ in range(12):
+        wheel(4); time.sleep(0.04)
+    time.sleep(1.5)
+    check("wheel scroll back up leaves no refresh indicator", grab(box) == before)
+
     # 3. Search
     mark = len(log_text())
     key("k", "Control_L"); time.sleep(0.4)
@@ -119,8 +153,9 @@ try:
     if m:
         vid = m.group(1)
         os.makedirs(MUSIC, exist_ok=True)
+        # m4a like a real download (VLC seeks inaccurately in Ogg Vorbis, which the app never downloads).
         subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi", "-i", "sine=frequency=440:duration=90",
-                        "-c:a", "libvorbis", os.path.join(MUSIC, f"Lindale UI test [{vid}].ogg")], check=True)
+                        "-c:a", "aac", os.path.join(MUSIC, f"Lindale UI test [{vid}].m4a")], check=True)
         mark = len(log_text())
         click(*rel(272, 196)); time.sleep(0.5)
         if not wait_log(r"Playing downloaded file", 5, mark):
@@ -140,6 +175,24 @@ try:
         time.sleep(2)
         discord = open(os.path.join(WORK, "discord.log"), encoding="utf-8").read() if os.path.exists(os.path.join(WORK, "discord.log")) else ""
         check("Discord Rich Presence sent", "SET_ACTIVITY" in discord)
+
+        # Keyboard shortcuts: Shift+Right seeks inside the song, Space pauses, Ctrl+Right/Left change track.
+        mark = len(log_text())
+        key("Right", "Shift_L"); time.sleep(0.4); key("Right", "Shift_L"); time.sleep(2)
+        check("Shift+Right seeks without changing the song", not now_playing(mark))
+        key("space"); time.sleep(1.5)
+        status = dbus("--dest=org.mpris.MediaPlayer2.lindale", "/org/mpris/MediaPlayer2",
+                      "org.freedesktop.DBus.Properties.Get", "string:org.mpris.MediaPlayer2.Player", "string:PlaybackStatus")
+        check("Space pauses", "Paused" in status, status.strip()[-40:])
+        key("space"); time.sleep(1)
+        mark = len(log_text())
+        key("Right", "Control_L"); time.sleep(3)
+        ids = now_playing(mark)
+        check("Ctrl+Right goes to the next song", ids and ids[-1] != vid, str(ids))
+        key("Left", "Control_L"); time.sleep(0.5); key("Left", "Control_L"); time.sleep(3)
+        ids = now_playing(mark)
+        check("Ctrl+Left comes back", ids and ids[-1] == vid, str(ids))
+        time.sleep(2)
 
     # 5. Full-screen player and back
     w = main_window()
