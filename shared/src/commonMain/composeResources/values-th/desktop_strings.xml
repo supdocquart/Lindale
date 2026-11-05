@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale คือ Metrolist เวอร์ชันเดสก์ท็อป ส่วนของ YouTube Music เป็นผลงานของทีม Metrolist ด้านล่าง ขอบคุณ!</string>
     <string name="about_report_bug">รายงานข้อผิดพลาด</string>
     <string name="about_metrolist_section">Metrolist (แอปต้นฉบับ)</string>
+    <string name="onboarding_welcome_title">ยินดีต้อนรับสู่ Lindalë</string>
+    <string name="onboarding_welcome_body">เครื่องเล่น YouTube Music ไร้โฆษณาสำหรับคอมพิวเตอร์ของคุณ ค้นหา เล่น และดาวน์โหลดเพลง พร้อมซิงค์คลังเพลง ขั้นตอนเหล่านี้ใช้เวลาเพียงนาทีเดียวและข้ามได้ทุกขั้น</string>
+    <string name="onboarding_signin_title">ลงชื่อเข้าใช้ (ไม่บังคับ)</string>
+    <string name="onboarding_signin_body">ลงชื่อเข้าใช้ด้วยบัญชี Google เพื่อรับคลังเพลง YouTube Music เพลงที่ชอบ เพลย์ลิสต์ และประวัติ Lindale ใช้งานได้แม้ไม่มีบัญชี</string>
+    <string name="onboarding_signin_button">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="onboarding_import_title">ย้ายเพลงจาก Spotify</string>
+    <string name="onboarding_import_body">1. เปิด Exportify ลงชื่อเข้าใช้ด้วย Spotify แล้วส่งออกเพลย์ลิสต์ (หรือทั้งหมด) เป็นไฟล์ CSV
+2. เปิดหน้านำเข้าที่นี่แล้วเลือก \"นำเข้าเพลย์ลิสต์ CSV\" Lindale จะค้นหาแต่ละเพลงบน YouTube Music และสร้างเพลย์ลิสต์
+
+เพลย์ลิสต์ M3U จากเครื่องเล่นอื่น (foobar2000, VLC, iTunes) ใช้ได้แบบเดียวกัน</string>
+    <string name="onboarding_exportify">เปิด Exportify</string>
+    <string name="onboarding_import_open">เปิดการนำเข้า</string>
+    <string name="onboarding_keys_title">ปุ่มลัดที่มีประโยชน์</string>
+    <string name="onboarding_keys_body">Ctrl+K: ค้นหา
+Space: เล่น / หยุดชั่วคราว
+Ctrl+← / →: เพลงก่อนหน้า / ถัดไป
+Ctrl+↑ / ↓: ระดับเสียง
+Shift+← / →: ข้าม 5 วินาที
+Ctrl+S: สุ่ม · Ctrl+R: เล่นซ้ำ · Ctrl+M: ปิดเสียง
+
+ปุ่มสื่อบนคีย์บอร์ดและตัวควบคุมสื่อของระบบ (แผงสื่อของ Windows หรือวิดเจ็ตบนเดสก์ท็อป Linux) ก็ควบคุม Lindale ได้เช่นกัน</string>
+    <string name="onboarding_next">ถัดไป</string>
+    <string name="onboarding_back">ย้อนกลับ</string>
+    <string name="onboarding_skip">ข้าม</string>
+    <string name="onboarding_done">เริ่มฟัง</string>
+    <string name="restore_desc_desktop">กู้คืนข้อมูลสำรองจาก Metrolist บน Android ได้ด้วย</string>
+    <string name="import_other_apps">นำเข้าจากแอปอื่น</string>
+    <string name="import_spotify_title">Spotify: ส่งออกเพลย์ลิสต์</string>
+    <string name="import_spotify_desc">เปิด Exportify ลงชื่อเข้าใช้ด้วย Spotify ดาวน์โหลดเพลย์ลิสต์เป็น CSV แล้วใช้ \"นำเข้าเพลย์ลิสต์ CSV\" ด้านล่าง</string>
+    <string name="import_m3u_desc">เพลย์ลิสต์ที่บันทึกโดย foobar2000, VLC, Winamp, iTunes หรือ MusicBee (.m3u, .m3u8)</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz หรือ CSV ใดก็ได้ที่มีคอลัมน์ชื่อเพลงและศิลปิน แต่ละเพลงจะถูกจับคู่บน YouTube Music</string>
+    <string name="close_to_tray">เล่นต่อในถาดระบบเมื่อปิดหน้าต่าง</string>
+    <string name="close_to_tray_desc">เมื่อปิดหน้าต่าง Lindale จะซ่อนอยู่ข้างนาฬิกา ออกได้จากเมนูของไอคอน</string>
+    <string name="tray_play_pause">เล่น / หยุดชั่วคราว</string>
+    <string name="tray_next">เพลงถัดไป</string>
+    <string name="tray_previous">เพลงก่อนหน้า</string>
+    <string name="tray_show">แสดง Lindale</string>
+    <string name="tray_quit">ออก</string>
+    <string name="hide_from_capture_desc">หน้าต่าง Lindale จะเป็นสีดำในภาพหน้าจอ การบันทึก และการแชร์หน้าจอ (Discord, Teams, OBS)</string>
+    <string name="appearance_dynamic_theme_desc">สีจะเปลี่ยนตามปกอัลบั้มของเพลงที่กำลังเล่น</string>
+    <string name="appearance_lyrics_click_desc">คลิกบรรทัดเนื้อเพลงเพื่อข้ามไปยังช่วงนั้นของเพลง</string>
+    <string name="appearance_lyrics_scroll_desc">บรรทัดปัจจุบันจะแสดงอยู่เสมอขณะเล่นเพลง</string>
+    <string name="appearance_library_playlist_desc">แสดงที่ด้านบนสุดของ คลังเพลง > เพลย์ลิสต์</string>
+    <string name="download_folder">โฟลเดอร์ดาวน์โหลด (คลิกเพื่อเปิด)</string>
 </resources>

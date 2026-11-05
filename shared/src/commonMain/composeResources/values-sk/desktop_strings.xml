@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale je desktopová verzia Metrolistu. Časť YouTube Music je dielom tímu Metrolist nižšie, ďakujeme!</string>
     <string name="about_report_bug">Nahlásiť chybu</string>
     <string name="about_metrolist_section">Metrolist (pôvodná aplikácia)</string>
+    <string name="onboarding_welcome_title">Vitajte v Lindalë</string>
+    <string name="onboarding_welcome_body">Prehrávač YouTube Music bez reklám pre váš počítač. Vyhľadávajte, prehrávajte a sťahujte skladby a majte knižnicu synchronizovanú. Tieto kroky zaberú minútu a ktorýkoľvek môžete preskočiť.</string>
+    <string name="onboarding_signin_title">Prihlásenie (voliteľné)</string>
+    <string name="onboarding_signin_body">Prihláste sa účtom Google a získajte knižnicu YouTube Music, obľúbené skladby, playlisty a históriu. Lindale funguje aj bez účtu.</string>
+    <string name="onboarding_signin_button">Prihlásiť sa cez Google</string>
+    <string name="onboarding_import_title">Preneste si hudbu zo Spotify</string>
+    <string name="onboarding_import_body">1. Otvorte Exportify, prihláste sa cez Spotify a exportujte playlist (alebo všetky) ako súbor CSV.
+2. Otvorte tu import a zvoľte „Importovať zoznamy skladieb vo formáte „csv“\". Lindale nájde každú skladbu na YouTube Music a vytvorí playlist.
+
+Playlisty M3U z iných prehrávačov (foobar2000, VLC, iTunes) fungujú rovnako.</string>
+    <string name="onboarding_exportify">Otvoriť Exportify</string>
+    <string name="onboarding_import_open">Otvoriť import</string>
+    <string name="onboarding_keys_title">Užitočné klávesy</string>
+    <string name="onboarding_keys_body">Ctrl+K: hľadať
+Medzerník: prehrať / pozastaviť
+Ctrl+← / →: predchádzajúca / ďalšia skladba
+Ctrl+↑ / ↓: hlasitosť
+Shift+← / →: posun o 5 sekúnd
+Ctrl+S: náhodne · Ctrl+R: opakovať · Ctrl+M: stlmiť
+
+Multimediálne klávesy klávesnice a systémové ovládanie médií (panel médií vo Windows alebo widget prostredia Linux) tiež ovládajú Lindale.</string>
+    <string name="onboarding_next">Ďalej</string>
+    <string name="onboarding_back">Späť</string>
+    <string name="onboarding_skip">Preskočiť</string>
+    <string name="onboarding_done">Začať počúvať</string>
+    <string name="restore_desc_desktop">Obnoví aj zálohy z Metrolistu pre Android.</string>
+    <string name="import_other_apps">Import z iných aplikácií</string>
+    <string name="import_spotify_title">Spotify: export playlistov</string>
+    <string name="import_spotify_desc">Otvorí Exportify. Prihláste sa cez Spotify, stiahnite playlist ako CSV a potom použite „Importovať zoznamy skladieb vo formáte „csv“\" nižšie.</string>
+    <string name="import_m3u_desc">Playlisty uložené vo foobar2000, VLC, Winamp, iTunes alebo MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz alebo akýkoľvek CSV so stĺpcami názvu a interpreta. Každá skladba sa vyhľadá na YouTube Music.</string>
+    <string name="close_to_tray">Po zatvorení hrať ďalej v oznamovacej oblasti</string>
+    <string name="close_to_tray_desc">Zatvorením okna sa Lindale skryje pri hodinách; ukončíte ho z ponuky ikony.</string>
+    <string name="tray_play_pause">Prehrať / pozastaviť</string>
+    <string name="tray_next">Ďalšia skladba</string>
+    <string name="tray_previous">Predchádzajúca skladba</string>
+    <string name="tray_show">Zobraziť Lindale</string>
+    <string name="tray_quit">Ukončiť</string>
+    <string name="hide_from_capture_desc">Okno Lindale bude na snímkach obrazovky, nahrávkach a pri zdieľaní obrazovky (Discord, Teams, OBS) čierne.</string>
+    <string name="appearance_dynamic_theme_desc">Farby sa riadia obalom práve hrajúcej skladby.</string>
+    <string name="appearance_lyrics_click_desc">Kliknutím na riadok textu preskočíte na danú časť skladby.</string>
+    <string name="appearance_lyrics_scroll_desc">Počas prehrávania drží aktuálny riadok na očiach.</string>
+    <string name="appearance_library_playlist_desc">Zobrazí sa hore v Knižnica > Playlisty.</string>
+    <string name="download_folder">Priečinok sťahovaní (kliknite na otvorenie)</string>
 </resources>

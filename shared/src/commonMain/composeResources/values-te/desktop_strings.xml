@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale అనేది Metrolist యొక్క డెస్క్‌టాప్ వెర్షన్. YouTube Music భాగం కింద ఉన్న Metrolist బృందం కృషి, ధన్యవాదాలు!</string>
     <string name="about_report_bug">బగ్‌ను నివేదించండి</string>
     <string name="about_metrolist_section">Metrolist (అసలు యాప్)</string>
+    <string name="onboarding_welcome_title">Lindalë కి స్వాగతం</string>
+    <string name="onboarding_welcome_body">మీ కంప్యూటర్ కోసం ప్రకటనలు లేని YouTube Music ప్లేయర్. పాటలు వెతకండి, ప్లే చేయండి, డౌన్‌లోడ్ చేయండి, మీ లైబ్రరీని సింక్‌లో ఉంచండి. ఈ దశలకు ఒక నిమిషం పడుతుంది, ఏదైనా దాటవేయవచ్చు.</string>
+    <string name="onboarding_signin_title">సైన్ ఇన్ (ఐచ్ఛికం)</string>
+    <string name="onboarding_signin_body">మీ YouTube Music లైబ్రరీ, నచ్చిన పాటలు, ప్లేలిస్ట్‌లు, చరిత్ర కోసం Google ఖాతాతో సైన్ ఇన్ చేయండి. ఖాతా లేకుండా కూడా Lindale పని చేస్తుంది.</string>
+    <string name="onboarding_signin_button">Google తో సైన్ ఇన్ చేయండి</string>
+    <string name="onboarding_import_title">Spotify నుండి మీ సంగీతాన్ని తీసుకురండి</string>
+    <string name="onboarding_import_body">1. Exportify తెరిచి, Spotify తో లాగిన్ అయి, ప్లేలిస్ట్‌ను (లేదా అన్నింటినీ) CSV ఫైల్‌గా ఎగుమతి చేయండి.
+2. ఇక్కడ దిగుమతి స్క్రీన్ తెరిచి \"Import a CSV playlist\" ఎంచుకోండి. Lindale ప్రతి పాటను YouTube Music లో కనుగొని ప్లేలిస్ట్ తయారు చేస్తుంది.
+
+ఇతర ప్లేయర్ల (foobar2000, VLC, iTunes) M3U ప్లేలిస్ట్‌లు కూడా ఇలాగే పని చేస్తాయి.</string>
+    <string name="onboarding_exportify">Exportify తెరవండి</string>
+    <string name="onboarding_import_open">దిగుమతి తెరవండి</string>
+    <string name="onboarding_keys_title">ఉపయోగకరమైన కీలు</string>
+    <string name="onboarding_keys_body">Ctrl+K: వెతుకు
+Space: ప్లే / పాజ్
+Ctrl+← / →: మునుపటి / తదుపరి పాట
+Ctrl+↑ / ↓: వాల్యూమ్
+Shift+← / →: 5 సెకన్లు ముందుకు / వెనక్కి
+Ctrl+S: షఫుల్ · Ctrl+R: రిపీట్ · Ctrl+M: మ్యూట్
+
+కీబోర్డ్ మీడియా కీలు మరియు సిస్టమ్ మీడియా నియంత్రణలు (Windows మీడియా ప్యానెల్ లేదా Linux డెస్క్‌టాప్ మీడియా విడ్జెట్) కూడా Lindale ను నియంత్రిస్తాయి.</string>
+    <string name="onboarding_next">తదుపరి</string>
+    <string name="onboarding_back">వెనక్కి</string>
+    <string name="onboarding_skip">దాటవేయి</string>
+    <string name="onboarding_done">వినడం ప్రారంభించండి</string>
+    <string name="restore_desc_desktop">Android లోని Metrolist బ్యాకప్‌లను కూడా పునరుద్ధరిస్తుంది.</string>
+    <string name="import_other_apps">ఇతర యాప్‌ల నుండి దిగుమతి</string>
+    <string name="import_spotify_title">Spotify: మీ ప్లేలిస్ట్‌లను ఎగుమతి చేయండి</string>
+    <string name="import_spotify_desc">Exportify ను తెరుస్తుంది. Spotify తో లాగిన్ అయి, ప్లేలిస్ట్‌ను CSV గా డౌన్‌లోడ్ చేసి, కింద \"Import a CSV playlist\" ఉపయోగించండి.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes లేదా MusicBee సేవ్ చేసిన ప్లేలిస్ట్‌లు (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz లేదా శీర్షిక, కళాకారుడు నిలువు వరుసలు ఉన్న ఏదైనా CSV. ప్రతి పాట YouTube Music లో సరిపోల్చబడుతుంది.</string>
+    <string name="close_to_tray">మూసినా సిస్టమ్ ట్రేలో ప్లే అవుతూ ఉండు</string>
+    <string name="close_to_tray_desc">విండో మూసినప్పుడు Lindale గడియారం పక్కన దాక్కుంటుంది; ఐకాన్ మెనూ నుండి నిష్క్రమించండి.</string>
+    <string name="tray_play_pause">ప్లే / పాజ్</string>
+    <string name="tray_next">తదుపరి పాట</string>
+    <string name="tray_previous">మునుపటి పాట</string>
+    <string name="tray_show">Lindale చూపించు</string>
+    <string name="tray_quit">నిష్క్రమించు</string>
+    <string name="hide_from_capture_desc">స్క్రీన్‌షాట్‌లు, రికార్డింగ్‌లు, స్క్రీన్ షేరింగ్ (Discord, Teams, OBS) లో Lindale విండో నల్లగా కనిపిస్తుంది.</string>
+    <string name="appearance_dynamic_theme_desc">ప్లే అవుతున్న పాట ఆల్బమ్ కవర్‌ను బట్టి రంగులు మారుతాయి.</string>
+    <string name="appearance_lyrics_click_desc">పాటలోని ఆ భాగానికి వెళ్లడానికి ఒక లైన్‌పై క్లిక్ చేయండి.</string>
+    <string name="appearance_lyrics_scroll_desc">పాట ప్లే అవుతున్నప్పుడు ప్రస్తుత లైన్ ఎప్పుడూ కనిపిస్తుంది.</string>
+    <string name="appearance_library_playlist_desc">లైబ్రరీ > ప్లేలిస్ట్‌లలో పైన చూపబడుతుంది.</string>
+    <string name="download_folder">డౌన్‌లోడ్ ఫోల్డర్ (తెరవడానికి క్లిక్ చేయండి)</string>
 </resources>

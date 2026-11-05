@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">Натисніть на рядок, щоб перейти до цього місця пісні.</string>
     <string name="appearance_lyrics_scroll_desc">Поточний рядок завжди залишається на виду.</string>
     <string name="appearance_library_playlist_desc">Показується вгорі в Бібліотека > Плейлисти.</string>
+    <string name="onboarding_welcome_title">Ласкаво просимо до Lindalë</string>
+    <string name="onboarding_welcome_body">Плеєр YouTube Music без реклами для вашого комп\'ютера. Шукайте, слухайте й завантажуйте пісні та синхронізуйте бібліотеку. Це займе хвилину, будь-який крок можна пропустити.</string>
+    <string name="onboarding_signin_title">Вхід (необов\'язково)</string>
+    <string name="onboarding_signin_body">Увійдіть в обліковий запис Google, щоб отримати бібліотеку YouTube Music, вподобані пісні, плейлисти й історію. Lindale працює і без облікового запису.</string>
+    <string name="onboarding_signin_button">Увійти через Google</string>
+    <string name="onboarding_import_title">Перенесіть музику зі Spotify</string>
+    <string name="onboarding_import_body">1. Відкрийте Exportify, увійдіть через Spotify і експортуйте плейлист (або всі) у CSV-файл.
+2. Відкрийте тут імпорт і виберіть «Імпортувати список відтворення у форматі CSV». Lindale знайде кожну пісню в YouTube Music і створить плейлист.
+
+Плейлисти M3U з інших плеєрів (foobar2000, VLC, iTunes) працюють так само.</string>
+    <string name="onboarding_exportify">Відкрити Exportify</string>
+    <string name="onboarding_import_open">Відкрити імпорт</string>
+    <string name="onboarding_keys_title">Корисні клавіші</string>
+    <string name="onboarding_keys_body">Ctrl+K: пошук
+Пробіл: відтворити / пауза
+Ctrl+← / →: попередня / наступна пісня
+Ctrl+↑ / ↓: гучність
+Shift+← / →: перемотка на 5 секунд
+Ctrl+S: перемішати · Ctrl+R: повтор · Ctrl+M: без звуку
+
+Мультимедійні клавіші клавіатури та системні засоби керування медіа (медіапанель Windows або медіавіджет робочого столу Linux) теж керують Lindale.</string>
+    <string name="onboarding_next">Далі</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_skip">Пропустити</string>
+    <string name="onboarding_done">Почати слухати</string>
+    <string name="restore_desc_desktop">Також відновлює резервні копії Metrolist для Android.</string>
+    <string name="import_other_apps">Імпорт з інших застосунків</string>
+    <string name="import_spotify_title">Spotify: експорт плейлистів</string>
+    <string name="import_spotify_desc">Відкриє Exportify. Увійдіть через Spotify, завантажте плейлист у CSV, потім скористайтеся «Імпортувати список відтворення у форматі CSV» нижче.</string>
+    <string name="import_m3u_desc">Плейлисти з foobar2000, VLC, Winamp, iTunes або MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz або будь-який CSV зі стовпцями назви та виконавця. Кожну пісню шукають у YouTube Music.</string>
+    <string name="close_to_tray">Продовжувати грати в треї після закриття</string>
+    <string name="close_to_tray_desc">Закриття вікна ховає Lindale біля годинника; вийти можна через меню значка.</string>
+    <string name="tray_play_pause">Відтворити / пауза</string>
+    <string name="tray_next">Наступна пісня</string>
+    <string name="tray_previous">Попередня пісня</string>
+    <string name="tray_show">Показати Lindale</string>
+    <string name="tray_quit">Вийти</string>
 </resources>

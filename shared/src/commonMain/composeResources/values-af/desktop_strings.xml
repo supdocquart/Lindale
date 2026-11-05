@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale is \'n rekenaarweergawe van Metrolist. Die YouTube Music-kant is die werk van die Metrolist-span hieronder, dankie!</string>
     <string name="about_report_bug">Rapporteer \'n fout</string>
     <string name="about_metrolist_section">Metrolist (oorspronklike toep)</string>
+    <string name="onboarding_welcome_title">Welkom by Lindalë</string>
+    <string name="onboarding_welcome_body">\'n Advertensievrye YouTube Music-speler vir jou rekenaar. Soek, speel en laai liedjies af en hou jou biblioteek gesinkroniseer. Hierdie stappe neem \'n minuut en jy kan enigeen oorslaan.</string>
+    <string name="onboarding_signin_title">Meld aan (opsioneel)</string>
+    <string name="onboarding_signin_body">Meld aan met jou Google-rekening vir jou YouTube Music-biblioteek, gunstelingliedjies, snitlyste en geskiedenis. Lindale werk ook sonder \'n rekening.</string>
+    <string name="onboarding_signin_button">Meld aan met Google</string>
+    <string name="onboarding_import_title">Bring jou musiek van Spotify</string>
+    <string name="onboarding_import_body">1. Maak Exportify oop, meld aan met Spotify en voer \'n snitlys (of almal) uit as \'n CSV-lêer.
+2. Maak hier die invoer oop en kies \"Voer \'n CSV-snitlys in\". Lindale vind elke liedjie op YouTube Music en maak \'n snitlys.
+
+M3U-lyste van ander spelers (foobar2000, VLC, iTunes) werk op dieselfde manier.</string>
+    <string name="onboarding_exportify">Maak Exportify oop</string>
+    <string name="onboarding_import_open">Maak invoer oop</string>
+    <string name="onboarding_keys_title">Handige sleutels</string>
+    <string name="onboarding_keys_body">Ctrl+K: soek
+Spasie: speel / pouse
+Ctrl+← / →: vorige / volgende liedjie
+Ctrl+↑ / ↓: volume
+Shift+← / →: spring 5 sekondes
+Ctrl+S: skommel · Ctrl+R: herhaal · Ctrl+M: demp
+
+Jou sleutelbord se mediasleutels en die stelsel se mediakontroles (die Windows-mediapaneel of jou Linux-werkskerm se mediaprogrammetjie) beheer Lindale ook.</string>
+    <string name="onboarding_next">Volgende</string>
+    <string name="onboarding_back">Terug</string>
+    <string name="onboarding_skip">Slaan oor</string>
+    <string name="onboarding_done">Begin luister</string>
+    <string name="restore_desc_desktop">Stel ook rugsteune van Metrolist op Android terug.</string>
+    <string name="import_other_apps">Voer in van ander programme</string>
+    <string name="import_spotify_title">Spotify: voer jou snitlyste uit</string>
+    <string name="import_spotify_desc">Maak Exportify oop. Meld aan met Spotify, laai \'n snitlys as CSV af en gebruik dan \"Voer \'n CSV-snitlys in\" hieronder.</string>
+    <string name="import_m3u_desc">Snitlyste gestoor deur foobar2000, VLC, Winamp, iTunes of MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz of enige CSV met titel- en kunstenaarkolomme. Elke liedjie word op YouTube Music opgesoek.</string>
+    <string name="close_to_tray">Hou aan speel in die stelselbalk wanneer gesluit</string>
+    <string name="close_to_tray_desc">As jy die venster sluit, versteek Lindale langs die horlosie; sluit dit af in die ikoon se kieslys.</string>
+    <string name="tray_play_pause">Speel / pouse</string>
+    <string name="tray_next">Volgende liedjie</string>
+    <string name="tray_previous">Vorige liedjie</string>
+    <string name="tray_show">Wys Lindale</string>
+    <string name="tray_quit">Verlaat</string>
+    <string name="hide_from_capture_desc">Lindale se venster is swart in skermskote, opnames en skermdeling (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Kleure volg die omslag van die liedjie wat speel.</string>
+    <string name="appearance_lyrics_click_desc">Klik op \'n reël om na daardie deel van die liedjie te spring.</string>
+    <string name="appearance_lyrics_scroll_desc">Hou die huidige reël sigbaar terwyl die liedjie speel.</string>
+    <string name="appearance_library_playlist_desc">Word bo-aan Biblioteek > Snitlyste gewys.</string>
+    <string name="download_folder">Aflaaivouer (klik om oop te maak)</string>
 </resources>

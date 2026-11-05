@@ -33,4 +33,47 @@
     <string name="about_report_bug">الإبلاغ عن خطأ</string>
     <string name="about_metrolist_section">Metrolist (التطبيق الأصلي)</string>
     <string name="download_folder">مجلد التنزيلات (انقر للفتح)</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في Lindalë</string>
+    <string name="onboarding_welcome_body">مشغّل YouTube Music خالٍ من الإعلانات لحاسوبك. ابحث عن الأغاني وشغّلها ونزّلها وأبقِ مكتبتك متزامنة. تستغرق هذه الخطوات دقيقة، ويمكنك تخطي أي منها.</string>
+    <string name="onboarding_signin_title">تسجيل الدخول (اختياري)</string>
+    <string name="onboarding_signin_body">سجّل الدخول بحساب Google لتحصل على مكتبة YouTube Music والأغاني التي أعجبتك وقوائم التشغيل والسجل. يعمل Lindale أيضًا دون حساب.</string>
+    <string name="onboarding_signin_button">تسجيل الدخول باستخدام Google</string>
+    <string name="onboarding_import_title">انقل موسيقاك من Spotify</string>
+    <string name="onboarding_import_body">1. افتح Exportify وسجّل الدخول بحساب Spotify وصدّر قائمة تشغيل (أو كلها) كملف CSV.
+2. افتح شاشة الاستيراد هنا واختر \"استيراد قوائم تشغيل CSV\". يبحث Lindale عن كل أغنية في YouTube Music وينشئ قائمة تشغيل.
+
+تعمل قوائم M3U من المشغلات الأخرى (foobar2000 وVLC وiTunes) بالطريقة نفسها.</string>
+    <string name="onboarding_exportify">فتح Exportify</string>
+    <string name="onboarding_import_open">فتح الاستيراد</string>
+    <string name="onboarding_keys_title">مفاتيح مفيدة</string>
+    <string name="onboarding_keys_body">Ctrl+K: بحث
+مسافة: تشغيل / إيقاف مؤقت
+Ctrl+← / →: الأغنية السابقة / التالية
+Ctrl+↑ / ↓: مستوى الصوت
+Shift+← / →: تقديم أو ترجيع 5 ثوانٍ
+Ctrl+S: ترتيب عشوائي · Ctrl+R: تكرار · Ctrl+M: كتم الصوت
+
+تتحكم في Lindale أيضًا مفاتيح الوسائط في لوحة المفاتيح وعناصر التحكم في الوسائط بالنظام (لوحة الوسائط في Windows أو أداة الوسائط في سطح مكتب Linux).</string>
+    <string name="onboarding_next">التالي</string>
+    <string name="onboarding_back">رجوع</string>
+    <string name="onboarding_skip">تخطٍّ</string>
+    <string name="onboarding_done">ابدأ الاستماع</string>
+    <string name="restore_desc_desktop">يستعيد أيضًا النسخ الاحتياطية من Metrolist على Android.</string>
+    <string name="import_other_apps">الاستيراد من تطبيقات أخرى</string>
+    <string name="import_spotify_title">Spotify: صدّر قوائم التشغيل</string>
+    <string name="import_spotify_desc">يفتح Exportify. سجّل الدخول بحساب Spotify ونزّل قائمة تشغيل بصيغة CSV، ثم استخدم \"استيراد قوائم تشغيل CSV\" أدناه.</string>
+    <string name="import_m3u_desc">قوائم تشغيل محفوظة بواسطة foobar2000 أو VLC أو Winamp أو iTunes أو MusicBee (.m3u و.m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify) أو TuneMyMusic أو Soundiiz أو أي ملف CSV يحتوي عمودَي العنوان والفنان. يُبحث عن كل أغنية في YouTube Music.</string>
+    <string name="close_to_tray">مواصلة التشغيل في علبة النظام عند الإغلاق</string>
+    <string name="close_to_tray_desc">يؤدي إغلاق النافذة إلى إخفاء Lindale بجوار الساعة؛ اخرج من قائمة الأيقونة.</string>
+    <string name="tray_play_pause">تشغيل / إيقاف مؤقت</string>
+    <string name="tray_next">الأغنية التالية</string>
+    <string name="tray_previous">الأغنية السابقة</string>
+    <string name="tray_show">إظهار Lindale</string>
+    <string name="tray_quit">خروج</string>
+    <string name="hide_from_capture_desc">تظهر نافذة Lindale سوداء في لقطات الشاشة والتسجيلات ومشاركة الشاشة (Discord وTeams وOBS).</string>
+    <string name="appearance_dynamic_theme_desc">تتبع الألوان غلاف الأغنية قيد التشغيل.</string>
+    <string name="appearance_lyrics_click_desc">انقر على سطر للانتقال إلى ذلك الجزء من الأغنية.</string>
+    <string name="appearance_lyrics_scroll_desc">يبقى السطر الحالي ظاهرًا أثناء التشغيل.</string>
+    <string name="appearance_library_playlist_desc">تظهر في أعلى المكتبة > قوائم التشغيل.</string>
 </resources>

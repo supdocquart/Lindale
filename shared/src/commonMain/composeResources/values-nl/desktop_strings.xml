@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">Klik op een regel om naar dat deel van het nummer te gaan.</string>
     <string name="appearance_lyrics_scroll_desc">Houdt de huidige regel in beeld tijdens het afspelen.</string>
     <string name="appearance_library_playlist_desc">Bovenaan in Bibliotheek > Afspeellijsten.</string>
+    <string name="onboarding_welcome_title">Welkom bij Lindalë</string>
+    <string name="onboarding_welcome_body">Een advertentievrije YouTube Music-speler voor je computer. Zoek, speel en download nummers en houd je bibliotheek gesynchroniseerd. Deze stappen duren een minuut en je kunt ze allemaal overslaan.</string>
+    <string name="onboarding_signin_title">Inloggen (optioneel)</string>
+    <string name="onboarding_signin_body">Log in met je Google-account voor je YouTube Music-bibliotheek, favoriete nummers, afspeellijsten en geschiedenis. Lindale werkt ook zonder account.</string>
+    <string name="onboarding_signin_button">Inloggen met Google</string>
+    <string name="onboarding_import_title">Haal je muziek van Spotify</string>
+    <string name="onboarding_import_body">1. Open Exportify, log in met Spotify en exporteer een afspeellijst (of allemaal) als CSV-bestand.
+2. Open hier het importscherm en kies \"Importeer een \"csv\" afspeellijst\". Lindale zoekt elk nummer op YouTube Music en maakt een afspeellijst.
+
+M3U-lijsten uit andere spelers (foobar2000, VLC, iTunes) werken op dezelfde manier.</string>
+    <string name="onboarding_exportify">Exportify openen</string>
+    <string name="onboarding_import_open">Importeren openen</string>
+    <string name="onboarding_keys_title">Handige toetsen</string>
+    <string name="onboarding_keys_body">Ctrl+K: zoeken
+Spatie: afspelen / pauzeren
+Ctrl+← / →: vorig / volgend nummer
+Ctrl+↑ / ↓: volume
+Shift+← / →: 5 seconden verspringen
+Ctrl+S: shuffle · Ctrl+R: herhalen · Ctrl+M: dempen
+
+De mediatoetsen van je toetsenbord en de mediabediening van je systeem (het mediapaneel van Windows of de mediawidget van je Linux-desktop) bedienen Lindale ook.</string>
+    <string name="onboarding_next">Volgende</string>
+    <string name="onboarding_back">Terug</string>
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_done">Begin met luisteren</string>
+    <string name="restore_desc_desktop">Herstelt ook back-ups van Metrolist op Android.</string>
+    <string name="import_other_apps">Importeren uit andere apps</string>
+    <string name="import_spotify_title">Spotify: exporteer je afspeellijsten</string>
+    <string name="import_spotify_desc">Opent Exportify. Log in met Spotify, download een afspeellijst als CSV en gebruik daarna hieronder \"Importeer een \"csv\" afspeellijst\".</string>
+    <string name="import_m3u_desc">Afspeellijsten van foobar2000, VLC, Winamp, iTunes of MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz of elke CSV met titel- en artiestkolommen. Elk nummer wordt op YouTube Music opgezocht.</string>
+    <string name="close_to_tray">Blijf spelen in het systeemvak na sluiten</string>
+    <string name="close_to_tray_desc">Als je het venster sluit, verbergt Lindale zich bij de klok; afsluiten via het menu van het pictogram.</string>
+    <string name="tray_play_pause">Afspelen / pauzeren</string>
+    <string name="tray_next">Volgend nummer</string>
+    <string name="tray_previous">Vorig nummer</string>
+    <string name="tray_show">Lindale tonen</string>
+    <string name="tray_quit">Afsluiten</string>
 </resources>

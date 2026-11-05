@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">點擊歌詞行即可跳到歌曲的該位置。</string>
     <string name="appearance_lyrics_scroll_desc">播放時始終顯示目前的歌詞行。</string>
     <string name="appearance_library_playlist_desc">顯示在 媒體庫 > 播放清單 頂端。</string>
+    <string name="onboarding_welcome_title">歡迎使用 Lindalë</string>
+    <string name="onboarding_welcome_body">一款適用於電腦的無廣告 YouTube Music 播放器。搜尋、播放和下載歌曲，並讓媒體庫保持同步。這些步驟只需一分鐘，每一步都可以略過。</string>
+    <string name="onboarding_signin_title">登入（選用）</string>
+    <string name="onboarding_signin_body">使用 Google 帳戶登入，即可取得 YouTube Music 媒體庫、喜歡的歌曲、播放清單和紀錄。不登入也能使用 Lindale。</string>
+    <string name="onboarding_signin_button">使用 Google 登入</string>
+    <string name="onboarding_import_title">從 Spotify 搬移音樂</string>
+    <string name="onboarding_import_body">1. 開啟 Exportify，用 Spotify 登入，將播放清單（或全部）匯出為 CSV 檔案。
+2. 在這裡開啟匯入畫面並選擇「匯入「CSV」播放清單」。Lindale 會在 YouTube Music 上找到每首歌並建立播放清單。
+
+其他播放器（foobar2000、VLC、iTunes）的 M3U 播放清單也能這樣匯入。</string>
+    <string name="onboarding_exportify">開啟 Exportify</string>
+    <string name="onboarding_import_open">開啟匯入</string>
+    <string name="onboarding_keys_title">實用按鍵</string>
+    <string name="onboarding_keys_body">Ctrl+K: 搜尋
+空白鍵: 播放 / 暫停
+Ctrl+← / →: 上一首 / 下一首
+Ctrl+↑ / ↓: 音量
+Shift+← / →: 快轉 / 倒轉 5 秒
+Ctrl+S: 隨機播放 · Ctrl+R: 重複 · Ctrl+M: 靜音
+
+鍵盤媒體鍵和系統媒體控制（Windows 媒體面板或 Linux 桌面的媒體小工具）也能控制 Lindale。</string>
+    <string name="onboarding_next">下一步</string>
+    <string name="onboarding_back">返回</string>
+    <string name="onboarding_skip">略過</string>
+    <string name="onboarding_done">開始聆聽</string>
+    <string name="restore_desc_desktop">也能還原 Android 版 Metrolist 的備份。</string>
+    <string name="import_other_apps">從其他應用程式匯入</string>
+    <string name="import_spotify_title">Spotify：匯出播放清單</string>
+    <string name="import_spotify_desc">開啟 Exportify。用 Spotify 登入，將播放清單下載為 CSV，然後使用下方的「匯入「CSV」播放清單」。</string>
+    <string name="import_m3u_desc">由 foobar2000、VLC、Winamp、iTunes 或 MusicBee 儲存的播放清單（.m3u、.m3u8）。</string>
+    <string name="import_csv_desc">Spotify（Exportify）、TuneMyMusic、Soundiiz，或任何含有標題和演出者欄位的 CSV。每首歌都會在 YouTube Music 上比對。</string>
+    <string name="close_to_tray">關閉後在系統匣繼續播放</string>
+    <string name="close_to_tray_desc">關閉視窗後 Lindale 會隱藏到時鐘旁；從圖示選單結束。</string>
+    <string name="tray_play_pause">播放 / 暫停</string>
+    <string name="tray_next">下一首</string>
+    <string name="tray_previous">上一首</string>
+    <string name="tray_show">顯示 Lindale</string>
+    <string name="tray_quit">結束</string>
 </resources>

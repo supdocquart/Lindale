@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale er ein skrivebordsversjon av Metrolist. YouTube Music-delen er arbeidet til Metrolist-teamet nedanfor, takk!</string>
     <string name="about_report_bug">Rapporter ein feil</string>
     <string name="about_metrolist_section">Metrolist (opphavleg app)</string>
+    <string name="onboarding_welcome_title">Velkomen til Lindalë</string>
+    <string name="onboarding_welcome_body">Ein reklamefri YouTube Music-spelar for datamaskina di. Søk, spel og last ned songar, og hald biblioteket synkronisert. Stega tek eit minutt, og du kan hoppe over kva som helst.</string>
+    <string name="onboarding_signin_title">Logg inn (valfritt)</string>
+    <string name="onboarding_signin_body">Logg inn med Google-kontoen din for å få YouTube Music-biblioteket, likte songar, spelelister og historikk. Lindale fungerer òg utan konto.</string>
+    <string name="onboarding_signin_button">Logg inn med Google</string>
+    <string name="onboarding_import_title">Ta med musikken frå Spotify</string>
+    <string name="onboarding_import_body">1. Opne Exportify, logg inn med Spotify og eksporter ei speleliste (eller alle) som CSV-fil.
+2. Opne importen her og vel «Importer csv-speleliste». Lindale finn kvar song på YouTube Music og lagar ei speleliste.
+
+M3U-lister frå andre spelarar (foobar2000, VLC, iTunes) fungerer på same måten.</string>
+    <string name="onboarding_exportify">Opne Exportify</string>
+    <string name="onboarding_import_open">Opne import</string>
+    <string name="onboarding_keys_title">Nyttige taster</string>
+    <string name="onboarding_keys_body">Ctrl+K: søk
+Mellomrom: spel / pause
+Ctrl+← / →: førre / neste song
+Ctrl+↑ / ↓: volum
+Shift+← / →: hopp 5 sekund
+Ctrl+S: tilfeldig · Ctrl+R: gjenta · Ctrl+M: demp
+
+Medietastane på tastaturet og systemet sine mediekontrollar (mediepanelet i Windows eller mediewidgeten på Linux-skrivebordet) styrer òg Lindale.</string>
+    <string name="onboarding_next">Neste</string>
+    <string name="onboarding_back">Tilbake</string>
+    <string name="onboarding_skip">Hopp over</string>
+    <string name="onboarding_done">Byrj å lytte</string>
+    <string name="restore_desc_desktop">Gjenopprettar òg tryggingskopiar frå Metrolist for Android.</string>
+    <string name="import_other_apps">Importer frå andre appar</string>
+    <string name="import_spotify_title">Spotify: eksporter spelelistene</string>
+    <string name="import_spotify_desc">Opnar Exportify. Logg inn med Spotify, last ned ei speleliste som CSV, og bruk så «Importer csv-speleliste» nedanfor.</string>
+    <string name="import_m3u_desc">Spelelister lagra av foobar2000, VLC, Winamp, iTunes eller MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz eller kva CSV som helst med tittel- og artistkolonnar. Kvar song blir søkt opp på YouTube Music.</string>
+    <string name="close_to_tray">Hald fram å spele i systemfeltet etter lukking</string>
+    <string name="close_to_tray_desc">Lukkar du vindauget, blir Lindale gøymd ved klokka; avslutt frå menyen til ikonet.</string>
+    <string name="tray_play_pause">Spel / pause</string>
+    <string name="tray_next">Neste song</string>
+    <string name="tray_previous">Førre song</string>
+    <string name="tray_show">Vis Lindale</string>
+    <string name="tray_quit">Avslutt</string>
+    <string name="hide_from_capture_desc">Lindale-vindauget blir svart i skjermbilete, opptak og skjermdeling (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Fargane følgjer omslaget til songen som spelar.</string>
+    <string name="appearance_lyrics_click_desc">Klikk på ei linje for å hoppe til den delen av songen.</string>
+    <string name="appearance_lyrics_scroll_desc">Linja som blir sungen, blir halden synleg.</string>
+    <string name="appearance_library_playlist_desc">Blir vist øvst i Bibliotek > Spelelister.</string>
+    <string name="download_folder">Nedlastingsmappe (klikk for å opne)</string>
 </resources>

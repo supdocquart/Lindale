@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale on Metrolistin työpöytäversio. YouTube Music -puoli on alla olevan Metrolist-tiimin työtä, kiitos!</string>
     <string name="about_report_bug">Ilmoita virheestä</string>
     <string name="about_metrolist_section">Metrolist (alkuperäinen sovellus)</string>
+    <string name="onboarding_welcome_title">Tervetuloa Lindalëen</string>
+    <string name="onboarding_welcome_body">Mainokseton YouTube Music -soitin tietokoneellesi. Hae, kuuntele ja lataa kappaleita ja pidä kirjastosi synkronoituna. Vaiheet vievät minuutin, ja voit ohittaa minkä tahansa.</string>
+    <string name="onboarding_signin_title">Kirjaudu (valinnainen)</string>
+    <string name="onboarding_signin_body">Kirjaudu Google-tililläsi saadaksesi YouTube Music -kirjastosi, tykätyt kappaleet, soittolistat ja historian. Lindale toimii myös ilman tiliä.</string>
+    <string name="onboarding_signin_button">Kirjaudu Googlella</string>
+    <string name="onboarding_import_title">Tuo musiikkisi Spotifysta</string>
+    <string name="onboarding_import_body">1. Avaa Exportify, kirjaudu Spotifylla ja vie soittolista (tai kaikki) CSV-tiedostoksi.
+2. Avaa tuonti täällä ja valitse ”Import a CSV playlist”. Lindale etsii jokaisen kappaleen YouTube Musicista ja tekee soittolistan.
+
+Muiden soittimien (foobar2000, VLC, iTunes) M3U-listat toimivat samalla tavalla.</string>
+    <string name="onboarding_exportify">Avaa Exportify</string>
+    <string name="onboarding_import_open">Avaa tuonti</string>
+    <string name="onboarding_keys_title">Käteviä näppäimiä</string>
+    <string name="onboarding_keys_body">Ctrl+K: haku
+Välilyönti: toista / tauko
+Ctrl+← / →: edellinen / seuraava kappale
+Ctrl+↑ / ↓: äänenvoimakkuus
+Shift+← / →: hyppää 5 sekuntia
+Ctrl+S: sekoitus · Ctrl+R: toisto · Ctrl+M: mykistys
+
+Näppäimistön mediapainikkeet ja järjestelmän mediaohjaimet (Windowsin mediapaneeli tai Linux-työpöydän mediapienoisohjelma) ohjaavat myös Lindalea.</string>
+    <string name="onboarding_next">Seuraava</string>
+    <string name="onboarding_back">Takaisin</string>
+    <string name="onboarding_skip">Ohita</string>
+    <string name="onboarding_done">Aloita kuuntelu</string>
+    <string name="restore_desc_desktop">Palauttaa myös Androidin Metrolist-varmuuskopiot.</string>
+    <string name="import_other_apps">Tuo muista sovelluksista</string>
+    <string name="import_spotify_title">Spotify: vie soittolistasi</string>
+    <string name="import_spotify_desc">Avaa Exportifyn. Kirjaudu Spotifylla, lataa soittolista CSV:nä ja käytä sitten alta ”Import a CSV playlist”.</string>
+    <string name="import_m3u_desc">foobar2000:n, VLC:n, Winampin, iTunesin tai MusicBeen tallentamat listat (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz tai mikä tahansa CSV, jossa on nimi- ja esittäjäsarake. Jokainen kappale haetaan YouTube Musicista.</string>
+    <string name="close_to_tray">Jatka soittoa ilmaisinalueella sulkemisen jälkeen</string>
+    <string name="close_to_tray_desc">Ikkunan sulkeminen piilottaa Lindalen kellon viereen; lopeta kuvakkeen valikosta.</string>
+    <string name="tray_play_pause">Toista / tauko</string>
+    <string name="tray_next">Seuraava kappale</string>
+    <string name="tray_previous">Edellinen kappale</string>
+    <string name="tray_show">Näytä Lindale</string>
+    <string name="tray_quit">Lopeta</string>
+    <string name="hide_from_capture_desc">Lindalen ikkuna näkyy mustana kuvakaappauksissa, tallenteissa ja näytön jakamisessa (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Värit seuraavat soivan kappaleen kansikuvaa.</string>
+    <string name="appearance_lyrics_click_desc">Napsauta riviä hypätäksesi kappaleen siihen kohtaan.</string>
+    <string name="appearance_lyrics_scroll_desc">Nykyinen rivi pysyy näkyvissä toiston aikana.</string>
+    <string name="appearance_library_playlist_desc">Näkyy ylimpänä kohdassa Kirjasto > Soittolistat.</string>
+    <string name="download_folder">Latauskansio (avaa napsauttamalla)</string>
 </resources>

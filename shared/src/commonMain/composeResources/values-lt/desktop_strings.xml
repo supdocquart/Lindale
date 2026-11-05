@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale yra Metrolist versija kompiuteriui. YouTube Music dalis – žemiau esančios Metrolist komandos darbas, ačiū!</string>
     <string name="about_report_bug">Pranešti apie klaidą</string>
     <string name="about_metrolist_section">Metrolist (originali programa)</string>
+    <string name="onboarding_welcome_title">Sveiki atvykę į Lindalë</string>
+    <string name="onboarding_welcome_body">YouTube Music grotuvas be reklamų jūsų kompiuteriui. Ieškokite, klausykitės ir atsisiųskite dainas bei sinchronizuokite biblioteką. Šie žingsniai užtruks minutę, bet kurį galite praleisti.</string>
+    <string name="onboarding_signin_title">Prisijungti (neprivaloma)</string>
+    <string name="onboarding_signin_body">Prisijunkite su Google paskyra ir gaukite YouTube Music biblioteką, pamėgtas dainas, grojaraščius ir istoriją. Lindale veikia ir be paskyros.</string>
+    <string name="onboarding_signin_button">Prisijungti su Google</string>
+    <string name="onboarding_import_title">Perkelkite muziką iš Spotify</string>
+    <string name="onboarding_import_body">1. Atidarykite Exportify, prisijunkite su Spotify ir eksportuokite grojaraštį (arba visus) kaip CSV failą.
+2. Čia atidarykite importą ir pasirinkite „Įkelti CSV grojaraštį\". Lindale suras kiekvieną dainą YouTube Music ir sukurs grojaraštį.
+
+M3U grojaraščiai iš kitų grotuvų (foobar2000, VLC, iTunes) veikia taip pat.</string>
+    <string name="onboarding_exportify">Atidaryti Exportify</string>
+    <string name="onboarding_import_open">Atidaryti importą</string>
+    <string name="onboarding_keys_title">Naudingi klavišai</string>
+    <string name="onboarding_keys_body">Ctrl+K: paieška
+Tarpas: groti / pristabdyti
+Ctrl+← / →: ankstesnė / kita daina
+Ctrl+↑ / ↓: garsumas
+Shift+← / →: peršokti 5 sekundes
+Ctrl+S: maišyti · Ctrl+R: kartoti · Ctrl+M: nutildyti
+
+Klaviatūros medijos klavišai ir sistemos medijos valdikliai (Windows medijos skydelis arba Linux darbalaukio valdiklis) taip pat valdo Lindale.</string>
+    <string name="onboarding_next">Toliau</string>
+    <string name="onboarding_back">Atgal</string>
+    <string name="onboarding_skip">Praleisti</string>
+    <string name="onboarding_done">Pradėti klausytis</string>
+    <string name="restore_desc_desktop">Taip pat atkuria Metrolist Android atsargines kopijas.</string>
+    <string name="import_other_apps">Importuoti iš kitų programų</string>
+    <string name="import_spotify_title">Spotify: eksportuokite grojaraščius</string>
+    <string name="import_spotify_desc">Atidaro Exportify. Prisijunkite su Spotify, atsisiųskite grojaraštį kaip CSV ir naudokite „Įkelti CSV grojaraštį\" žemiau.</string>
+    <string name="import_m3u_desc">Grojaraščiai iš foobar2000, VLC, Winamp, iTunes ar MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ar bet kuris CSV su pavadinimo ir atlikėjo stulpeliais. Kiekviena daina ieškoma YouTube Music.</string>
+    <string name="close_to_tray">Uždarius toliau groti sistemos dėkle</string>
+    <string name="close_to_tray_desc">Uždarius langą Lindale pasislepia prie laikrodžio; išeiti galima iš piktogramos meniu.</string>
+    <string name="tray_play_pause">Groti / pristabdyti</string>
+    <string name="tray_next">Kita daina</string>
+    <string name="tray_previous">Ankstesnė daina</string>
+    <string name="tray_show">Rodyti Lindale</string>
+    <string name="tray_quit">Išeiti</string>
+    <string name="hide_from_capture_desc">Lindale langas bus juodas ekrano kopijose, įrašuose ir dalijantis ekranu (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Spalvos derinamos prie grojamos dainos viršelio.</string>
+    <string name="appearance_lyrics_click_desc">Spustelėkite eilutę, kad peršoktumėte į tą dainos vietą.</string>
+    <string name="appearance_lyrics_scroll_desc">Grojant dabartinė eilutė visada matoma.</string>
+    <string name="appearance_library_playlist_desc">Rodoma viršuje skiltyje Biblioteka > Grojaraščiai.</string>
+    <string name="download_folder">Atsisiuntimų aplankas (spustelėkite, kad atidarytumėte)</string>
 </resources>

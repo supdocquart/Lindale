@@ -33,4 +33,47 @@
     <string name="about_report_bug">Nahlásit chybu</string>
     <string name="about_metrolist_section">Metrolist (původní aplikace)</string>
     <string name="download_folder">Složka stažených (kliknutím otevřete)</string>
+    <string name="onboarding_welcome_title">Vítejte v Lindalë</string>
+    <string name="onboarding_welcome_body">Přehrávač YouTube Music bez reklam pro váš počítač. Vyhledávejte, přehrávejte a stahujte skladby a mějte knihovnu synchronizovanou. Tyto kroky zaberou minutu a kterýkoli můžete přeskočit.</string>
+    <string name="onboarding_signin_title">Přihlášení (volitelné)</string>
+    <string name="onboarding_signin_body">Přihlaste se účtem Google a získejte knihovnu YouTube Music, oblíbené skladby, playlisty a historii. Lindale funguje i bez účtu.</string>
+    <string name="onboarding_signin_button">Přihlásit se přes Google</string>
+    <string name="onboarding_import_title">Přeneste si hudbu ze Spotify</string>
+    <string name="onboarding_import_body">1. Otevřete Exportify, přihlaste se přes Spotify a exportujte playlist (nebo všechny) jako soubor CSV.
+2. Otevřete zde import a zvolte „Importovat playlist CSV\". Lindale najde každou skladbu na YouTube Music a vytvoří playlist.
+
+Playlisty M3U z jiných přehrávačů (foobar2000, VLC, iTunes) fungují stejně.</string>
+    <string name="onboarding_exportify">Otevřít Exportify</string>
+    <string name="onboarding_import_open">Otevřít import</string>
+    <string name="onboarding_keys_title">Užitečné klávesy</string>
+    <string name="onboarding_keys_body">Ctrl+K: hledat
+Mezerník: přehrát / pozastavit
+Ctrl+← / →: předchozí / další skladba
+Ctrl+↑ / ↓: hlasitost
+Shift+← / →: posun o 5 sekund
+Ctrl+S: náhodně · Ctrl+R: opakovat · Ctrl+M: ztlumit
+
+Multimediální klávesy klávesnice a systémové ovládání médií (panel médií ve Windows nebo widget prostředí Linux) také ovládají Lindale.</string>
+    <string name="onboarding_next">Další</string>
+    <string name="onboarding_back">Zpět</string>
+    <string name="onboarding_skip">Přeskočit</string>
+    <string name="onboarding_done">Začít poslouchat</string>
+    <string name="restore_desc_desktop">Obnoví také zálohy z Metrolistu pro Android.</string>
+    <string name="import_other_apps">Import z jiných aplikací</string>
+    <string name="import_spotify_title">Spotify: export playlistů</string>
+    <string name="import_spotify_desc">Otevře Exportify. Přihlaste se přes Spotify, stáhněte playlist jako CSV a pak použijte „Importovat playlist CSV\" níže.</string>
+    <string name="import_m3u_desc">Playlisty uložené ve foobar2000, VLC, Winamp, iTunes nebo MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz nebo jakýkoli CSV se sloupci názvu a interpreta. Každá skladba se vyhledá na YouTube Music.</string>
+    <string name="close_to_tray">Po zavření hrát dál v oznamovací oblasti</string>
+    <string name="close_to_tray_desc">Zavřením okna se Lindale skryje u hodin; ukončíte jej z nabídky ikony.</string>
+    <string name="tray_play_pause">Přehrát / pozastavit</string>
+    <string name="tray_next">Další skladba</string>
+    <string name="tray_previous">Předchozí skladba</string>
+    <string name="tray_show">Zobrazit Lindale</string>
+    <string name="tray_quit">Ukončit</string>
+    <string name="hide_from_capture_desc">Okno Lindale bude na snímcích obrazovky, nahrávkách a při sdílení obrazovky (Discord, Teams, OBS) černé.</string>
+    <string name="appearance_dynamic_theme_desc">Barvy se řídí obalem právě hrající skladby.</string>
+    <string name="appearance_lyrics_click_desc">Kliknutím na řádek textu přeskočíte na danou část skladby.</string>
+    <string name="appearance_lyrics_scroll_desc">Během přehrávání drží aktuální řádek na očích.</string>
+    <string name="appearance_library_playlist_desc">Zobrazí se nahoře v Knihovna > Playlisty.</string>
 </resources>

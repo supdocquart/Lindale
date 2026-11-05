@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale on Metrolisti lauaarvutiversioon. YouTube Musicu osa on allpool oleva Metrolisti meeskonna töö, aitäh!</string>
     <string name="about_report_bug">Teata veast</string>
     <string name="about_metrolist_section">Metrolist (algne rakendus)</string>
+    <string name="onboarding_welcome_title">Tere tulemast Lindalësse</string>
+    <string name="onboarding_welcome_body">Reklaamivaba YouTube Musicu mängija sinu arvutile. Otsi, kuula ja laadi lugusid alla ning hoia oma kogu sünkroonis. Need sammud võtavad minuti ja iga saab vahele jätta.</string>
+    <string name="onboarding_signin_title">Logi sisse (valikuline)</string>
+    <string name="onboarding_signin_body">Logi sisse Google\'i kontoga, et saada oma YouTube Musicu kogu, meeldinud lood, esitusloendid ja ajalugu. Lindale töötab ka ilma kontota.</string>
+    <string name="onboarding_signin_button">Logi sisse Google\'iga</string>
+    <string name="onboarding_import_title">Too oma muusika Spotifyst</string>
+    <string name="onboarding_import_body">1. Ava Exportify, logi Spotifyga sisse ja ekspordi esitusloend (või kõik) CSV-failina.
+2. Ava siin import ja vali „Impordi CSV-vormingus esitusloend\". Lindale leiab iga loo YouTube Musicust ja teeb esitusloendi.
+
+Teiste mängijate (foobar2000, VLC, iTunes) M3U-loendid töötavad samamoodi.</string>
+    <string name="onboarding_exportify">Ava Exportify</string>
+    <string name="onboarding_import_open">Ava import</string>
+    <string name="onboarding_keys_title">Kasulikud klahvid</string>
+    <string name="onboarding_keys_body">Ctrl+K: otsing
+Tühik: esita / paus
+Ctrl+← / →: eelmine / järgmine lugu
+Ctrl+↑ / ↓: helitugevus
+Shift+← / →: hüppa 5 sekundit
+Ctrl+S: juhuesitus · Ctrl+R: kordus · Ctrl+M: vaigista
+
+Klaviatuuri meediaklahvid ja süsteemi meedianupud (Windowsi meediapaneel või Linuxi töölaua vidin) juhivad samuti Lindalet.</string>
+    <string name="onboarding_next">Edasi</string>
+    <string name="onboarding_back">Tagasi</string>
+    <string name="onboarding_skip">Jäta vahele</string>
+    <string name="onboarding_done">Alusta kuulamist</string>
+    <string name="restore_desc_desktop">Taastab ka Androidi Metrolisti varukoopiad.</string>
+    <string name="import_other_apps">Impordi teistest rakendustest</string>
+    <string name="import_spotify_title">Spotify: ekspordi esitusloendid</string>
+    <string name="import_spotify_desc">Avab Exportify. Logi Spotifyga sisse, laadi esitusloend CSV-na alla ja kasuta all „Impordi CSV-vormingus esitusloend\".</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winampi, iTunesi või MusicBee salvestatud loendid (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz või mis tahes CSV pealkirja ja esitaja veeruga. Iga lugu otsitakse YouTube Musicust.</string>
+    <string name="close_to_tray">Sulgemisel mängi edasi süsteemisalves</string>
+    <string name="close_to_tray_desc">Akna sulgemine peidab Lindale kella kõrvale; välju ikooni menüüst.</string>
+    <string name="tray_play_pause">Esita / paus</string>
+    <string name="tray_next">Järgmine lugu</string>
+    <string name="tray_previous">Eelmine lugu</string>
+    <string name="tray_show">Näita Lindalet</string>
+    <string name="tray_quit">Välju</string>
+    <string name="hide_from_capture_desc">Lindale aken on kuvatõmmistel, salvestistel ja ekraani jagamisel (Discord, Teams, OBS) must.</string>
+    <string name="appearance_dynamic_theme_desc">Värvid järgivad mängiva loo kaanepilti.</string>
+    <string name="appearance_lyrics_click_desc">Klõpsa real, et hüpata loo sellesse kohta.</string>
+    <string name="appearance_lyrics_scroll_desc">Esituse ajal jääb praegune rida nähtavale.</string>
+    <string name="appearance_library_playlist_desc">Kuvatakse kohas Kogu > Esitusloendid üleval.</string>
+    <string name="download_folder">Allalaadimiste kaust (klõpsa avamiseks)</string>
 </resources>

@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale היא גרסת מחשב של Metrolist. החלק של YouTube Music הוא עבודת צוות Metrolist שלהלן, תודה!</string>
     <string name="about_report_bug">דיווח על באג</string>
     <string name="about_metrolist_section">Metrolist (האפליקציה המקורית)</string>
+    <string name="onboarding_welcome_title">ברוכים הבאים ל-Lindalë</string>
+    <string name="onboarding_welcome_body">נגן YouTube Music ללא פרסומות למחשב שלך. חפשו, נגנו והורידו שירים ושמרו על הספרייה מסונכרנת. השלבים לוקחים דקה ואפשר לדלג על כל אחד מהם.</string>
+    <string name="onboarding_signin_title">כניסה (רשות)</string>
+    <string name="onboarding_signin_body">היכנסו עם חשבון Google כדי לקבל את ספריית YouTube Music, השירים שאהבתם, הפלייליסטים וההיסטוריה. Lindale עובד גם בלי חשבון.</string>
+    <string name="onboarding_signin_button">כניסה עם Google</string>
+    <string name="onboarding_import_title">העבירו את המוזיקה מ-Spotify</string>
+    <string name="onboarding_import_body">1. פתחו את Exportify, היכנסו עם Spotify וייצאו פלייליסט (או את כולם) כקובץ CSV.
+2. פתחו כאן את מסך הייבוא ובחרו \"ייבוא רשימות השמעה בפורמט csv\". Lindale מוצא כל שיר ב-YouTube Music ויוצר פלייליסט.
+
+פלייליסטים בפורמט M3U מנגנים אחרים (foobar2000, VLC, iTunes) עובדים באותה דרך.</string>
+    <string name="onboarding_exportify">פתיחת Exportify</string>
+    <string name="onboarding_import_open">פתיחת הייבוא</string>
+    <string name="onboarding_keys_title">מקשים שימושיים</string>
+    <string name="onboarding_keys_body">Ctrl+K: חיפוש
+רווח: נגינה / השהיה
+Ctrl+← / →: השיר הקודם / הבא
+Ctrl+↑ / ↓: עוצמת קול
+Shift+← / →: דילוג של 5 שניות
+Ctrl+S: ערבוב · Ctrl+R: חזרה · Ctrl+M: השתקה
+
+גם מקשי המדיה במקלדת ופקדי המדיה של המערכת (חלונית המדיה של Windows או וידג׳ט המדיה בשולחן העבודה של Linux) שולטים ב-Lindale.</string>
+    <string name="onboarding_next">הבא</string>
+    <string name="onboarding_back">חזרה</string>
+    <string name="onboarding_skip">דילוג</string>
+    <string name="onboarding_done">להתחיל להאזין</string>
+    <string name="restore_desc_desktop">משחזר גם גיבויים של Metrolist ל-Android.</string>
+    <string name="import_other_apps">ייבוא מאפליקציות אחרות</string>
+    <string name="import_spotify_title">Spotify: ייצוא הפלייליסטים</string>
+    <string name="import_spotify_desc">פותח את Exportify. היכנסו עם Spotify, הורידו פלייליסט כ-CSV ואז השתמשו ב-\"ייבוא רשימות השמעה בפורמט csv\" למטה.</string>
+    <string name="import_m3u_desc">פלייליסטים ששמרו foobar2000, VLC, Winamp, iTunes או MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz או כל CSV עם עמודות שם ואמן. כל שיר נמצא ב-YouTube Music.</string>
+    <string name="close_to_tray">להמשיך לנגן במגש המערכת כשסוגרים</string>
+    <string name="close_to_tray_desc">סגירת החלון מסתירה את Lindale ליד השעון; יציאה מתפריט הסמל.</string>
+    <string name="tray_play_pause">נגינה / השהיה</string>
+    <string name="tray_next">השיר הבא</string>
+    <string name="tray_previous">השיר הקודם</string>
+    <string name="tray_show">הצגת Lindale</string>
+    <string name="tray_quit">יציאה</string>
+    <string name="hide_from_capture_desc">החלון של Lindale יופיע שחור בצילומי מסך, בהקלטות ובשיתוף מסך (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">הצבעים משתנים לפי עטיפת השיר שמתנגן.</string>
+    <string name="appearance_lyrics_click_desc">לחצו על שורה כדי לקפוץ לחלק הזה בשיר.</string>
+    <string name="appearance_lyrics_scroll_desc">השורה הנוכחית נשארת גלויה בזמן הנגינה.</string>
+    <string name="appearance_library_playlist_desc">מוצג בראש ספרייה > פלייליסטים.</string>
+    <string name="download_folder">תיקיית הורדות (לחצו לפתיחה)</string>
 </resources>

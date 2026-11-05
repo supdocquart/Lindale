@@ -45,4 +45,35 @@
     <string name="tray_previous">Предыдущий трек</string>
     <string name="tray_show">Показать Lindale</string>
     <string name="tray_quit">Выход</string>
+    <string name="onboarding_welcome_title">Добро пожаловать в Lindalë</string>
+    <string name="onboarding_welcome_body">Плеер YouTube Music без рекламы для вашего компьютера. Ищите, слушайте и скачивайте песни, синхронизируйте медиатеку. Это займёт минуту, любой шаг можно пропустить.</string>
+    <string name="onboarding_signin_title">Вход (необязательно)</string>
+    <string name="onboarding_signin_body">Войдите в аккаунт Google, чтобы получить медиатеку YouTube Music, понравившиеся треки, плейлисты и историю. Lindale работает и без аккаунта.</string>
+    <string name="onboarding_signin_button">Войти через Google</string>
+    <string name="onboarding_import_title">Перенесите музыку из Spotify</string>
+    <string name="onboarding_import_body">1. Откройте Exportify, войдите через Spotify и экспортируйте плейлист (или все) в CSV-файл.
+2. Откройте здесь импорт и выберите «Импортировать плейлист CSV». Lindale найдёт каждый трек в YouTube Music и создаст плейлист.
+
+Плейлисты M3U из других плееров (foobar2000, VLC, iTunes) работают так же.</string>
+    <string name="onboarding_exportify">Открыть Exportify</string>
+    <string name="onboarding_import_open">Открыть импорт</string>
+    <string name="onboarding_keys_title">Полезные клавиши</string>
+    <string name="onboarding_keys_body">Ctrl+K: поиск
+Пробел: играть / пауза
+Ctrl+← / →: предыдущий / следующий трек
+Ctrl+↑ / ↓: громкость
+Shift+← / →: перемотка на 5 секунд
+Ctrl+S: перемешать · Ctrl+R: повтор · Ctrl+M: без звука
+
+Мультимедийные клавиши клавиатуры и системные элементы управления (медиапанель Windows или медиавиджет рабочего стола Linux) тоже управляют Lindale.</string>
+    <string name="onboarding_next">Далее</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_skip">Пропустить</string>
+    <string name="onboarding_done">Начать слушать</string>
+    <string name="restore_desc_desktop">Также восстанавливает резервные копии Metrolist для Android.</string>
+    <string name="import_other_apps">Импорт из других приложений</string>
+    <string name="import_spotify_title">Spotify: экспорт плейлистов</string>
+    <string name="import_spotify_desc">Откроет Exportify. Войдите через Spotify, скачайте плейлист в CSV, затем используйте «Импортировать плейлист CSV» ниже.</string>
+    <string name="import_m3u_desc">Плейлисты из foobar2000, VLC, Winamp, iTunes или MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz или любой CSV со столбцами названия и исполнителя. Каждый трек ищется в YouTube Music.</string>
 </resources>

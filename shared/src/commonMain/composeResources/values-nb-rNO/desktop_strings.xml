@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale er en skrivebordsversjon av Metrolist. YouTube Music-delen er arbeidet til Metrolist-teamet nedenfor, takk!</string>
     <string name="about_report_bug">Rapporter en feil</string>
     <string name="about_metrolist_section">Metrolist (opprinnelig app)</string>
+    <string name="onboarding_welcome_title">Velkommen til Lindalë</string>
+    <string name="onboarding_welcome_body">En reklamefri YouTube Music-spiller for datamaskinen din. Søk, spill og last ned sanger, og hold biblioteket synkronisert. Stegene tar et minutt, og du kan hoppe over hvilket som helst.</string>
+    <string name="onboarding_signin_title">Logg inn (valgfritt)</string>
+    <string name="onboarding_signin_body">Logg inn med Google-kontoen din for å få YouTube Music-biblioteket, likte sanger, spillelister og historikk. Lindale fungerer også uten konto.</string>
+    <string name="onboarding_signin_button">Logg inn med Google</string>
+    <string name="onboarding_import_title">Ta med musikken fra Spotify</string>
+    <string name="onboarding_import_body">1. Åpne Exportify, logg inn med Spotify og eksporter en spilleliste (eller alle) som CSV-fil.
+2. Åpne importen her og velg «Import a CSV playlist». Lindale finner hver sang på YouTube Music og lager en spilleliste.
+
+M3U-lister fra andre spillere (foobar2000, VLC, iTunes) fungerer på samme måte.</string>
+    <string name="onboarding_exportify">Åpne Exportify</string>
+    <string name="onboarding_import_open">Åpne import</string>
+    <string name="onboarding_keys_title">Nyttige taster</string>
+    <string name="onboarding_keys_body">Ctrl+K: søk
+Mellomrom: spill / pause
+Ctrl+← / →: forrige / neste sang
+Ctrl+↑ / ↓: volum
+Shift+← / →: hopp 5 sekunder
+Ctrl+S: tilfeldig · Ctrl+R: gjenta · Ctrl+M: demp
+
+Medietastene på tastaturet og systemets mediekontroller (mediepanelet i Windows eller mediewidgeten på Linux-skrivebordet) styrer også Lindale.</string>
+    <string name="onboarding_next">Neste</string>
+    <string name="onboarding_back">Tilbake</string>
+    <string name="onboarding_skip">Hopp over</string>
+    <string name="onboarding_done">Begynn å lytte</string>
+    <string name="restore_desc_desktop">Gjenoppretter også sikkerhetskopier fra Metrolist for Android.</string>
+    <string name="import_other_apps">Importer fra andre apper</string>
+    <string name="import_spotify_title">Spotify: eksporter spillelistene</string>
+    <string name="import_spotify_desc">Åpner Exportify. Logg inn med Spotify, last ned en spilleliste som CSV, og bruk deretter «Import a CSV playlist» nedenfor.</string>
+    <string name="import_m3u_desc">Spillelister lagret av foobar2000, VLC, Winamp, iTunes eller MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz eller hvilken som helst CSV med tittel- og artistkolonner. Hver sang søkes opp på YouTube Music.</string>
+    <string name="close_to_tray">Fortsett å spille i systemstatusfeltet etter lukking</string>
+    <string name="close_to_tray_desc">Lukker du vinduet, skjules Lindale ved klokken; avslutt fra ikonets meny.</string>
+    <string name="tray_play_pause">Spill / pause</string>
+    <string name="tray_next">Neste sang</string>
+    <string name="tray_previous">Forrige sang</string>
+    <string name="tray_show">Vis Lindale</string>
+    <string name="tray_quit">Avslutt</string>
+    <string name="hide_from_capture_desc">Lindale-vinduet blir svart i skjermbilder, opptak og skjermdeling (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Fargene følger omslaget til sangen som spilles.</string>
+    <string name="appearance_lyrics_click_desc">Klikk på en linje for å hoppe til den delen av sangen.</string>
+    <string name="appearance_lyrics_scroll_desc">Linjen som synges holdes synlig under avspilling.</string>
+    <string name="appearance_library_playlist_desc">Vises øverst i Bibliotek > Spillelister.</string>
+    <string name="download_folder">Nedlastingsmappe (klikk for å åpne)</string>
 </resources>

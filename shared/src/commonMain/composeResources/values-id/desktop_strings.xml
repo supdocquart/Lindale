@@ -33,4 +33,47 @@
     <string name="about_report_bug">Laporkan bug</string>
     <string name="about_metrolist_section">Metrolist (aplikasi asli)</string>
     <string name="download_folder">Folder unduhan (klik untuk membuka)</string>
+    <string name="onboarding_welcome_title">Selamat datang di Lindalë</string>
+    <string name="onboarding_welcome_body">Pemutar YouTube Music tanpa iklan untuk komputer Anda. Cari, putar, dan unduh lagu serta jaga pustaka tetap tersinkron. Langkah ini hanya semenit dan semuanya bisa dilewati.</string>
+    <string name="onboarding_signin_title">Masuk (opsional)</string>
+    <string name="onboarding_signin_body">Masuk dengan akun Google untuk mendapatkan pustaka YouTube Music, lagu yang disukai, playlist, dan riwayat. Lindale juga berfungsi tanpa akun.</string>
+    <string name="onboarding_signin_button">Masuk dengan Google</string>
+    <string name="onboarding_import_title">Bawa musik Anda dari Spotify</string>
+    <string name="onboarding_import_body">1. Buka Exportify, masuk dengan Spotify, dan ekspor playlist (atau semuanya) sebagai file CSV.
+2. Buka layar impor di sini dan pilih \"Impor playlist CSV\". Lindale mencari setiap lagu di YouTube Music dan membuat playlist.
+
+Playlist M3U dari pemutar lain (foobar2000, VLC, iTunes) juga bisa dengan cara yang sama.</string>
+    <string name="onboarding_exportify">Buka Exportify</string>
+    <string name="onboarding_import_open">Buka impor</string>
+    <string name="onboarding_keys_title">Tombol praktis</string>
+    <string name="onboarding_keys_body">Ctrl+K: cari
+Spasi: putar / jeda
+Ctrl+← / →: lagu sebelumnya / berikutnya
+Ctrl+↑ / ↓: volume
+Shift+← / →: lompat 5 detik
+Ctrl+S: acak · Ctrl+R: ulangi · Ctrl+M: bisukan
+
+Tombol media keyboard dan kontrol media sistem (panel media Windows atau widget desktop Linux) juga mengontrol Lindale.</string>
+    <string name="onboarding_next">Berikutnya</string>
+    <string name="onboarding_back">Kembali</string>
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_done">Mulai mendengarkan</string>
+    <string name="restore_desc_desktop">Juga memulihkan cadangan dari Metrolist di Android.</string>
+    <string name="import_other_apps">Impor dari aplikasi lain</string>
+    <string name="import_spotify_title">Spotify: ekspor playlist Anda</string>
+    <string name="import_spotify_desc">Membuka Exportify. Masuk dengan Spotify, unduh playlist sebagai CSV, lalu gunakan \"Impor playlist CSV\" di bawah.</string>
+    <string name="import_m3u_desc">Playlist yang disimpan oleh foobar2000, VLC, Winamp, iTunes, atau MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz, atau CSV apa pun dengan kolom judul dan artis. Setiap lagu dicocokkan di YouTube Music.</string>
+    <string name="close_to_tray">Tetap memutar di baki sistem saat ditutup</string>
+    <string name="close_to_tray_desc">Menutup jendela menyembunyikan Lindale di dekat jam; keluar dari menu ikonnya.</string>
+    <string name="tray_play_pause">Putar / jeda</string>
+    <string name="tray_next">Lagu berikutnya</string>
+    <string name="tray_previous">Lagu sebelumnya</string>
+    <string name="tray_show">Tampilkan Lindale</string>
+    <string name="tray_quit">Keluar</string>
+    <string name="hide_from_capture_desc">Jendela Lindale tampak hitam di tangkapan layar, rekaman, dan berbagi layar (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Warna mengikuti sampul lagu yang sedang diputar.</string>
+    <string name="appearance_lyrics_click_desc">Klik baris lirik untuk melompat ke bagian lagu itu.</string>
+    <string name="appearance_lyrics_scroll_desc">Baris yang sedang dinyanyikan tetap terlihat.</string>
+    <string name="appearance_library_playlist_desc">Ditampilkan paling atas di Pustaka > Playlist.</string>
 </resources>

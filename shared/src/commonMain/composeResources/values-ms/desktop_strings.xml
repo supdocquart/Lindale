@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale ialah versi desktop Metrolist. Bahagian YouTube Music ialah hasil kerja pasukan Metrolist di bawah, terima kasih!</string>
     <string name="about_report_bug">Laporkan pepijat</string>
     <string name="about_metrolist_section">Metrolist (aplikasi asal)</string>
+    <string name="onboarding_welcome_title">Selamat datang ke Lindalë</string>
+    <string name="onboarding_welcome_body">Pemain YouTube Music tanpa iklan untuk komputer anda. Cari, main dan muat turun lagu serta pastikan pustaka anda sentiasa disegerakkan. Langkah ini mengambil masa seminit dan anda boleh langkau mana-mana.</string>
+    <string name="onboarding_signin_title">Log masuk (pilihan)</string>
+    <string name="onboarding_signin_body">Log masuk dengan akaun Google untuk pustaka YouTube Music, lagu disukai, senarai main dan sejarah. Lindale juga berfungsi tanpa akaun.</string>
+    <string name="onboarding_signin_button">Log masuk dengan Google</string>
+    <string name="onboarding_import_title">Bawa muzik anda dari Spotify</string>
+    <string name="onboarding_import_body">1. Buka Exportify, log masuk dengan Spotify dan eksport senarai main (atau semua) sebagai fail CSV.
+2. Buka skrin import di sini dan pilih \"Import senarai main dari CSV\". Lindale mencari setiap lagu di YouTube Music dan membuat senarai main.
+
+Senarai M3U daripada pemain lain (foobar2000, VLC, iTunes) berfungsi dengan cara yang sama.</string>
+    <string name="onboarding_exportify">Buka Exportify</string>
+    <string name="onboarding_import_open">Buka import</string>
+    <string name="onboarding_keys_title">Kekunci berguna</string>
+    <string name="onboarding_keys_body">Ctrl+K: cari
+Ruang: main / jeda
+Ctrl+← / →: lagu sebelum / seterusnya
+Ctrl+↑ / ↓: kelantangan
+Shift+← / →: lompat 5 saat
+Ctrl+S: rawak · Ctrl+R: ulang · Ctrl+M: senyap
+
+Kekunci media papan kekunci dan kawalan media sistem (panel media Windows atau widget desktop Linux) turut mengawal Lindale.</string>
+    <string name="onboarding_next">Seterusnya</string>
+    <string name="onboarding_back">Kembali</string>
+    <string name="onboarding_skip">Langkau</string>
+    <string name="onboarding_done">Mula mendengar</string>
+    <string name="restore_desc_desktop">Turut memulihkan sandaran daripada Metrolist di Android.</string>
+    <string name="import_other_apps">Import daripada aplikasi lain</string>
+    <string name="import_spotify_title">Spotify: eksport senarai main anda</string>
+    <string name="import_spotify_desc">Membuka Exportify. Log masuk dengan Spotify, muat turun senarai main sebagai CSV, kemudian gunakan \"Import senarai main dari CSV\" di bawah.</string>
+    <string name="import_m3u_desc">Senarai main yang disimpan oleh foobar2000, VLC, Winamp, iTunes atau MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz atau mana-mana CSV dengan lajur tajuk dan artis. Setiap lagu dipadankan di YouTube Music.</string>
+    <string name="close_to_tray">Terus bermain dalam dulang sistem apabila ditutup</string>
+    <string name="close_to_tray_desc">Menutup tetingkap menyembunyikan Lindale di sebelah jam; keluar melalui menu ikon.</string>
+    <string name="tray_play_pause">Main / jeda</string>
+    <string name="tray_next">Lagu seterusnya</string>
+    <string name="tray_previous">Lagu sebelumnya</string>
+    <string name="tray_show">Tunjukkan Lindale</string>
+    <string name="tray_quit">Keluar</string>
+    <string name="hide_from_capture_desc">Tetingkap Lindale kelihatan hitam dalam tangkapan skrin, rakaman dan perkongsian skrin (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Warna mengikut kulit album lagu yang sedang dimainkan.</string>
+    <string name="appearance_lyrics_click_desc">Klik baris lirik untuk melompat ke bahagian lagu itu.</string>
+    <string name="appearance_lyrics_scroll_desc">Baris semasa kekal kelihatan ketika lagu dimainkan.</string>
+    <string name="appearance_library_playlist_desc">Dipaparkan di bahagian atas Pustaka > Senarai main.</string>
+    <string name="download_folder">Folder muat turun (klik untuk membuka)</string>
 </resources>

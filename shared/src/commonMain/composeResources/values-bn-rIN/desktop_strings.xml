@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale হলো Metrolist-এর ডেস্কটপ সংস্করণ। YouTube Music-এর অংশটি নিচের Metrolist দলের কাজ, ধন্যবাদ!</string>
     <string name="about_report_bug">বাগ রিপোর্ট করুন</string>
     <string name="about_metrolist_section">Metrolist (মূল অ্যাপ)</string>
+    <string name="onboarding_welcome_title">Lindalë-এ স্বাগতম</string>
+    <string name="onboarding_welcome_body">আপনার কম্পিউটারের জন্য বিজ্ঞাপনমুক্ত YouTube Music প্লেয়ার। গান খুঁজুন, চালান, ডাউনলোড করুন এবং লাইব্রেরি সিঙ্ক রাখুন। এই ধাপগুলোতে এক মিনিট লাগে, যেকোনোটি এড়িয়ে যেতে পারেন।</string>
+    <string name="onboarding_signin_title">সাইন ইন (ঐচ্ছিক)</string>
+    <string name="onboarding_signin_body">আপনার YouTube Music লাইব্রেরি, পছন্দের গান, প্লেলিস্ট ও ইতিহাস পেতে Google অ্যাকাউন্ট দিয়ে সাইন ইন করুন। অ্যাকাউন্ট ছাড়াও Lindale চলে।</string>
+    <string name="onboarding_signin_button">Google দিয়ে সাইন ইন করুন</string>
+    <string name="onboarding_import_title">Spotify থেকে আপনার গান আনুন</string>
+    <string name="onboarding_import_body">1. Exportify খুলুন, Spotify দিয়ে লগ ইন করুন এবং একটি প্লেলিস্ট (বা সবগুলো) CSV ফাইল হিসেবে এক্সপোর্ট করুন।
+2. এখানে ইমপোর্ট স্ক্রিন খুলে \"Import a CSV playlist\" বেছে নিন। Lindale প্রতিটি গান YouTube Music-এ খুঁজে প্লেলিস্ট বানায়।
+
+অন্য প্লেয়ারের (foobar2000, VLC, iTunes) M3U প্লেলিস্টও একইভাবে কাজ করে।</string>
+    <string name="onboarding_exportify">Exportify খুলুন</string>
+    <string name="onboarding_import_open">ইমপোর্ট খুলুন</string>
+    <string name="onboarding_keys_title">কাজের কী</string>
+    <string name="onboarding_keys_body">Ctrl+K: খুঁজুন
+Space: চালান / থামান
+Ctrl+← / →: আগের / পরের গান
+Ctrl+↑ / ↓: ভলিউম
+Shift+← / →: ৫ সেকেন্ড এগোন / পিছোন
+Ctrl+S: শাফেল · Ctrl+R: পুনরাবৃত্তি · Ctrl+M: মিউট
+
+কীবোর্ডের মিডিয়া কী এবং সিস্টেমের মিডিয়া নিয়ন্ত্রণ (Windows মিডিয়া প্যানেল বা Linux ডেস্কটপের মিডিয়া উইজেট) দিয়েও Lindale চালানো যায়।</string>
+    <string name="onboarding_next">পরবর্তী</string>
+    <string name="onboarding_back">পেছনে</string>
+    <string name="onboarding_skip">এড়িয়ে যান</string>
+    <string name="onboarding_done">শোনা শুরু করুন</string>
+    <string name="restore_desc_desktop">Android-এর Metrolist ব্যাকআপও পুনরুদ্ধার করে।</string>
+    <string name="import_other_apps">অন্য অ্যাপ থেকে ইমপোর্ট</string>
+    <string name="import_spotify_title">Spotify: প্লেলিস্ট এক্সপোর্ট করুন</string>
+    <string name="import_spotify_desc">Exportify খোলে। Spotify দিয়ে লগ ইন করুন, প্লেলিস্ট CSV হিসেবে ডাউনলোড করুন, তারপর নিচের \"Import a CSV playlist\" ব্যবহার করুন।</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes বা MusicBee-তে সংরক্ষিত প্লেলিস্ট (.m3u, .m3u8)।</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz বা শিরোনাম ও শিল্পীর কলাম থাকা যেকোনো CSV। প্রতিটি গান YouTube Music-এ মেলানো হয়।</string>
+    <string name="close_to_tray">বন্ধ করলে সিস্টেম ট্রেতে চলতে থাকুক</string>
+    <string name="close_to_tray_desc">উইন্ডো বন্ধ করলে Lindale ঘড়ির পাশে লুকিয়ে থাকে; আইকনের মেনু থেকে বের হন।</string>
+    <string name="tray_play_pause">চালান / থামান</string>
+    <string name="tray_next">পরের গান</string>
+    <string name="tray_previous">আগের গান</string>
+    <string name="tray_show">Lindale দেখান</string>
+    <string name="tray_quit">বের হন</string>
+    <string name="hide_from_capture_desc">স্ক্রিনশট, রেকর্ডিং ও স্ক্রিন শেয়ারে (Discord, Teams, OBS) Lindale-এর উইন্ডো কালো দেখায়।</string>
+    <string name="appearance_dynamic_theme_desc">চলমান গানের অ্যালবাম কভার অনুযায়ী রং বদলায়।</string>
+    <string name="appearance_lyrics_click_desc">গানের সেই অংশে যেতে কোনো লাইনে ক্লিক করুন।</string>
+    <string name="appearance_lyrics_scroll_desc">গান চলার সময় বর্তমান লাইন সবসময় দেখা যায়।</string>
+    <string name="appearance_library_playlist_desc">লাইব্রেরি > প্লেলিস্টের একেবারে ওপরে দেখায়।</string>
+    <string name="download_folder">ডাউনলোড ফোল্ডার (খুলতে ক্লিক করুন)</string>
 </resources>

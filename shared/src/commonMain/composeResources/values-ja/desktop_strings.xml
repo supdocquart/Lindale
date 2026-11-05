@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">歌詞の行をクリックすると、その位置へ移動します。</string>
     <string name="appearance_lyrics_scroll_desc">再生中の行を常に表示し続けます。</string>
     <string name="appearance_library_playlist_desc">ライブラリ > プレイリストの先頭に表示されます。</string>
+    <string name="onboarding_welcome_title">Lindalë へようこそ</string>
+    <string name="onboarding_welcome_body">パソコン向けの広告なし YouTube Music プレーヤーです。曲を検索・再生・ダウンロードし、ライブラリを同期できます。各ステップは 1 分ほどで、どれでもスキップできます。</string>
+    <string name="onboarding_signin_title">ログイン（任意）</string>
+    <string name="onboarding_signin_body">Google アカウントでログインすると、YouTube Music のライブラリ、高評価した曲、プレイリスト、履歴を利用できます。アカウントなしでも使えます。</string>
+    <string name="onboarding_signin_button">Google でログイン</string>
+    <string name="onboarding_import_title">Spotify から音楽を移す</string>
+    <string name="onboarding_import_body">1. Exportify を開いて Spotify でログインし、プレイリスト（またはすべて）を CSV ファイルとして書き出します。
+2. ここで取り込み画面を開き、「CSV形式のプレイリストをインポート」を選びます。Lindale が YouTube Music で各曲を探してプレイリストを作ります。
+
+ほかのプレーヤー（foobar2000、VLC、iTunes）の M3U プレイリストも同じように使えます。</string>
+    <string name="onboarding_exportify">Exportify を開く</string>
+    <string name="onboarding_import_open">取り込みを開く</string>
+    <string name="onboarding_keys_title">便利なキー</string>
+    <string name="onboarding_keys_body">Ctrl+K: 検索
+Space: 再生 / 一時停止
+Ctrl+← / →: 前の曲 / 次の曲
+Ctrl+↑ / ↓: 音量
+Shift+← / →: 5 秒移動
+Ctrl+S: シャッフル · Ctrl+R: リピート · Ctrl+M: ミュート
+
+キーボードのメディアキーやシステムのメディア操作（Windows のメディアパネルや Linux デスクトップのメディアウィジェット）でも Lindale を操作できます。</string>
+    <string name="onboarding_next">次へ</string>
+    <string name="onboarding_back">戻る</string>
+    <string name="onboarding_skip">スキップ</string>
+    <string name="onboarding_done">聴き始める</string>
+    <string name="restore_desc_desktop">Android 版 Metrolist のバックアップも復元できます。</string>
+    <string name="import_other_apps">ほかのアプリから取り込む</string>
+    <string name="import_spotify_title">Spotify: プレイリストを書き出す</string>
+    <string name="import_spotify_desc">Exportify を開きます。Spotify でログインしてプレイリストを CSV でダウンロードし、下の「CSV形式のプレイリストをインポート」を使ってください。</string>
+    <string name="import_m3u_desc">foobar2000、VLC、Winamp、iTunes、MusicBee が保存したプレイリスト（.m3u、.m3u8）。</string>
+    <string name="import_csv_desc">Spotify（Exportify）、TuneMyMusic、Soundiiz、または曲名とアーティスト列のある CSV。各曲を YouTube Music で探します。</string>
+    <string name="close_to_tray">閉じてもトレイで再生を続ける</string>
+    <string name="close_to_tray_desc">ウィンドウを閉じると Lindale は時計の横に隠れます。終了はアイコンのメニューから。</string>
+    <string name="tray_play_pause">再生 / 一時停止</string>
+    <string name="tray_next">次の曲</string>
+    <string name="tray_previous">前の曲</string>
+    <string name="tray_show">Lindale を表示</string>
+    <string name="tray_quit">終了</string>
 </resources>

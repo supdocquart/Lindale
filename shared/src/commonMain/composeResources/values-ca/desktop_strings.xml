@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale és una versió d\'escriptori de Metrolist. La part de YouTube Music és obra de l\'equip de Metrolist de sota. Gràcies!</string>
     <string name="about_report_bug">Informa d\'un error</string>
     <string name="about_metrolist_section">Metrolist (aplicació original)</string>
+    <string name="onboarding_welcome_title">Us donem la benvinguda a Lindalë</string>
+    <string name="onboarding_welcome_body">Un reproductor de YouTube Music sense anuncis per al vostre ordinador. Cerqueu, escolteu i baixeu cançons i mantingueu la biblioteca sincronitzada. Aquests passos duren un minut i podeu ometre\'n qualsevol.</string>
+    <string name="onboarding_signin_title">Inicia la sessió (opcional)</string>
+    <string name="onboarding_signin_body">Inicieu la sessió amb el compte de Google per tenir la biblioteca de YouTube Music, les cançons que us agraden, les llistes i l\'historial. Lindale també funciona sense compte.</string>
+    <string name="onboarding_signin_button">Inicia la sessió amb Google</string>
+    <string name="onboarding_import_title">Porteu la vostra música d\'Spotify</string>
+    <string name="onboarding_import_body">1. Obriu Exportify, inicieu la sessió amb Spotify i exporteu una llista (o totes) com a fitxer CSV.
+2. Obriu aquí la importació i trieu «Importa una llista de reproducció \"csv\"». Lindale troba cada cançó a YouTube Music i crea una llista.
+
+Les llistes M3U d\'altres reproductors (foobar2000, VLC, iTunes) funcionen igual.</string>
+    <string name="onboarding_exportify">Obre Exportify</string>
+    <string name="onboarding_import_open">Obre la importació</string>
+    <string name="onboarding_keys_title">Tecles útils</string>
+    <string name="onboarding_keys_body">Ctrl+K: cerca
+Espai: reprodueix / pausa
+Ctrl+← / →: cançó anterior / següent
+Ctrl+↑ / ↓: volum
+Shift+← / →: salta 5 segons
+Ctrl+S: aleatori · Ctrl+R: repeteix · Ctrl+M: silencia
+
+Les tecles multimèdia del teclat i els controls multimèdia del sistema (el tauler multimèdia de Windows o el giny de l\'escriptori Linux) també controlen Lindale.</string>
+    <string name="onboarding_next">Següent</string>
+    <string name="onboarding_back">Enrere</string>
+    <string name="onboarding_skip">Omet</string>
+    <string name="onboarding_done">Comença a escoltar</string>
+    <string name="restore_desc_desktop">També restaura còpies de seguretat de Metrolist per a Android.</string>
+    <string name="import_other_apps">Importa d\'altres aplicacions</string>
+    <string name="import_spotify_title">Spotify: exporteu les llistes</string>
+    <string name="import_spotify_desc">Obre Exportify. Inicieu la sessió amb Spotify, baixeu una llista com a CSV i després feu servir «Importa una llista de reproducció \"csv\"» a sota.</string>
+    <string name="import_m3u_desc">Llistes desades per foobar2000, VLC, Winamp, iTunes o MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz o qualsevol CSV amb columnes de títol i artista. Cada cançó es cerca a YouTube Music.</string>
+    <string name="close_to_tray">Continua sonant a la safata en tancar</string>
+    <string name="close_to_tray_desc">En tancar la finestra, Lindale s\'amaga al costat del rellotge; sortiu des del menú de la icona.</string>
+    <string name="tray_play_pause">Reprodueix / pausa</string>
+    <string name="tray_next">Cançó següent</string>
+    <string name="tray_previous">Cançó anterior</string>
+    <string name="tray_show">Mostra Lindale</string>
+    <string name="tray_quit">Surt</string>
+    <string name="hide_from_capture_desc">La finestra de Lindale apareix negra a les captures, enregistraments i en compartir la pantalla (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Els colors segueixen la portada de la cançó que sona.</string>
+    <string name="appearance_lyrics_click_desc">Feu clic en una línia per saltar a aquella part de la cançó.</string>
+    <string name="appearance_lyrics_scroll_desc">La línia actual es manté visible durant la reproducció.</string>
+    <string name="appearance_library_playlist_desc">Es mostra a dalt de tot a Biblioteca > Llistes.</string>
+    <string name="download_folder">Carpeta de baixades (feu clic per obrir-la)</string>
 </resources>

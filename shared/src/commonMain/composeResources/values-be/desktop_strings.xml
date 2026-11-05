@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale — настольная версія Metrolist. Уся праца з YouTube Music — заслуга каманды Metrolist ніжэй, дзякуй!</string>
     <string name="about_report_bug">Паведаміць пра памылку</string>
     <string name="about_metrolist_section">Metrolist (арыгінальная праграма)</string>
+    <string name="onboarding_welcome_title">Вітаем у Lindalë</string>
+    <string name="onboarding_welcome_body">Плэер YouTube Music без рэкламы для вашага камп\'ютара. Шукайце, слухайце і спампоўвайце песні і сінхранізуйце бібліятэку. Гэта зойме хвіліну, любы крок можна прапусціць.</string>
+    <string name="onboarding_signin_title">Уваход (неабавязкова)</string>
+    <string name="onboarding_signin_body">Увайдзіце ў акаўнт Google, каб атрымаць бібліятэку YouTube Music, упадабаныя песні, плэйлісты і гісторыю. Lindale працуе і без акаўнта.</string>
+    <string name="onboarding_signin_button">Увайсці праз Google</string>
+    <string name="onboarding_import_title">Перанясіце музыку са Spotify</string>
+    <string name="onboarding_import_body">1. Адкрыйце Exportify, увайдзіце праз Spotify і экспартуйце плэйліст (ці ўсе) у CSV-файл.
+2. Адкрыйце тут імпарт і выберыце «Импортировать плейлист CSV». Lindale знойдзе кожную песню ў YouTube Music і створыць плэйліст.
+
+Плэйлісты M3U з іншых плэераў (foobar2000, VLC, iTunes) працуюць гэтак жа.</string>
+    <string name="onboarding_exportify">Адкрыць Exportify</string>
+    <string name="onboarding_import_open">Адкрыць імпарт</string>
+    <string name="onboarding_keys_title">Карысныя клавішы</string>
+    <string name="onboarding_keys_body">Ctrl+K: пошук
+Прабел: прайграць / паўза
+Ctrl+← / →: папярэдняя / наступная песня
+Ctrl+↑ / ↓: гучнасць
+Shift+← / →: перамотка на 5 секунд
+Ctrl+S: перамяшаць · Ctrl+R: паўтор · Ctrl+M: без гуку
+
+Мультымедыйныя клавішы клавіятуры і сістэмныя элементы кіравання медыя (медыяпанэль Windows ці медыявіджэт працоўнага стала Linux) таксама кіруюць Lindale.</string>
+    <string name="onboarding_next">Далей</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_skip">Прапусціць</string>
+    <string name="onboarding_done">Пачаць слухаць</string>
+    <string name="restore_desc_desktop">Таксама аднаўляе рэзервовыя копіі Metrolist для Android.</string>
+    <string name="import_other_apps">Імпарт з іншых праграм</string>
+    <string name="import_spotify_title">Spotify: экспарт плэйлістаў</string>
+    <string name="import_spotify_desc">Адкрые Exportify. Увайдзіце праз Spotify, спампуйце плэйліст у CSV, потым скарыстайцеся «Импортировать плейлист CSV» ніжэй.</string>
+    <string name="import_m3u_desc">Плэйлісты з foobar2000, VLC, Winamp, iTunes ці MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ці любы CSV са слупкамі назвы і выканаўцы. Кожную песню шукаюць у YouTube Music.</string>
+    <string name="close_to_tray">Працягваць граць у трэі пасля закрыцця</string>
+    <string name="close_to_tray_desc">Закрыццё акна хавае Lindale каля гадзінніка; выйсці можна праз меню значка.</string>
+    <string name="tray_play_pause">Прайграць / паўза</string>
+    <string name="tray_next">Наступная песня</string>
+    <string name="tray_previous">Папярэдняя песня</string>
+    <string name="tray_show">Паказаць Lindale</string>
+    <string name="tray_quit">Выйсці</string>
+    <string name="hide_from_capture_desc">Акно Lindale будзе чорным на скрыншотах, запісах і пры дэманстрацыі экрана (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Колеры падладжваюцца пад вокладку бягучай песні.</string>
+    <string name="appearance_lyrics_click_desc">Націсніце на радок, каб перайсці да гэтага месца песні.</string>
+    <string name="appearance_lyrics_scroll_desc">Бягучы радок заўсёды на віду падчас прайгравання.</string>
+    <string name="appearance_library_playlist_desc">Паказваецца ўверсе ў Бібліятэка > Плэйлісты.</string>
+    <string name="download_folder">Папка спамповак (націсніце, каб адкрыць)</string>
 </resources>

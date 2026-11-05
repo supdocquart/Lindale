@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale je namizna različica Metroliste. Del za YouTube Music je delo ekipe Metrolist spodaj, hvala!</string>
     <string name="about_report_bug">Prijavi napako</string>
     <string name="about_metrolist_section">Metrolist (izvirna aplikacija)</string>
+    <string name="onboarding_welcome_title">Dobrodošli v Lindalë</string>
+    <string name="onboarding_welcome_body">Predvajalnik YouTube Music brez oglasov za vaš računalnik. Iščite, predvajajte in prenašajte skladbe ter imejte knjižnico usklajeno. Ti koraki trajajo minuto in vsakega lahko preskočite.</string>
+    <string name="onboarding_signin_title">Prijava (neobvezno)</string>
+    <string name="onboarding_signin_body">Prijavite se z Google računom za knjižnico YouTube Music, všečkane skladbe, sezname predvajanja in zgodovino. Lindale deluje tudi brez računa.</string>
+    <string name="onboarding_signin_button">Prijava z Googlom</string>
+    <string name="onboarding_import_title">Prenesite glasbo iz Spotifyja</string>
+    <string name="onboarding_import_body">1. Odprite Exportify, se prijavite s Spotifyjem in izvozite seznam predvajanja (ali vse) kot datoteko CSV.
+2. Tukaj odprite uvoz in izberite »Uvoz seznamov predvajanja \"csv\"«. Lindale vsako skladbo poišče na YouTube Music in ustvari seznam.
+
+Seznami M3U iz drugih predvajalnikov (foobar2000, VLC, iTunes) delujejo enako.</string>
+    <string name="onboarding_exportify">Odpri Exportify</string>
+    <string name="onboarding_import_open">Odpri uvoz</string>
+    <string name="onboarding_keys_title">Uporabne tipke</string>
+    <string name="onboarding_keys_body">Ctrl+K: iskanje
+Preslednica: predvajaj / premor
+Ctrl+← / →: prejšnja / naslednja skladba
+Ctrl+↑ / ↓: glasnost
+Shift+← / →: skok za 5 sekund
+Ctrl+S: naključno · Ctrl+R: ponavljaj · Ctrl+M: utišaj
+
+Večpredstavnostne tipke tipkovnice in sistemski kontrolniki predvajanja (podokno predstavnosti v Windows ali pripomoček namizja Linux) prav tako upravljajo Lindale.</string>
+    <string name="onboarding_next">Naprej</string>
+    <string name="onboarding_back">Nazaj</string>
+    <string name="onboarding_skip">Preskoči</string>
+    <string name="onboarding_done">Začni poslušati</string>
+    <string name="restore_desc_desktop">Obnovi tudi varnostne kopije iz Metrolista za Android.</string>
+    <string name="import_other_apps">Uvoz iz drugih aplikacij</string>
+    <string name="import_spotify_title">Spotify: izvozite sezname</string>
+    <string name="import_spotify_desc">Odpre Exportify. Prijavite se s Spotifyjem, prenesite seznam kot CSV in nato spodaj uporabite »Uvoz seznamov predvajanja \"csv\"«.</string>
+    <string name="import_m3u_desc">Seznami predvajanja iz foobar2000, VLC, Winamp, iTunes ali MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ali kateri koli CSV s stolpcema naslov in izvajalec. Vsaka skladba se poišče na YouTube Music.</string>
+    <string name="close_to_tray">Po zaprtju predvajaj naprej v sistemski vrstici</string>
+    <string name="close_to_tray_desc">Zaprtje okna skrije Lindale ob uri; zaprete ga v meniju ikone.</string>
+    <string name="tray_play_pause">Predvajaj / premor</string>
+    <string name="tray_next">Naslednja skladba</string>
+    <string name="tray_previous">Prejšnja skladba</string>
+    <string name="tray_show">Pokaži Lindale</string>
+    <string name="tray_quit">Izhod</string>
+    <string name="hide_from_capture_desc">Okno Lindale je na posnetkih zaslona, snemanjih in pri deljenju zaslona (Discord, Teams, OBS) črno.</string>
+    <string name="appearance_dynamic_theme_desc">Barve sledijo naslovnici skladbe, ki se predvaja.</string>
+    <string name="appearance_lyrics_click_desc">Kliknite vrstico besedila za skok na ta del skladbe.</string>
+    <string name="appearance_lyrics_scroll_desc">Trenutna vrstica med predvajanjem ostane vidna.</string>
+    <string name="appearance_library_playlist_desc">Prikazano na vrhu v Knjižnica > Seznami predvajanja.</string>
+    <string name="download_folder">Mapa prenosov (kliknite za odpiranje)</string>
 </resources>

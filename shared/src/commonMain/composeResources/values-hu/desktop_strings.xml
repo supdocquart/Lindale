@@ -33,4 +33,47 @@
     <string name="about_report_bug">Hiba bejelentése</string>
     <string name="about_metrolist_section">Metrolist (eredeti alkalmazás)</string>
     <string name="download_folder">Letöltési mappa (kattints a megnyitáshoz)</string>
+    <string name="onboarding_welcome_title">Üdvözöl a Lindalë</string>
+    <string name="onboarding_welcome_body">Reklámmentes YouTube Music lejátszó a számítógépedre. Keress, hallgass és tölts le dalokat, és tartsd szinkronban a könyvtáradat. A lépések egy percet vesznek igénybe, bármelyik kihagyható.</string>
+    <string name="onboarding_signin_title">Bejelentkezés (nem kötelező)</string>
+    <string name="onboarding_signin_body">Jelentkezz be Google-fiókkal a YouTube Music könyvtáradhoz, kedvelt dalaidhoz, lejátszási listáidhoz és előzményeidhez. A Lindale fiók nélkül is működik.</string>
+    <string name="onboarding_signin_button">Bejelentkezés Google-lal</string>
+    <string name="onboarding_import_title">Hozd át a zenéidet a Spotifyról</string>
+    <string name="onboarding_import_body">1. Nyisd meg az Exportifyt, jelentkezz be Spotifyjal, és exportálj egy lejátszási listát (vagy mindet) CSV-fájlba.
+2. Nyisd meg itt az importálást, és válaszd ezt: „CSV lejátszásilista importálása\". A Lindale minden dalt megkeres a YouTube Musicon, és listát készít.
+
+Más lejátszók (foobar2000, VLC, iTunes) M3U listái ugyanígy működnek.</string>
+    <string name="onboarding_exportify">Exportify megnyitása</string>
+    <string name="onboarding_import_open">Importálás megnyitása</string>
+    <string name="onboarding_keys_title">Hasznos billentyűk</string>
+    <string name="onboarding_keys_body">Ctrl+K: keresés
+Szóköz: lejátszás / szünet
+Ctrl+← / →: előző / következő dal
+Ctrl+↑ / ↓: hangerő
+Shift+← / →: ugrás 5 másodpercet
+Ctrl+S: keverés · Ctrl+R: ismétlés · Ctrl+M: némítás
+
+A billentyűzet médiabillentyűi és a rendszer médiavezérlői (a Windows médiapanelje vagy a Linux asztal médiamodulja) is vezérlik a Lindale-t.</string>
+    <string name="onboarding_next">Tovább</string>
+    <string name="onboarding_back">Vissza</string>
+    <string name="onboarding_skip">Kihagyás</string>
+    <string name="onboarding_done">Zenehallgatás indítása</string>
+    <string name="restore_desc_desktop">A Metrolist androidos biztonsági mentéseit is visszaállítja.</string>
+    <string name="import_other_apps">Importálás más alkalmazásokból</string>
+    <string name="import_spotify_title">Spotify: lejátszási listák exportálása</string>
+    <string name="import_spotify_desc">Megnyitja az Exportifyt. Jelentkezz be Spotifyjal, töltsd le a listát CSV-ként, majd használd lent ezt: „CSV lejátszásilista importálása\".</string>
+    <string name="import_m3u_desc">A foobar2000, VLC, Winamp, iTunes vagy MusicBee által mentett listák (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz vagy bármely CSV cím és előadó oszloppal. Minden dalt a YouTube Musicon keres meg.</string>
+    <string name="close_to_tray">Bezáráskor játszás tovább a tálcán</string>
+    <string name="close_to_tray_desc">Az ablak bezárásakor a Lindale az óra mellé rejtőzik; az ikon menüjéből léphetsz ki.</string>
+    <string name="tray_play_pause">Lejátszás / szünet</string>
+    <string name="tray_next">Következő dal</string>
+    <string name="tray_previous">Előző dal</string>
+    <string name="tray_show">Lindale megjelenítése</string>
+    <string name="tray_quit">Kilépés</string>
+    <string name="hide_from_capture_desc">A Lindale ablaka feketén jelenik meg képernyőképeken, felvételeken és képernyőmegosztáskor (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">A színek a szóló dal borítóját követik.</string>
+    <string name="appearance_lyrics_click_desc">Kattints egy sorra, hogy a dal arra a részére ugorj.</string>
+    <string name="appearance_lyrics_scroll_desc">Lejátszás közben az aktuális sor mindig látható marad.</string>
+    <string name="appearance_library_playlist_desc">A Könyvtár > Lejátszási listák tetején jelenik meg.</string>
 </resources>

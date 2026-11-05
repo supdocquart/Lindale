@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale, Metrolist-ന്റെ ഡെസ്ക്ടോപ്പ് പതിപ്പാണ്. YouTube Music ഭാഗം താഴെയുള്ള Metrolist ടീമിന്റെ പ്രയത്നമാണ്, നന്ദി!</string>
     <string name="about_report_bug">ബഗ് റിപ്പോർട്ട് ചെയ്യുക</string>
     <string name="about_metrolist_section">Metrolist (യഥാർത്ഥ ആപ്പ്)</string>
+    <string name="onboarding_welcome_title">Lindalë-ലേക്ക് സ്വാഗതം</string>
+    <string name="onboarding_welcome_body">നിങ്ങളുടെ കമ്പ്യൂട്ടറിനായുള്ള പരസ്യങ്ങളില്ലാത്ത YouTube Music പ്ലെയർ. പാട്ടുകൾ തിരയുക, പ്ലേ ചെയ്യുക, ഡൗൺലോഡ് ചെയ്യുക, ലൈബ്രറി സമന്വയിപ്പിച്ച് നിലനിർത്തുക. ഈ ഘട്ടങ്ങൾക്ക് ഒരു മിനിറ്റ് മതി, ഏതും ഒഴിവാക്കാം.</string>
+    <string name="onboarding_signin_title">സൈൻ ഇൻ (ഐച്ഛികം)</string>
+    <string name="onboarding_signin_body">നിങ്ങളുടെ YouTube Music ലൈബ്രറി, ഇഷ്ടപ്പെട്ട പാട്ടുകൾ, പ്ലേലിസ്റ്റുകൾ, ചരിത്രം എന്നിവയ്ക്കായി Google അക്കൗണ്ട് ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക. അക്കൗണ്ട് ഇല്ലാതെയും Lindale പ്രവർത്തിക്കും.</string>
+    <string name="onboarding_signin_button">Google ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="onboarding_import_title">Spotify-യിൽ നിന്ന് നിങ്ങളുടെ സംഗീതം കൊണ്ടുവരിക</string>
+    <string name="onboarding_import_body">1. Exportify തുറന്ന് Spotify ഉപയോഗിച്ച് ലോഗിൻ ചെയ്ത്, ഒരു പ്ലേലിസ്റ്റ് (അല്ലെങ്കിൽ എല്ലാം) CSV ഫയലായി എക്സ്പോർട്ട് ചെയ്യുക.
+2. ഇവിടെ ഇമ്പോർട്ട് സ്ക്രീൻ തുറന്ന് \"Import a CSV playlist\" തിരഞ്ഞെടുക്കുക. Lindale ഓരോ പാട്ടും YouTube Music-ൽ കണ്ടെത്തി പ്ലേലിസ്റ്റ് ഉണ്ടാക്കും.
+
+മറ്റ് പ്ലെയറുകളിലെ (foobar2000, VLC, iTunes) M3U പ്ലേലിസ്റ്റുകളും ഇതുപോലെ പ്രവർത്തിക്കും.</string>
+    <string name="onboarding_exportify">Exportify തുറക്കുക</string>
+    <string name="onboarding_import_open">ഇമ്പോർട്ട് തുറക്കുക</string>
+    <string name="onboarding_keys_title">ഉപകാരപ്രദമായ കീകൾ</string>
+    <string name="onboarding_keys_body">Ctrl+K: തിരയുക
+Space: പ്ലേ / താൽക്കാലികമായി നിർത്തുക
+Ctrl+← / →: മുമ്പത്തെ / അടുത്ത പാട്ട്
+Ctrl+↑ / ↓: ശബ്ദം
+Shift+← / →: 5 സെക്കൻഡ് നീക്കുക
+Ctrl+S: ഷഫിൾ · Ctrl+R: ആവർത്തിക്കുക · Ctrl+M: മ്യൂട്ട്
+
+കീബോർഡിലെ മീഡിയ കീകളും സിസ്റ്റത്തിലെ മീഡിയ നിയന്ത്രണങ്ങളും (Windows മീഡിയ പാനൽ അല്ലെങ്കിൽ Linux ഡെസ്ക്ടോപ്പിലെ മീഡിയ വിഡ്ജറ്റ്) Lindale നിയന്ത്രിക്കും.</string>
+    <string name="onboarding_next">അടുത്തത്</string>
+    <string name="onboarding_back">തിരികെ</string>
+    <string name="onboarding_skip">ഒഴിവാക്കുക</string>
+    <string name="onboarding_done">കേൾക്കാൻ തുടങ്ങുക</string>
+    <string name="restore_desc_desktop">Android-ലെ Metrolist ബാക്കപ്പുകളും പുനഃസ്ഥാപിക്കും.</string>
+    <string name="import_other_apps">മറ്റ് ആപ്പുകളിൽ നിന്ന് ഇമ്പോർട്ട്</string>
+    <string name="import_spotify_title">Spotify: പ്ലേലിസ്റ്റുകൾ എക്സ്പോർട്ട് ചെയ്യുക</string>
+    <string name="import_spotify_desc">Exportify തുറക്കുന്നു. Spotify ഉപയോഗിച്ച് ലോഗിൻ ചെയ്ത്, പ്ലേലിസ്റ്റ് CSV ആയി ഡൗൺലോഡ് ചെയ്ത്, താഴെയുള്ള \"Import a CSV playlist\" ഉപയോഗിക്കുക.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes അല്ലെങ്കിൽ MusicBee സേവ് ചെയ്ത പ്ലേലിസ്റ്റുകൾ (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz അല്ലെങ്കിൽ ശീർഷകവും ആർട്ടിസ്റ്റും ഉള്ള ഏത് CSV-യും. ഓരോ പാട്ടും YouTube Music-ൽ പൊരുത്തപ്പെടുത്തും.</string>
+    <string name="close_to_tray">അടച്ചാലും സിസ്റ്റം ട്രേയിൽ പ്ലേ ചെയ്യുക</string>
+    <string name="close_to_tray_desc">വിൻഡോ അടച്ചാൽ Lindale ക്ലോക്കിനടുത്ത് മറയും; ഐക്കണിന്റെ മെനുവിൽ നിന്ന് പുറത്തുകടക്കുക.</string>
+    <string name="tray_play_pause">പ്ലേ / താൽക്കാലികമായി നിർത്തുക</string>
+    <string name="tray_next">അടുത്ത പാട്ട്</string>
+    <string name="tray_previous">മുമ്പത്തെ പാട്ട്</string>
+    <string name="tray_show">Lindale കാണിക്കുക</string>
+    <string name="tray_quit">പുറത്തുകടക്കുക</string>
+    <string name="hide_from_capture_desc">സ്ക്രീൻഷോട്ടുകൾ, റെക്കോർഡിംഗുകൾ, സ്ക്രീൻ പങ്കിടൽ (Discord, Teams, OBS) എന്നിവയിൽ Lindale വിൻഡോ കറുപ്പായി കാണും.</string>
+    <string name="appearance_dynamic_theme_desc">പ്ലേ ചെയ്യുന്ന പാട്ടിന്റെ ആൽബം കവർ അനുസരിച്ച് നിറങ്ങൾ മാറും.</string>
+    <string name="appearance_lyrics_click_desc">പാട്ടിന്റെ ആ ഭാഗത്തേക്ക് പോകാൻ ഒരു വരിയിൽ ക്ലിക്ക് ചെയ്യുക.</string>
+    <string name="appearance_lyrics_scroll_desc">പാട്ട് പ്ലേ ചെയ്യുമ്പോൾ നിലവിലെ വരി എപ്പോഴും കാണാം.</string>
+    <string name="appearance_library_playlist_desc">ലൈബ്രറി > പ്ലേലിസ്റ്റുകളിൽ മുകളിൽ കാണിക്കും.</string>
+    <string name="download_folder">ഡൗൺലോഡ് ഫോൾഡർ (തുറക്കാൻ ക്ലിക്ക് ചെയ്യുക)</string>
 </resources>

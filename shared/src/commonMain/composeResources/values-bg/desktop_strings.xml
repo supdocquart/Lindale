@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale е настолна версия на Metrolist. Частта с YouTube Music е дело на екипа на Metrolist по-долу, благодарим!</string>
     <string name="about_report_bug">Съобщи за грешка</string>
     <string name="about_metrolist_section">Metrolist (оригиналното приложение)</string>
+    <string name="onboarding_welcome_title">Добре дошли в Lindalë</string>
+    <string name="onboarding_welcome_body">Плейър за YouTube Music без реклами за вашия компютър. Търсете, слушайте и изтегляйте песни и синхронизирайте библиотеката си. Стъпките отнемат минута и можете да пропуснете всяка.</string>
+    <string name="onboarding_signin_title">Вход (по желание)</string>
+    <string name="onboarding_signin_body">Влезте с профила си в Google, за да получите библиотеката си в YouTube Music, харесаните песни, плейлистите и историята. Lindale работи и без профил.</string>
+    <string name="onboarding_signin_button">Вход с Google</string>
+    <string name="onboarding_import_title">Пренесете музиката си от Spotify</string>
+    <string name="onboarding_import_body">1. Отворете Exportify, влезте със Spotify и експортирайте плейлист (или всички) като CSV файл.
+2. Отворете импорта тук и изберете „Импортиране на CSV плейлисти\". Lindale намира всяка песен в YouTube Music и създава плейлист.
+
+M3U плейлисти от други плейъри (foobar2000, VLC, iTunes) работят по същия начин.</string>
+    <string name="onboarding_exportify">Отваряне на Exportify</string>
+    <string name="onboarding_import_open">Отваряне на импорта</string>
+    <string name="onboarding_keys_title">Полезни клавиши</string>
+    <string name="onboarding_keys_body">Ctrl+K: търсене
+Интервал: пускане / пауза
+Ctrl+← / →: предишна / следваща песен
+Ctrl+↑ / ↓: сила на звука
+Shift+← / →: превъртане с 5 секунди
+Ctrl+S: разбъркване · Ctrl+R: повтаряне · Ctrl+M: без звук
+
+Мултимедийните клавиши на клавиатурата и системните медийни контроли (медийният панел на Windows или медийната джаджа на Linux работния плот) също управляват Lindale.</string>
+    <string name="onboarding_next">Напред</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_skip">Пропускане</string>
+    <string name="onboarding_done">Започнете да слушате</string>
+    <string name="restore_desc_desktop">Възстановява и резервни копия от Metrolist за Android.</string>
+    <string name="import_other_apps">Импорт от други приложения</string>
+    <string name="import_spotify_title">Spotify: експорт на плейлисти</string>
+    <string name="import_spotify_desc">Отваря Exportify. Влезте със Spotify, изтеглете плейлист като CSV, после използвайте „Импортиране на CSV плейлисти\" по-долу.</string>
+    <string name="import_m3u_desc">Плейлисти, запазени от foobar2000, VLC, Winamp, iTunes или MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz или всеки CSV с колони за заглавие и изпълнител. Всяка песен се търси в YouTube Music.</string>
+    <string name="close_to_tray">Продължаване в системния трей след затваряне</string>
+    <string name="close_to_tray_desc">Затварянето на прозореца скрива Lindale до часовника; излезте от менюто на иконата.</string>
+    <string name="tray_play_pause">Пускане / пауза</string>
+    <string name="tray_next">Следваща песен</string>
+    <string name="tray_previous">Предишна песен</string>
+    <string name="tray_show">Показване на Lindale</string>
+    <string name="tray_quit">Изход</string>
+    <string name="hide_from_capture_desc">Прозорецът на Lindale е черен на екранни снимки, записи и при споделяне на екрана (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Цветовете следват обложката на звучащата песен.</string>
+    <string name="appearance_lyrics_click_desc">Щракнете върху ред от текста, за да прескочите до тази част на песента.</string>
+    <string name="appearance_lyrics_scroll_desc">Текущият ред остава видим, докато песента звучи.</string>
+    <string name="appearance_library_playlist_desc">Показва се най-горе в Библиотека > Плейлисти.</string>
+    <string name="download_folder">Папка за изтегляния (щракнете, за да я отворите)</string>
 </resources>

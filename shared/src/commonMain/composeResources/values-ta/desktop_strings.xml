@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale என்பது Metrolist-இன் டெஸ்க்டாப் பதிப்பு. YouTube Music பகுதி கீழே உள்ள Metrolist குழுவின் உழைப்பு, நன்றி!</string>
     <string name="about_report_bug">பிழையைப் புகாரளி</string>
     <string name="about_metrolist_section">Metrolist (அசல் செயலி)</string>
+    <string name="onboarding_welcome_title">Lindalë-க்கு வரவேற்கிறோம்</string>
+    <string name="onboarding_welcome_body">உங்கள் கணினிக்கான விளம்பரமில்லா YouTube Music பிளேயர். பாடல்களைத் தேடி, இயக்கி, பதிவிறக்கி, உங்கள் நூலகத்தை ஒத்திசைவாக வைத்திருங்கள். இந்தப் படிகளுக்கு ஒரு நிமிடம் ஆகும்; எதையும் தவிர்க்கலாம்.</string>
+    <string name="onboarding_signin_title">உள்நுழை (விருப்பம்)</string>
+    <string name="onboarding_signin_body">உங்கள் YouTube Music நூலகம், விரும்பிய பாடல்கள், பிளேலிஸ்ட்கள், வரலாறு பெற Google கணக்கில் உள்நுழையுங்கள். கணக்கு இல்லாமலும் Lindale இயங்கும்.</string>
+    <string name="onboarding_signin_button">Google மூலம் உள்நுழை</string>
+    <string name="onboarding_import_title">Spotify-இலிருந்து உங்கள் இசையைக் கொண்டு வாருங்கள்</string>
+    <string name="onboarding_import_body">1. Exportify-ஐத் திறந்து Spotify-இல் உள்நுழைந்து, ஒரு பிளேலிஸ்ட்டை (அல்லது அனைத்தையும்) CSV கோப்பாக ஏற்றுமதி செய்யுங்கள்.
+2. இங்கே இறக்குமதித் திரையைத் திறந்து \"Import a CSV playlist\" என்பதைத் தேர்ந்தெடுங்கள். Lindale ஒவ்வொரு பாடலையும் YouTube Music-இல் கண்டுபிடித்து பிளேலிஸ்ட் உருவாக்கும்.
+
+மற்ற பிளேயர்களின் (foobar2000, VLC, iTunes) M3U பிளேலிஸ்ட்களும் இதே முறையில் வேலை செய்யும்.</string>
+    <string name="onboarding_exportify">Exportify-ஐத் திற</string>
+    <string name="onboarding_import_open">இறக்குமதியைத் திற</string>
+    <string name="onboarding_keys_title">பயனுள்ள விசைகள்</string>
+    <string name="onboarding_keys_body">Ctrl+K: தேடல்
+Space: இயக்கு / இடைநிறுத்து
+Ctrl+← / →: முந்தைய / அடுத்த பாடல்
+Ctrl+↑ / ↓: ஒலியளவு
+Shift+← / →: 5 விநாடிகள் நகர்த்து
+Ctrl+S: கலக்கு · Ctrl+R: மீண்டும் இயக்கு · Ctrl+M: ஒலியடக்கு
+
+விசைப்பலகையின் மீடியா விசைகளும் கணினியின் மீடியா கட்டுப்பாடுகளும் (Windows மீடியா பேனல் அல்லது Linux டெஸ்க்டாப் மீடியா விட்ஜெட்) Lindale-ஐக் கட்டுப்படுத்தும்.</string>
+    <string name="onboarding_next">அடுத்து</string>
+    <string name="onboarding_back">பின்செல்</string>
+    <string name="onboarding_skip">தவிர்</string>
+    <string name="onboarding_done">கேட்கத் தொடங்கு</string>
+    <string name="restore_desc_desktop">Android-இல் உள்ள Metrolist காப்புப்பிரதிகளையும் மீட்டெடுக்கும்.</string>
+    <string name="import_other_apps">பிற ஆப்ஸிலிருந்து இறக்குமதி</string>
+    <string name="import_spotify_title">Spotify: பிளேலிஸ்ட்களை ஏற்றுமதி செய்யுங்கள்</string>
+    <string name="import_spotify_desc">Exportify-ஐத் திறக்கும். Spotify-இல் உள்நுழைந்து பிளேலிஸ்ட்டை CSV ஆகப் பதிவிறக்கி, கீழே உள்ள \"Import a CSV playlist\" ஐப் பயன்படுத்துங்கள்.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes அல்லது MusicBee சேமித்த பிளேலிஸ்ட்கள் (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz அல்லது தலைப்பு, கலைஞர் நெடுவரிசைகள் உள்ள எந்த CSV-யும். ஒவ்வொரு பாடலும் YouTube Music-இல் பொருத்தப்படும்.</string>
+    <string name="close_to_tray">மூடினாலும் சிஸ்டம் ட்ரேயில் தொடர்ந்து இயக்கு</string>
+    <string name="close_to_tray_desc">சாளரத்தை மூடினால் Lindale கடிகாரத்தின் அருகே மறையும்; ஐகானின் மெனுவிலிருந்து வெளியேறுங்கள்.</string>
+    <string name="tray_play_pause">இயக்கு / இடைநிறுத்து</string>
+    <string name="tray_next">அடுத்த பாடல்</string>
+    <string name="tray_previous">முந்தைய பாடல்</string>
+    <string name="tray_show">Lindale-ஐக் காட்டு</string>
+    <string name="tray_quit">வெளியேறு</string>
+    <string name="hide_from_capture_desc">ஸ்கிரீன்ஷாட்கள், பதிவுகள், திரைப் பகிர்வு (Discord, Teams, OBS) ஆகியவற்றில் Lindale சாளரம் கருப்பாகத் தெரியும்.</string>
+    <string name="appearance_dynamic_theme_desc">இயங்கும் பாடலின் ஆல்பம் அட்டைக்கு ஏற்ப நிறங்கள் மாறும்.</string>
+    <string name="appearance_lyrics_click_desc">பாடலின் அந்தப் பகுதிக்குச் செல்ல ஒரு வரியைக் கிளிக் செய்யுங்கள்.</string>
+    <string name="appearance_lyrics_scroll_desc">பாடல் இயங்கும்போது தற்போதைய வரி எப்போதும் தெரியும்.</string>
+    <string name="appearance_library_playlist_desc">நூலகம் > பிளேலிஸ்ட்களின் மேலே காட்டப்படும்.</string>
+    <string name="download_folder">பதிவிறக்கக் கோப்புறை (திறக்க கிளிக் செய்யுங்கள்)</string>
 </resources>

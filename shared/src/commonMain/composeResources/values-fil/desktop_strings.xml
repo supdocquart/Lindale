@@ -32,4 +32,48 @@
     <string name="about_based_on">Ang Lindale ay desktop na bersyon ng Metrolist. Ang bahagi ng YouTube Music ay gawa ng Metrolist team sa ibaba, salamat!</string>
     <string name="about_report_bug">Mag-ulat ng bug</string>
     <string name="about_metrolist_section">Metrolist (orihinal na app)</string>
+    <string name="onboarding_welcome_title">Maligayang pagdating sa Lindalë</string>
+    <string name="onboarding_welcome_body">Isang YouTube Music player na walang ads para sa iyong computer. Maghanap, magpatugtog at mag-download ng mga kanta at panatilihing naka-sync ang iyong library. Isang minuto lang ang mga hakbang na ito at puwede mong laktawan ang alinman.</string>
+    <string name="onboarding_signin_title">Mag-sign in (opsyonal)</string>
+    <string name="onboarding_signin_body">Mag-sign in gamit ang iyong Google account para makuha ang iyong YouTube Music library, mga nagustuhang kanta, mga playlist at history. Gumagana rin ang Lindale nang walang account.</string>
+    <string name="onboarding_signin_button">Mag-sign in gamit ang Google</string>
+    <string name="onboarding_import_title">Dalhin ang musika mo mula sa Spotify</string>
+    <string name="onboarding_import_body">1. Buksan ang Exportify, mag-log in gamit ang Spotify at i-export ang isang playlist (o lahat) bilang CSV file.
+2. Buksan dito ang import at piliin ang \"Import a CSV playlist\". Hahanapin ng Lindale ang bawat kanta sa YouTube Music at gagawa ng playlist.
+
+Ganito rin gumagana ang mga M3U playlist mula sa ibang player (foobar2000, VLC, iTunes).</string>
+    <string name="onboarding_exportify">Buksan ang Exportify</string>
+    <string name="onboarding_import_open">Buksan ang import</string>
+    <string name="onboarding_keys_title">Mga madaling key</string>
+    <string name="onboarding_keys_body">Ctrl+K: maghanap
+Space: i-play / i-pause
+Ctrl+← / →: nakaraan / susunod na kanta
+Ctrl+↑ / ↓: volume
+Shift+← / →: lumaktaw nang 5 segundo
+Ctrl+S: shuffle · Ctrl+R: ulitin · Ctrl+M: i-mute
+
+Kinokontrol din ang Lindale ng mga media key ng keyboard at ng mga media control ng system (ang media panel ng Windows o ang media widget ng iyong Linux desktop).</string>
+    <string name="onboarding_next">Susunod</string>
+    <string name="onboarding_back">Bumalik</string>
+    <string name="onboarding_skip">Laktawan</string>
+    <string name="onboarding_done">Magsimulang makinig</string>
+    <string name="restore_desc_desktop">Nire-restore din ang mga backup mula sa Metrolist sa Android.</string>
+    <string name="import_other_apps">Mag-import mula sa ibang app</string>
+    <string name="import_spotify_title">Spotify: i-export ang mga playlist mo</string>
+    <string name="import_spotify_desc">Binubuksan ang Exportify. Mag-log in gamit ang Spotify, i-download ang playlist bilang CSV, saka gamitin ang \"Import a CSV playlist\" sa ibaba.</string>
+    <string name="import_m3u_desc">Mga playlist na naka-save sa foobar2000, VLC, Winamp, iTunes o MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz o anumang CSV na may column ng pamagat at artist. Hinahanap ang bawat kanta sa YouTube Music.</string>
+    <string name="close_to_tray">Patuloy na tumugtog sa system tray kapag isinara</string>
+    <string name="close_to_tray_desc">Kapag isinara ang window, nagtatago ang Lindale sa tabi ng orasan; lumabas mula sa menu ng icon.</string>
+    <string name="tray_play_pause">I-play / i-pause</string>
+    <string name="tray_next">Susunod na kanta</string>
+    <string name="tray_previous">Nakaraang kanta</string>
+    <string name="tray_show">Ipakita ang Lindale</string>
+    <string name="tray_quit">Umalis</string>
+    <string name="hide_from_capture_desc">Nagiging itim ang window ng Lindale sa mga screenshot, recording at screen sharing (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Sinusundan ng mga kulay ang album art ng tumutugtog na kanta.</string>
+    <string name="appearance_lyrics_click_desc">I-click ang isang linya para lumaktaw sa bahaging iyon ng kanta.</string>
+    <string name="appearance_lyrics_scroll_desc">Nananatiling nakikita ang kasalukuyang linya habang tumutugtog.</string>
+    <string name="appearance_library_playlist_desc">Ipinapakita sa itaas ng Library > Mga Playlist.</string>
+    <string name="download_folder">Folder ng mga download (i-click para buksan)</string>
 </resources>

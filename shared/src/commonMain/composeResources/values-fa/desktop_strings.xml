@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale نسخه دسکتاپ Metrolist است. بخش YouTube Music حاصل کار تیم Metrolist در پایین است، سپاس!</string>
     <string name="about_report_bug">گزارش اشکال</string>
     <string name="about_metrolist_section">Metrolist (برنامه اصلی)</string>
+    <string name="onboarding_welcome_title">به Lindalë خوش آمدید</string>
+    <string name="onboarding_welcome_body">پخش‌کننده YouTube Music بدون تبلیغ برای رایانه شما. آهنگ‌ها را جست‌وجو، پخش و دانلود کنید و کتابخانه را همگام نگه دارید. این مراحل یک دقیقه طول می‌کشد و می‌توانید هرکدام را رد کنید.</string>
+    <string name="onboarding_signin_title">ورود (اختیاری)</string>
+    <string name="onboarding_signin_body">با حساب Google وارد شوید تا کتابخانه YouTube Music، آهنگ‌های پسندیده، فهرست‌های پخش و سابقه را داشته باشید. Lindale بدون حساب هم کار می‌کند.</string>
+    <string name="onboarding_signin_button">ورود با Google</string>
+    <string name="onboarding_import_title">موسیقی خود را از Spotify بیاورید</string>
+    <string name="onboarding_import_body">1. Exportify را باز کنید، با Spotify وارد شوید و یک فهرست پخش (یا همه) را به‌صورت فایل CSV صادر کنید.
+2. صفحه واردکردن را اینجا باز کنید و «Import a CSV playlist» را انتخاب کنید. Lindale هر آهنگ را در YouTube Music پیدا می‌کند و فهرست پخش می‌سازد.
+
+فهرست‌های M3U از پخش‌کننده‌های دیگر (foobar2000، VLC، iTunes) هم به همین شکل کار می‌کنند.</string>
+    <string name="onboarding_exportify">باز کردن Exportify</string>
+    <string name="onboarding_import_open">باز کردن واردکردن</string>
+    <string name="onboarding_keys_title">کلیدهای کاربردی</string>
+    <string name="onboarding_keys_body">Ctrl+K: جست‌وجو
+فاصله: پخش / مکث
+Ctrl+← / →: آهنگ قبلی / بعدی
+Ctrl+↑ / ↓: صدا
+Shift+← / →: پرش ۵ ثانیه
+Ctrl+S: درهم · Ctrl+R: تکرار · Ctrl+M: بی‌صدا
+
+کلیدهای رسانه صفحه‌کلید و کنترل‌های رسانه سیستم (پنل رسانه Windows یا ابزارک رسانه میزکار Linux) هم Lindale را کنترل می‌کنند.</string>
+    <string name="onboarding_next">بعدی</string>
+    <string name="onboarding_back">بازگشت</string>
+    <string name="onboarding_skip">رد شدن</string>
+    <string name="onboarding_done">شروع گوش دادن</string>
+    <string name="restore_desc_desktop">پشتیبان‌های Metrolist در Android را هم بازیابی می‌کند.</string>
+    <string name="import_other_apps">واردکردن از برنامه‌های دیگر</string>
+    <string name="import_spotify_title">Spotify: صادر کردن فهرست‌های پخش</string>
+    <string name="import_spotify_desc">Exportify را باز می‌کند. با Spotify وارد شوید، فهرست پخش را به‌صورت CSV دانلود کنید و سپس از «Import a CSV playlist» در پایین استفاده کنید.</string>
+    <string name="import_m3u_desc">فهرست‌های پخش ذخیره‌شده با foobar2000، VLC، Winamp، iTunes یا MusicBee (.m3u، .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify)، TuneMyMusic، Soundiiz یا هر CSV دارای ستون‌های عنوان و هنرمند. هر آهنگ در YouTube Music پیدا می‌شود.</string>
+    <string name="close_to_tray">ادامه پخش در سینی سیستم پس از بستن</string>
+    <string name="close_to_tray_desc">بستن پنجره Lindale را کنار ساعت پنهان می‌کند؛ از منوی نماد خارج شوید.</string>
+    <string name="tray_play_pause">پخش / مکث</string>
+    <string name="tray_next">آهنگ بعدی</string>
+    <string name="tray_previous">آهنگ قبلی</string>
+    <string name="tray_show">نمایش Lindale</string>
+    <string name="tray_quit">خروج</string>
+    <string name="hide_from_capture_desc">پنجره Lindale در اسکرین‌شات‌ها، ضبط‌ها و اشتراک صفحه (Discord، Teams، OBS) سیاه دیده می‌شود.</string>
+    <string name="appearance_dynamic_theme_desc">رنگ‌ها از جلد آهنگ در حال پخش پیروی می‌کنند.</string>
+    <string name="appearance_lyrics_click_desc">روی یک خط کلیک کنید تا به آن بخش از آهنگ بروید.</string>
+    <string name="appearance_lyrics_scroll_desc">خط فعلی هنگام پخش همیشه دیده می‌شود.</string>
+    <string name="appearance_library_playlist_desc">در بالای کتابخانه > فهرست‌های پخش نمایش داده می‌شود.</string>
+    <string name="download_folder">پوشه دانلودها (برای باز کردن کلیک کنید)</string>
 </resources>

@@ -33,4 +33,47 @@
     <string name="about_report_bug">Báo lỗi</string>
     <string name="about_metrolist_section">Metrolist (ứng dụng gốc)</string>
     <string name="download_folder">Thư mục tải xuống (nhấn để mở)</string>
+    <string name="onboarding_welcome_title">Chào mừng bạn đến với Lindalë</string>
+    <string name="onboarding_welcome_body">Trình phát YouTube Music không quảng cáo cho máy tính của bạn. Tìm, phát, tải bài hát và đồng bộ thư viện. Các bước này mất khoảng một phút và bạn có thể bỏ qua bất kỳ bước nào.</string>
+    <string name="onboarding_signin_title">Đăng nhập (tùy chọn)</string>
+    <string name="onboarding_signin_body">Đăng nhập bằng tài khoản Google để có thư viện YouTube Music, bài hát đã thích, danh sách phát và lịch sử. Lindale vẫn hoạt động khi không có tài khoản.</string>
+    <string name="onboarding_signin_button">Đăng nhập bằng Google</string>
+    <string name="onboarding_import_title">Mang nhạc của bạn từ Spotify sang</string>
+    <string name="onboarding_import_body">1. Mở Exportify, đăng nhập bằng Spotify và xuất danh sách phát (hoặc tất cả) thành tệp CSV.
+2. Mở màn hình nhập ở đây và chọn \"Nhập danh sách phát từ tệp CSV\". Lindale tìm từng bài trên YouTube Music và tạo danh sách phát.
+
+Danh sách M3U từ các trình phát khác (foobar2000, VLC, iTunes) cũng dùng được như vậy.</string>
+    <string name="onboarding_exportify">Mở Exportify</string>
+    <string name="onboarding_import_open">Mở màn hình nhập</string>
+    <string name="onboarding_keys_title">Phím tắt tiện dụng</string>
+    <string name="onboarding_keys_body">Ctrl+K: tìm kiếm
+Phím cách: phát / tạm dừng
+Ctrl+← / →: bài trước / bài tiếp theo
+Ctrl+↑ / ↓: âm lượng
+Shift+← / →: tua 5 giây
+Ctrl+S: trộn bài · Ctrl+R: lặp lại · Ctrl+M: tắt tiếng
+
+Các phím đa phương tiện trên bàn phím và điều khiển phương tiện của hệ thống (bảng phương tiện của Windows hoặc tiện ích trên màn hình Linux) cũng điều khiển Lindale.</string>
+    <string name="onboarding_next">Tiếp</string>
+    <string name="onboarding_back">Quay lại</string>
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_done">Bắt đầu nghe</string>
+    <string name="restore_desc_desktop">Cũng khôi phục bản sao lưu từ Metrolist trên Android.</string>
+    <string name="import_other_apps">Nhập từ ứng dụng khác</string>
+    <string name="import_spotify_title">Spotify: xuất danh sách phát</string>
+    <string name="import_spotify_desc">Mở Exportify. Đăng nhập bằng Spotify, tải danh sách phát dưới dạng CSV rồi dùng \"Nhập danh sách phát từ tệp CSV\" bên dưới.</string>
+    <string name="import_m3u_desc">Danh sách phát do foobar2000, VLC, Winamp, iTunes hoặc MusicBee lưu (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz hoặc bất kỳ CSV nào có cột tên bài và nghệ sĩ. Mỗi bài được tìm trên YouTube Music.</string>
+    <string name="close_to_tray">Tiếp tục phát trong khay hệ thống khi đóng</string>
+    <string name="close_to_tray_desc">Đóng cửa sổ sẽ ẩn Lindale cạnh đồng hồ; thoát từ menu của biểu tượng.</string>
+    <string name="tray_play_pause">Phát / tạm dừng</string>
+    <string name="tray_next">Bài tiếp theo</string>
+    <string name="tray_previous">Bài trước</string>
+    <string name="tray_show">Hiện Lindale</string>
+    <string name="tray_quit">Thoát</string>
+    <string name="hide_from_capture_desc">Cửa sổ Lindale sẽ hiện màu đen khi chụp màn hình, quay màn hình và chia sẻ màn hình (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Màu sắc thay đổi theo ảnh bìa của bài đang phát.</string>
+    <string name="appearance_lyrics_click_desc">Nhấp vào một dòng để chuyển đến đoạn đó của bài hát.</string>
+    <string name="appearance_lyrics_scroll_desc">Dòng hiện tại luôn hiển thị khi bài hát phát.</string>
+    <string name="appearance_library_playlist_desc">Hiển thị ở đầu Thư viện > Danh sách phát.</string>
 </resources>

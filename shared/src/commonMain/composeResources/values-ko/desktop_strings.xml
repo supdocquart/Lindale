@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">가사 줄을 클릭하면 해당 부분으로 이동합니다.</string>
     <string name="appearance_lyrics_scroll_desc">재생 중인 줄이 항상 보이도록 스크롤합니다.</string>
     <string name="appearance_library_playlist_desc">보관함 > 재생목록 맨 위에 표시됩니다.</string>
+    <string name="onboarding_welcome_title">Lindalë에 오신 것을 환영합니다</string>
+    <string name="onboarding_welcome_body">컴퓨터용 광고 없는 YouTube Music 플레이어입니다. 노래를 검색, 재생, 다운로드하고 보관함을 동기화하세요. 1분이면 끝나며 어떤 단계든 건너뛸 수 있습니다.</string>
+    <string name="onboarding_signin_title">로그인 (선택)</string>
+    <string name="onboarding_signin_body">Google 계정으로 로그인하면 YouTube Music 보관함, 좋아요 표시한 곡, 재생목록, 기록을 사용할 수 있습니다. 계정 없이도 사용할 수 있습니다.</string>
+    <string name="onboarding_signin_button">Google로 로그인</string>
+    <string name="onboarding_import_title">Spotify에서 음악 가져오기</string>
+    <string name="onboarding_import_body">1. Exportify를 열고 Spotify로 로그인한 뒤 재생목록(또는 전체)을 CSV 파일로 내보내세요.
+2. 여기서 가져오기 화면을 열고 \"CSV 재생목록 가져오기\"를 선택하세요. Lindale이 YouTube Music에서 각 곡을 찾아 재생목록을 만듭니다.
+
+다른 플레이어(foobar2000, VLC, iTunes)의 M3U 재생목록도 같은 방식으로 됩니다.</string>
+    <string name="onboarding_exportify">Exportify 열기</string>
+    <string name="onboarding_import_open">가져오기 열기</string>
+    <string name="onboarding_keys_title">유용한 키</string>
+    <string name="onboarding_keys_body">Ctrl+K: 검색
+Space: 재생 / 일시정지
+Ctrl+← / →: 이전 / 다음 곡
+Ctrl+↑ / ↓: 볼륨
+Shift+← / →: 5초 이동
+Ctrl+S: 셔플 · Ctrl+R: 반복 · Ctrl+M: 음소거
+
+키보드의 미디어 키와 시스템 미디어 컨트롤(Windows 미디어 패널 또는 Linux 데스크톱 미디어 위젯)로도 Lindale을 조작할 수 있습니다.</string>
+    <string name="onboarding_next">다음</string>
+    <string name="onboarding_back">뒤로</string>
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_done">듣기 시작</string>
+    <string name="restore_desc_desktop">Android용 Metrolist 백업도 복원합니다.</string>
+    <string name="import_other_apps">다른 앱에서 가져오기</string>
+    <string name="import_spotify_title">Spotify: 재생목록 내보내기</string>
+    <string name="import_spotify_desc">Exportify를 엽니다. Spotify로 로그인해 재생목록을 CSV로 다운로드한 뒤 아래 \"CSV 재생목록 가져오기\"를 사용하세요.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes, MusicBee에서 저장한 재생목록(.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify(Exportify), TuneMyMusic, Soundiiz 또는 제목과 아티스트 열이 있는 모든 CSV. 각 곡은 YouTube Music에서 찾습니다.</string>
+    <string name="close_to_tray">닫아도 트레이에서 계속 재생</string>
+    <string name="close_to_tray_desc">창을 닫으면 Lindale이 시계 옆으로 숨습니다. 종료는 아이콘 메뉴에서 하세요.</string>
+    <string name="tray_play_pause">재생 / 일시정지</string>
+    <string name="tray_next">다음 곡</string>
+    <string name="tray_previous">이전 곡</string>
+    <string name="tray_show">Lindale 보기</string>
+    <string name="tray_quit">종료</string>
 </resources>

@@ -38,4 +38,42 @@
     <string name="appearance_lyrics_click_desc">Söz sətrinə klikləyəndə mahnı o hissəyə keçir.</string>
     <string name="appearance_lyrics_scroll_desc">Mahnı çalarkən cari sətir həmişə görünür.</string>
     <string name="appearance_library_playlist_desc">Kitabxana > Pleylistlər bölməsinin yuxarısında göstərilir.</string>
+    <string name="onboarding_welcome_title">Lindalë-yə xoş gəlmisiniz</string>
+    <string name="onboarding_welcome_body">Kompüteriniz üçün reklamsız YouTube Music pleyeri. Mahnı axtarın, dinləyin, yükləyin və kitabxananızı sinxron saxlayın. Bu addımlar bir dəqiqə çəkir, istədiyinizi keçə bilərsiniz.</string>
+    <string name="onboarding_signin_title">Daxil olun (istəyə bağlı)</string>
+    <string name="onboarding_signin_body">YouTube Music kitabxananız, bəyəndiyiniz mahnılar, pleylistlər və tarixçə üçün Google hesabı ilə daxil olun. Lindale hesabsız da işləyir.</string>
+    <string name="onboarding_signin_button">Google ilə daxil ol</string>
+    <string name="onboarding_import_title">Musiqinizi Spotify-dan gətirin</string>
+    <string name="onboarding_import_body">1. Exportify-ı açın, Spotify ilə daxil olun və pleylisti (və ya hamısını) CSV faylı kimi ixrac edin.
+2. Burada idxal ekranını açın və \"CSV formatında pleylist idxal edin\" seçin. Lindale hər mahnını YouTube Music-də tapıb pleylist yaradır.
+
+Digər pleyerlərin (foobar2000, VLC, iTunes) M3U pleylistləri də eyni cür işləyir.</string>
+    <string name="onboarding_exportify">Exportify-ı aç</string>
+    <string name="onboarding_import_open">İdxalı aç</string>
+    <string name="onboarding_keys_title">Faydalı düymələr</string>
+    <string name="onboarding_keys_body">Ctrl+K: axtarış
+Boşluq: oxut / fasilə
+Ctrl+← / →: əvvəlki / növbəti mahnı
+Ctrl+↑ / ↓: səs
+Shift+← / →: 5 saniyə irəli / geri
+Ctrl+S: qarışdır · Ctrl+R: təkrarla · Ctrl+M: səssiz
+
+Klaviaturanın media düymələri və sistemin media idarəetməsi (Windows media paneli və ya Linux iş masasının media vidceti) də Lindale-i idarə edir.</string>
+    <string name="onboarding_next">Növbəti</string>
+    <string name="onboarding_back">Geri</string>
+    <string name="onboarding_skip">Keç</string>
+    <string name="onboarding_done">Dinləməyə başla</string>
+    <string name="restore_desc_desktop">Android-dəki Metrolist ehtiyat nüsxələrini də bərpa edir.</string>
+    <string name="import_other_apps">Digər tətbiqlərdən idxal</string>
+    <string name="import_spotify_title">Spotify: pleylistləri ixrac edin</string>
+    <string name="import_spotify_desc">Exportify-ı açır. Spotify ilə daxil olun, pleylisti CSV kimi yükləyin, sonra aşağıdakı \"CSV formatında pleylist idxal edin\" seçimindən istifadə edin.</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes və ya MusicBee-nin saxladığı pleylistlər (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz və ya başlıq və ifaçı sütunu olan istənilən CSV. Hər mahnı YouTube Music-də tapılır.</string>
+    <string name="close_to_tray">Bağlananda sistem nişanlar sahəsində oxumağa davam et</string>
+    <string name="close_to_tray_desc">Pəncərəni bağlayanda Lindale saatın yanında gizlənir; ikonun menyusundan çıxın.</string>
+    <string name="tray_play_pause">Oxut / fasilə</string>
+    <string name="tray_next">Növbəti mahnı</string>
+    <string name="tray_previous">Əvvəlki mahnı</string>
+    <string name="tray_show">Lindale-i göstər</string>
+    <string name="tray_quit">Çıxış</string>
 </resources>

@@ -33,4 +33,47 @@
     <string name="about_report_bug">Raportează o eroare</string>
     <string name="about_metrolist_section">Metrolist (aplicația originală)</string>
     <string name="download_folder">Dosar descărcări (clic pentru a deschide)</string>
+    <string name="onboarding_welcome_title">Bun venit în Lindalë</string>
+    <string name="onboarding_welcome_body">Un player YouTube Music fără reclame pentru computerul tău. Caută, ascultă și descarcă melodii și păstrează biblioteca sincronizată. Pașii durează un minut și îi poți sări pe oricare.</string>
+    <string name="onboarding_signin_title">Conectare (opțional)</string>
+    <string name="onboarding_signin_body">Conectează-te cu contul Google pentru biblioteca YouTube Music, melodiile apreciate, playlisturile și istoricul. Lindale funcționează și fără cont.</string>
+    <string name="onboarding_signin_button">Conectează-te cu Google</string>
+    <string name="onboarding_import_title">Adu-ți muzica din Spotify</string>
+    <string name="onboarding_import_body">1. Deschide Exportify, conectează-te cu Spotify și exportă un playlist (sau toate) ca fișier CSV.
+2. Deschide aici importul și alege „Importă un playlist CSV\". Lindale găsește fiecare melodie pe YouTube Music și creează un playlist.
+
+Playlisturile M3U din alte playere (foobar2000, VLC, iTunes) funcționează la fel.</string>
+    <string name="onboarding_exportify">Deschide Exportify</string>
+    <string name="onboarding_import_open">Deschide importul</string>
+    <string name="onboarding_keys_title">Taste utile</string>
+    <string name="onboarding_keys_body">Ctrl+K: căutare
+Spațiu: redare / pauză
+Ctrl+← / →: melodia anterioară / următoare
+Ctrl+↑ / ↓: volum
+Shift+← / →: salt de 5 secunde
+Ctrl+S: amestecare · Ctrl+R: repetare · Ctrl+M: fără sunet
+
+Tastele multimedia ale tastaturii și controalele media ale sistemului (panoul media din Windows sau widgetul desktopului Linux) controlează și ele Lindale.</string>
+    <string name="onboarding_next">Înainte</string>
+    <string name="onboarding_back">Înapoi</string>
+    <string name="onboarding_skip">Omite</string>
+    <string name="onboarding_done">Începe să asculți</string>
+    <string name="restore_desc_desktop">Restaurează și copii de rezervă din Metrolist pentru Android.</string>
+    <string name="import_other_apps">Importă din alte aplicații</string>
+    <string name="import_spotify_title">Spotify: exportă playlisturile</string>
+    <string name="import_spotify_desc">Deschide Exportify. Conectează-te cu Spotify, descarcă un playlist ca CSV, apoi folosește „Importă un playlist CSV\" mai jos.</string>
+    <string name="import_m3u_desc">Playlisturi salvate de foobar2000, VLC, Winamp, iTunes sau MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz sau orice CSV cu coloane de titlu și artist. Fiecare melodie este căutată pe YouTube Music.</string>
+    <string name="close_to_tray">Continuă redarea în zona de notificare la închidere</string>
+    <string name="close_to_tray_desc">Închiderea ferestrei ascunde Lindale lângă ceas; ieși din meniul pictogramei.</string>
+    <string name="tray_play_pause">Redare / pauză</string>
+    <string name="tray_next">Melodia următoare</string>
+    <string name="tray_previous">Melodia anterioară</string>
+    <string name="tray_show">Afișează Lindale</string>
+    <string name="tray_quit">Ieșire</string>
+    <string name="hide_from_capture_desc">Fereastra Lindale apare neagră în capturi de ecran, înregistrări și partajarea ecranului (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Culorile urmează coperta melodiei care rulează.</string>
+    <string name="appearance_lyrics_click_desc">Dă clic pe un vers ca să sari la acea parte a melodiei.</string>
+    <string name="appearance_lyrics_scroll_desc">Versul curent rămâne vizibil în timpul redării.</string>
+    <string name="appearance_library_playlist_desc">Apare sus în Bibliotecă > Playlisturi.</string>
 </resources>

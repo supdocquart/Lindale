@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale je desktop verzija Metroliste. Dio za YouTube Music djelo je Metrolist tima ispod, hvala!</string>
     <string name="about_report_bug">Prijavi grešku</string>
     <string name="about_metrolist_section">Metrolist (originalna aplikacija)</string>
+    <string name="onboarding_welcome_title">Dobro došli u Lindalë</string>
+    <string name="onboarding_welcome_body">Plejer YouTube Musica bez reklama za vaš računar. Tražite, slušajte i preuzimajte pjesme te sinhronizujte biblioteku. Ovi koraci traju minutu i svaki možete preskočiti.</string>
+    <string name="onboarding_signin_title">Prijava (nije obavezno)</string>
+    <string name="onboarding_signin_body">Prijavite se Google računom za biblioteku YouTube Musica, omiljene pjesme, popise za reprodukciju i povijest. Lindale radi i bez računa.</string>
+    <string name="onboarding_signin_button">Prijava putem Googlea</string>
+    <string name="onboarding_import_title">Prenesite glazbu sa Spotifyja</string>
+    <string name="onboarding_import_body">1. Otvorite Exportify, prijavite se Spotifyjem i izvezite popis (ili sve) kao CSV datoteku.
+2. Ovdje otvorite uvoz i odaberite „Uvoz playlista iz \"csv\" formata\". Lindale pronalazi svaku pjesmu na YouTube Musicu i stvara popis.
+
+M3U popisi iz drugih reproduktora (foobar2000, VLC, iTunes) rade na isti način.</string>
+    <string name="onboarding_exportify">Otvori Exportify</string>
+    <string name="onboarding_import_open">Otvori uvoz</string>
+    <string name="onboarding_keys_title">Korisne tipke</string>
+    <string name="onboarding_keys_body">Ctrl+K: traži
+Razmaknica: reproduciraj / pauza
+Ctrl+← / →: prethodna / sljedeća pjesma
+Ctrl+↑ / ↓: glasnoća
+Shift+← / →: skok za 5 sekundi
+Ctrl+S: nasumično · Ctrl+R: ponavljanje · Ctrl+M: bez zvuka
+
+Multimedijalne tipke tastature i sistemske kontrole medija (panel medija u Windowsu ili widget Linux radne površine) također upravljaju Lindaleom.</string>
+    <string name="onboarding_next">Dalje</string>
+    <string name="onboarding_back">Natrag</string>
+    <string name="onboarding_skip">Preskoči</string>
+    <string name="onboarding_done">Počni slušati</string>
+    <string name="restore_desc_desktop">Vraća i sigurnosne kopije iz Metrolista za Android.</string>
+    <string name="import_other_apps">Uvoz iz drugih aplikacija</string>
+    <string name="import_spotify_title">Spotify: izvezite popise</string>
+    <string name="import_spotify_desc">Otvara Exportify. Prijavite se Spotifyjem, preuzmite popis kao CSV, zatim upotrijebite „Uvoz playlista iz \"csv\" formata\" ispod.</string>
+    <string name="import_m3u_desc">Popisi spremljeni u foobar2000, VLC, Winamp, iTunes ili MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ili bilo koji CSV sa stupcima naslova i izvođača. Svaka pjesma traži se na YouTube Musicu.</string>
+    <string name="close_to_tray">Nastavi svirati u sistemskoj traci nakon zatvaranja</string>
+    <string name="close_to_tray_desc">Zatvaranjem prozora Lindale se skriva pored sata; izlaz je u meniju ikone.</string>
+    <string name="tray_play_pause">Reproduciraj / pauza</string>
+    <string name="tray_next">Sljedeća pjesma</string>
+    <string name="tray_previous">Prethodna pjesma</string>
+    <string name="tray_show">Prikaži Lindale</string>
+    <string name="tray_quit">Izlaz</string>
+    <string name="hide_from_capture_desc">Prozor Lindalea je crn na snimkama zaslona, snimanjima i pri dijeljenju zaslona (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Boje prate omot pjesme koja svira.</string>
+    <string name="appearance_lyrics_click_desc">Kliknite redak teksta za skok na taj dio pjesme.</string>
+    <string name="appearance_lyrics_scroll_desc">Trenutni redak ostaje vidljiv tijekom reprodukcije.</string>
+    <string name="appearance_library_playlist_desc">Prikazuje se na vrhu u Biblioteka > Popisi.</string>
+    <string name="download_folder">Folder preuzimanja (kliknite da otvorite)</string>
 </resources>

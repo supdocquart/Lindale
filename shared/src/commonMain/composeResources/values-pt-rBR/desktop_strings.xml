@@ -45,4 +45,35 @@
     <string name="tray_previous">Música anterior</string>
     <string name="tray_show">Mostrar Lindale</string>
     <string name="tray_quit">Sair</string>
+    <string name="onboarding_welcome_title">Boas-vindas ao Lindalë</string>
+    <string name="onboarding_welcome_body">Um player de YouTube Music sem anúncios para o seu computador. Pesquise, ouça e baixe músicas e mantenha sua biblioteca sincronizada. Estes passos levam um minuto e você pode pular qualquer um.</string>
+    <string name="onboarding_signin_title">Entrar (opcional)</string>
+    <string name="onboarding_signin_body">Entre com sua conta Google para ter sua biblioteca do YouTube Music, músicas curtidas, playlists e histórico. O Lindale também funciona sem conta.</string>
+    <string name="onboarding_signin_button">Entrar com o Google</string>
+    <string name="onboarding_import_title">Traga sua música do Spotify</string>
+    <string name="onboarding_import_body">1. Abra o Exportify, entre com o Spotify e exporte uma playlist (ou todas) como arquivo CSV.
+2. Abra a importação aqui e escolha \"Importar uma playlist CSV\". O Lindale encontra cada música no YouTube Music e cria uma playlist.
+
+Playlists M3U de outros players (foobar2000, VLC, iTunes) funcionam do mesmo jeito.</string>
+    <string name="onboarding_exportify">Abrir o Exportify</string>
+    <string name="onboarding_import_open">Abrir importação</string>
+    <string name="onboarding_keys_title">Atalhos úteis</string>
+    <string name="onboarding_keys_body">Ctrl+K: pesquisar
+Espaço: tocar / pausar
+Ctrl+← / →: música anterior / próxima
+Ctrl+↑ / ↓: volume
+Shift+← / →: pular 5 segundos
+Ctrl+S: aleatório · Ctrl+R: repetir · Ctrl+M: silenciar
+
+As teclas de mídia do teclado e os controles de mídia do sistema (o painel de mídia do Windows ou o widget do seu desktop Linux) também controlam o Lindale.</string>
+    <string name="onboarding_next">Próximo</string>
+    <string name="onboarding_back">Voltar</string>
+    <string name="onboarding_skip">Pular</string>
+    <string name="onboarding_done">Começar a ouvir</string>
+    <string name="restore_desc_desktop">Também restaura backups do Metrolist para Android.</string>
+    <string name="import_other_apps">Importar de outros apps</string>
+    <string name="import_spotify_title">Spotify: exporte suas playlists</string>
+    <string name="import_spotify_desc">Abre o Exportify. Entre com o Spotify, baixe uma playlist como CSV e use \"Importar uma playlist CSV\" abaixo.</string>
+    <string name="import_m3u_desc">Playlists salvas pelo foobar2000, VLC, Winamp, iTunes ou MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ou qualquer CSV com colunas de título e artista. Cada música é buscada no YouTube Music.</string>
 </resources>

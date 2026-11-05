@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale é unha versión de escritorio de Metrolist. A parte de YouTube Music é obra do equipo de Metrolist de abaixo. Grazas!</string>
     <string name="about_report_bug">Informar dun erro</string>
     <string name="about_metrolist_section">Metrolist (aplicación orixinal)</string>
+    <string name="onboarding_welcome_title">Dámosche a benvida a Lindalë</string>
+    <string name="onboarding_welcome_body">Un reprodutor de YouTube Music sen anuncios para o teu ordenador. Busca, escoita e descarga cancións e mantén a biblioteca sincronizada. Estes pasos levan un minuto e podes omitir calquera.</string>
+    <string name="onboarding_signin_title">Iniciar sesión (opcional)</string>
+    <string name="onboarding_signin_body">Inicia sesión coa túa conta de Google para ter a biblioteca de YouTube Music, as cancións que che gustan, as listas e o historial. Lindale tamén funciona sen conta.</string>
+    <string name="onboarding_signin_button">Iniciar sesión con Google</string>
+    <string name="onboarding_import_title">Trae a túa música de Spotify</string>
+    <string name="onboarding_import_body">1. Abre Exportify, inicia sesión con Spotify e exporta unha lista (ou todas) como ficheiro CSV.
+2. Abre aquí a importación e escolle «Importar unha lista de reprodución CSV». Lindale atopa cada canción en YouTube Music e crea unha lista.
+
+As listas M3U doutros reprodutores (foobar2000, VLC, iTunes) funcionan igual.</string>
+    <string name="onboarding_exportify">Abrir Exportify</string>
+    <string name="onboarding_import_open">Abrir importación</string>
+    <string name="onboarding_keys_title">Teclas útiles</string>
+    <string name="onboarding_keys_body">Ctrl+K: buscar
+Espazo: reproducir / pausar
+Ctrl+← / →: canción anterior / seguinte
+Ctrl+↑ / ↓: volume
+Shift+← / →: saltar 5 segundos
+Ctrl+S: aleatorio · Ctrl+R: repetir · Ctrl+M: silenciar
+
+As teclas multimedia do teclado e os controis multimedia do sistema (o panel multimedia de Windows ou o widget do escritorio Linux) tamén controlan Lindale.</string>
+    <string name="onboarding_next">Seguinte</string>
+    <string name="onboarding_back">Atrás</string>
+    <string name="onboarding_skip">Omitir</string>
+    <string name="onboarding_done">Comezar a escoitar</string>
+    <string name="restore_desc_desktop">Tamén restaura copias de seguranza de Metrolist para Android.</string>
+    <string name="import_other_apps">Importar doutras aplicacións</string>
+    <string name="import_spotify_title">Spotify: exporta as túas listas</string>
+    <string name="import_spotify_desc">Abre Exportify. Inicia sesión con Spotify, descarga unha lista como CSV e usa «Importar unha lista de reprodución CSV» abaixo.</string>
+    <string name="import_m3u_desc">Listas gardadas por foobar2000, VLC, Winamp, iTunes ou MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ou calquera CSV con columnas de título e artista. Cada canción búscase en YouTube Music.</string>
+    <string name="close_to_tray">Seguir soando na bandexa ao pechar</string>
+    <string name="close_to_tray_desc">Ao pechar a xanela, Lindale agóchase xunto ao reloxo; sae desde o menú da icona.</string>
+    <string name="tray_play_pause">Reproducir / pausar</string>
+    <string name="tray_next">Canción seguinte</string>
+    <string name="tray_previous">Canción anterior</string>
+    <string name="tray_show">Amosar Lindale</string>
+    <string name="tray_quit">Saír</string>
+    <string name="hide_from_capture_desc">A xanela de Lindale aparece negra nas capturas, gravacións e ao compartir a pantalla (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">As cores seguen a portada da canción que soa.</string>
+    <string name="appearance_lyrics_click_desc">Preme nunha liña para saltar a esa parte da canción.</string>
+    <string name="appearance_lyrics_scroll_desc">A liña actual mantense visible durante a reprodución.</string>
+    <string name="appearance_library_playlist_desc">Amósase arriba en Biblioteca > Listas.</string>
+    <string name="download_folder">Cartafol de descargas (preme para abrilo)</string>
 </resources>

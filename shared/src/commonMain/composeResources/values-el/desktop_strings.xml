@@ -33,4 +33,47 @@
     <string name="about_report_bug">Αναφορά σφάλματος</string>
     <string name="about_metrolist_section">Metrolist (αρχική εφαρμογή)</string>
     <string name="download_folder">Φάκελος λήψεων (κάντε κλικ για άνοιγμα)</string>
+    <string name="onboarding_welcome_title">Καλώς ήρθατε στο Lindalë</string>
+    <string name="onboarding_welcome_body">Ένα πρόγραμμα αναπαραγωγής YouTube Music χωρίς διαφημίσεις για τον υπολογιστή σας. Αναζητήστε, ακούστε και κατεβάστε τραγούδια και κρατήστε τη βιβλιοθήκη σας συγχρονισμένη. Τα βήματα διαρκούν ένα λεπτό και μπορείτε να παραλείψετε οποιοδήποτε.</string>
+    <string name="onboarding_signin_title">Σύνδεση (προαιρετικά)</string>
+    <string name="onboarding_signin_body">Συνδεθείτε με τον λογαριασμό Google για τη βιβλιοθήκη YouTube Music, τα αγαπημένα τραγούδια, τις λίστες και το ιστορικό. Το Lindale λειτουργεί και χωρίς λογαριασμό.</string>
+    <string name="onboarding_signin_button">Σύνδεση με Google</string>
+    <string name="onboarding_import_title">Φέρτε τη μουσική σας από το Spotify</string>
+    <string name="onboarding_import_body">1. Ανοίξτε το Exportify, συνδεθείτε με το Spotify και εξαγάγετε μια λίστα (ή όλες) ως αρχείο CSV.
+2. Ανοίξτε εδώ την εισαγωγή και επιλέξτε «Εισαγωγή λιστών αναπαραγωγής \"csv\"». Το Lindale βρίσκει κάθε τραγούδι στο YouTube Music και φτιάχνει λίστα.
+
+Οι λίστες M3U από άλλα προγράμματα (foobar2000, VLC, iTunes) λειτουργούν με τον ίδιο τρόπο.</string>
+    <string name="onboarding_exportify">Άνοιγμα Exportify</string>
+    <string name="onboarding_import_open">Άνοιγμα εισαγωγής</string>
+    <string name="onboarding_keys_title">Χρήσιμα πλήκτρα</string>
+    <string name="onboarding_keys_body">Ctrl+K: αναζήτηση
+Διάστημα: αναπαραγωγή / παύση
+Ctrl+← / →: προηγούμενο / επόμενο τραγούδι
+Ctrl+↑ / ↓: ένταση
+Shift+← / →: μετάβαση 5 δευτερολέπτων
+Ctrl+S: τυχαία σειρά · Ctrl+R: επανάληψη · Ctrl+M: σίγαση
+
+Τα πλήκτρα πολυμέσων του πληκτρολογίου και τα χειριστήρια πολυμέσων του συστήματος (ο πίνακας πολυμέσων των Windows ή το widget της επιφάνειας εργασίας Linux) ελέγχουν επίσης το Lindale.</string>
+    <string name="onboarding_next">Επόμενο</string>
+    <string name="onboarding_back">Πίσω</string>
+    <string name="onboarding_skip">Παράλειψη</string>
+    <string name="onboarding_done">Ξεκινήστε να ακούτε</string>
+    <string name="restore_desc_desktop">Επαναφέρει επίσης αντίγραφα ασφαλείας του Metrolist για Android.</string>
+    <string name="import_other_apps">Εισαγωγή από άλλες εφαρμογές</string>
+    <string name="import_spotify_title">Spotify: εξαγωγή λιστών</string>
+    <string name="import_spotify_desc">Ανοίγει το Exportify. Συνδεθείτε με το Spotify, κατεβάστε μια λίστα ως CSV και χρησιμοποιήστε το «Εισαγωγή λιστών αναπαραγωγής \"csv\"» παρακάτω.</string>
+    <string name="import_m3u_desc">Λίστες από foobar2000, VLC, Winamp, iTunes ή MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ή οποιοδήποτε CSV με στήλες τίτλου και καλλιτέχνη. Κάθε τραγούδι αναζητείται στο YouTube Music.</string>
+    <string name="close_to_tray">Συνέχεια αναπαραγωγής στην περιοχή ειδοποιήσεων μετά το κλείσιμο</string>
+    <string name="close_to_tray_desc">Το κλείσιμο του παραθύρου κρύβει το Lindale δίπλα στο ρολόι· έξοδος από το μενού του εικονιδίου.</string>
+    <string name="tray_play_pause">Αναπαραγωγή / παύση</string>
+    <string name="tray_next">Επόμενο τραγούδι</string>
+    <string name="tray_previous">Προηγούμενο τραγούδι</string>
+    <string name="tray_show">Εμφάνιση Lindale</string>
+    <string name="tray_quit">Έξοδος</string>
+    <string name="hide_from_capture_desc">Το παράθυρο του Lindale εμφανίζεται μαύρο σε στιγμιότυπα, εγγραφές και κοινή χρήση οθόνης (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Τα χρώματα ακολουθούν το εξώφυλλο του τραγουδιού που παίζει.</string>
+    <string name="appearance_lyrics_click_desc">Κάντε κλικ σε μια γραμμή για μετάβαση σε εκείνο το σημείο του τραγουδιού.</string>
+    <string name="appearance_lyrics_scroll_desc">Η τρέχουσα γραμμή μένει ορατή κατά την αναπαραγωγή.</string>
+    <string name="appearance_library_playlist_desc">Εμφανίζεται στην κορυφή στο Βιβλιοθήκη > Λίστες.</string>
 </resources>

@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale është një version desktop i Metrolist. Pjesa e YouTube Music është punë e ekipit të Metrolist më poshtë, faleminderit!</string>
     <string name="about_report_bug">Raporto një gabim</string>
     <string name="about_metrolist_section">Metrolist (aplikacioni origjinal)</string>
+    <string name="onboarding_welcome_title">Mirë se vini në Lindalë</string>
+    <string name="onboarding_welcome_body">Një luajtës YouTube Music pa reklama për kompjuterin tuaj. Kërkoni, dëgjoni dhe shkarkoni këngë dhe mbani bibliotekën të sinkronizuar. Këto hapa zgjasin një minutë dhe mund të kaloni cilindo.</string>
+    <string name="onboarding_signin_title">Hyni (opsionale)</string>
+    <string name="onboarding_signin_body">Hyni me llogarinë Google për bibliotekën e YouTube Music, këngët e pëlqyera, listat dhe historikun. Lindale punon edhe pa llogari.</string>
+    <string name="onboarding_signin_button">Hyni me Google</string>
+    <string name="onboarding_import_title">Sillni muzikën nga Spotify</string>
+    <string name="onboarding_import_body">1. Hapni Exportify, hyni me Spotify dhe eksportoni një listë (ose të gjitha) si skedar CSV.
+2. Hapni importin këtu dhe zgjidhni \"Importo një listë dëgjimi CSV\". Lindale gjen çdo këngë në YouTube Music dhe krijon një listë.
+
+Listat M3U nga luajtës të tjerë (foobar2000, VLC, iTunes) punojnë njësoj.</string>
+    <string name="onboarding_exportify">Hap Exportify</string>
+    <string name="onboarding_import_open">Hap importin</string>
+    <string name="onboarding_keys_title">Taste të dobishme</string>
+    <string name="onboarding_keys_body">Ctrl+K: kërko
+Hapësira: luaj / pauzë
+Ctrl+← / →: kënga e mëparshme / e radhës
+Ctrl+↑ / ↓: volumi
+Shift+← / →: kalo 5 sekonda
+Ctrl+S: përzierje · Ctrl+R: përsërit · Ctrl+M: pa zë
+
+Tastet multimediale të tastierës dhe kontrollet e mediave të sistemit (paneli i mediave në Windows ose widget-i i desktopit Linux) kontrollojnë gjithashtu Lindale.</string>
+    <string name="onboarding_next">Tjetër</string>
+    <string name="onboarding_back">Prapa</string>
+    <string name="onboarding_skip">Kalo</string>
+    <string name="onboarding_done">Fillo të dëgjosh</string>
+    <string name="restore_desc_desktop">Rikthen edhe kopjet rezervë nga Metrolist në Android.</string>
+    <string name="import_other_apps">Importo nga aplikacione të tjera</string>
+    <string name="import_spotify_title">Spotify: eksportoni listat</string>
+    <string name="import_spotify_desc">Hap Exportify. Hyni me Spotify, shkarkoni një listë si CSV, pastaj përdorni \"Importo një listë dëgjimi CSV\" më poshtë.</string>
+    <string name="import_m3u_desc">Lista të ruajtura nga foobar2000, VLC, Winamp, iTunes ose MusicBee (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz ose çdo CSV me kolona titulli dhe artisti. Çdo këngë kërkohet në YouTube Music.</string>
+    <string name="close_to_tray">Vazhdo të luash në hapësirën e sistemit pas mbylljes</string>
+    <string name="close_to_tray_desc">Mbyllja e dritares e fsheh Lindale pranë orës; dilni nga menyja e ikonës.</string>
+    <string name="tray_play_pause">Luaj / pauzë</string>
+    <string name="tray_next">Kënga e radhës</string>
+    <string name="tray_previous">Kënga e mëparshme</string>
+    <string name="tray_show">Shfaq Lindale</string>
+    <string name="tray_quit">Dil</string>
+    <string name="hide_from_capture_desc">Dritarja e Lindale del e zezë në pamjet e ekranit, regjistrimet dhe ndarjen e ekranit (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Ngjyrat ndjekin kopertinën e këngës që po luhet.</string>
+    <string name="appearance_lyrics_click_desc">Klikoni një rresht për të kaluar në atë pjesë të këngës.</string>
+    <string name="appearance_lyrics_scroll_desc">Rreshti aktual mbetet i dukshëm gjatë luajtjes.</string>
+    <string name="appearance_library_playlist_desc">Shfaqet në krye te Biblioteka > Listat.</string>
+    <string name="download_folder">Dosja e shkarkimeve (kliko për ta hapur)</string>
 </resources>

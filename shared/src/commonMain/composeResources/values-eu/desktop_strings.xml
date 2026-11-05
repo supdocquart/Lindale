@@ -32,4 +32,48 @@
     <string name="about_based_on">Lindale Metrolist-en mahaigaineko bertsioa da. YouTube Music-en zatia beheko Metrolist taldearen lana da, eskerrik asko!</string>
     <string name="about_report_bug">Akatsa jakinarazi</string>
     <string name="about_metrolist_section">Metrolist (jatorrizko aplikazioa)</string>
+    <string name="onboarding_welcome_title">Ongi etorri Lindalë-ra</string>
+    <string name="onboarding_welcome_body">Iragarkirik gabeko YouTube Music erreproduzigailua zure ordenagailurako. Bilatu, entzun eta deskargatu abestiak, eta mantendu liburutegia sinkronizatuta. Urratsek minutu bat behar dute, eta edozein salta dezakezu.</string>
+    <string name="onboarding_signin_title">Hasi saioa (aukerakoa)</string>
+    <string name="onboarding_signin_body">Hasi saioa Google kontuarekin YouTube Music liburutegia, gogoko abestiak, zerrendak eta historia izateko. Lindale-k kontu gabe ere funtzionatzen du.</string>
+    <string name="onboarding_signin_button">Hasi saioa Google-rekin</string>
+    <string name="onboarding_import_title">Ekarri zure musika Spotify-tik</string>
+    <string name="onboarding_import_body">1. Ireki Exportify, hasi saioa Spotify-rekin eta esportatu zerrenda bat (edo guztiak) CSV fitxategi gisa.
+2. Ireki hemen inportazioa eta aukeratu «CSV zerrenda gehitu». Lindale-k abesti bakoitza YouTube Music-en aurkitu eta zerrenda bat sortzen du.
+
+Beste erreproduzigailuen M3U zerrendek (foobar2000, VLC, iTunes) berdin funtzionatzen dute.</string>
+    <string name="onboarding_exportify">Ireki Exportify</string>
+    <string name="onboarding_import_open">Ireki inportazioa</string>
+    <string name="onboarding_keys_title">Tekla erabilgarriak</string>
+    <string name="onboarding_keys_body">Ctrl+K: bilatu
+Zuriunea: erreproduzitu / pausatu
+Ctrl+← / →: aurreko / hurrengo abestia
+Ctrl+↑ / ↓: bolumena
+Shift+← / →: 5 segundo jauzi
+Ctrl+S: ausazkoa · Ctrl+R: errepikatu · Ctrl+M: isilarazi
+
+Teklatuaren multimedia teklek eta sistemaren multimedia kontrolek (Windows-eko multimedia panelak edo Linux mahaigaineko trepetak) ere kontrolatzen dute Lindale.</string>
+    <string name="onboarding_next">Hurrengoa</string>
+    <string name="onboarding_back">Atzera</string>
+    <string name="onboarding_skip">Saltatu</string>
+    <string name="onboarding_done">Hasi entzuten</string>
+    <string name="restore_desc_desktop">Android-erako Metrolist-en babeskopiak ere leheneratzen ditu.</string>
+    <string name="import_other_apps">Inportatu beste aplikazioetatik</string>
+    <string name="import_spotify_title">Spotify: esportatu zure zerrendak</string>
+    <string name="import_spotify_desc">Exportify irekitzen du. Hasi saioa Spotify-rekin, deskargatu zerrenda bat CSV gisa eta erabili behean «CSV zerrenda gehitu».</string>
+    <string name="import_m3u_desc">foobar2000, VLC, Winamp, iTunes edo MusicBee-k gordetako zerrendak (.m3u, .m3u8).</string>
+    <string name="import_csv_desc">Spotify (Exportify), TuneMyMusic, Soundiiz edo izenburu eta artista zutabeak dituen edozein CSV. Abesti bakoitza YouTube Music-en bilatzen da.</string>
+    <string name="close_to_tray">Itxitakoan jarraitu jotzen sistema-erretiluan</string>
+    <string name="close_to_tray_desc">Leihoa ixtean Lindale erlojuaren ondoan ezkutatzen da; irten ikonoaren menutik.</string>
+    <string name="tray_play_pause">Erreproduzitu / pausatu</string>
+    <string name="tray_next">Hurrengo abestia</string>
+    <string name="tray_previous">Aurreko abestia</string>
+    <string name="tray_show">Erakutsi Lindale</string>
+    <string name="tray_quit">Irten</string>
+    <string name="hide_from_capture_desc">Lindale-ren leihoa beltz agertzen da pantaila-argazkietan, grabazioetan eta pantaila partekatzean (Discord, Teams, OBS).</string>
+    <string name="appearance_dynamic_theme_desc">Koloreek jotzen ari den abestiaren azala jarraitzen dute.</string>
+    <string name="appearance_lyrics_click_desc">Egin klik lerro batean abestiaren zati horretara jauzi egiteko.</string>
+    <string name="appearance_lyrics_scroll_desc">Uneko lerroa ikusgai mantentzen da erreproduzitzean.</string>
+    <string name="appearance_library_playlist_desc">Liburutegia > Zerrendak ataleko goialdean agertzen da.</string>
+    <string name="download_folder">Deskargen karpeta (egin klik irekitzeko)</string>
 </resources>
