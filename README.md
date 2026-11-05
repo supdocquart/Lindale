@@ -52,6 +52,8 @@ cd Lindale
 
 It plays through the system VLC (`libvlc5`), shows up in your desktop's media controls (MPRIS), and Discord Rich Presence works with the regular, Flatpak and Snap Discord apps. Settings live in `~/.local/share/lindale`, cache and logs in `~/.cache/lindale`.
 
+Experimental: with the `libmpv2` package installed, `LINDALE_ENGINE=mpv /opt/lindale/bin/Lindale` plays through mpv instead of VLC (it falls back to VLC if libmpv is missing).
+
 ## Build from source
 
 You need Git and a 64-bit **VLC 3.0** install (the app uses libVLC for playback; release builds bundle it).

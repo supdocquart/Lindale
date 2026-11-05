@@ -95,7 +95,8 @@ try:
     if not started:
         raise SystemExit
     time.sleep(3)
-    check("VLC engine loads", re.search(r"Audio engine: vlc", log_text()))
+    engine = os.environ.get("LINDALE_ENGINE", "vlc").lower()
+    check(f"{engine} engine loads", re.search(rf"Audio engine: {engine}", log_text()))
     check("media controls (MPRIS) ready", re.search(r"media session: system media controls ready", log_text()))
     check("window is shown", main_window())
 

@@ -212,6 +212,7 @@ class MpvEngine private constructor(
         private const val END_ERROR = 4
         private const val END_REDIRECT = 5
         private const val LIB = "libmpv-2"
+        private val LINUX_LIBS = listOf("libmpv.so.2", "libmpv.so.1", "mpv")
 
         /** Folders that may hold libmpv-2.dll: packaged app resources, then dev-tree and user folders. */
         private fun candidateDirs(): List<File> = buildList {
@@ -225,10 +226,18 @@ class MpvEngine private constructor(
 
         /** Null when libmpv is missing or fails to start; the caller then falls back to libVLC. */
         fun create(listener: AudioEngine.Listener, speed: Float, pitch: Float): MpvEngine? = runCatching {
-            val dir = candidateDirs().firstOrNull { File(it, "$LIB.dll").isFile }
-                ?: return null.also { Timber.w("mpv: libmpv-2.dll not found") }
-            NativeLibrary.addSearchPath(LIB, dir.absolutePath)
-            val lib = Native.load(LIB, MpvLib::class.java, mapOf(Library.OPTION_STRING_ENCODING to "UTF-8"))
+            val loadOptions = mapOf(Library.OPTION_STRING_ENCODING to "UTF-8")
+            val (lib, from) = if (com.metrolist.music.platform.AppDirs.isWindows) {
+                val dir = candidateDirs().firstOrNull { File(it, "$LIB.dll").isFile }
+                    ?: return null.also { Timber.w("mpv: libmpv-2.dll not found") }
+                NativeLibrary.addSearchPath(LIB, dir.absolutePath)
+                Native.load(LIB, MpvLib::class.java, loadOptions) to dir.absolutePath
+            } else {
+                // Linux: the distribution's libmpv (package libmpv2, or libmpv1 on older releases).
+                val name = LINUX_LIBS.firstOrNull { runCatching { NativeLibrary.getInstance(it) }.isSuccess }
+                    ?: return null.also { Timber.w("mpv: libmpv not found (install the libmpv2 package)") }
+                Native.load(name, MpvLib::class.java, loadOptions) to name
+            }
             val ctx = lib.mpv_create() ?: error("mpv_create returned null")
             val options = linkedMapOf(
                 "config" to "no",
@@ -261,7 +270,7 @@ class MpvEngine private constructor(
             lib.mpv_observe_property(ctx, 1, "pause", FORMAT_FLAG)
             lib.mpv_observe_property(ctx, 2, "paused-for-cache", FORMAT_FLAG)
             lib.mpv_observe_property(ctx, 3, "duration", FORMAT_DOUBLE)
-            Timber.i("mpv: libmpv loaded from %s", dir.absolutePath)
+            Timber.i("mpv: libmpv loaded from %s", from)
             MpvEngine(lib, ctx, listener).also { it.setPlaybackParameters(speed, pitch) }
         }.onFailure { Timber.e(it, "mpv: could not start") }.getOrNull()
     }

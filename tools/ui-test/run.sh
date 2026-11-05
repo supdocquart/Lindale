@@ -4,6 +4,7 @@
 # (tools/ui-test/drive.py). Needs: xvfb pulseaudio dbus libvlc5 vlc-plugin-base ffmpeg
 # stalonetray python3-xlib (pip install python-xlib). Settings and cache go to throwaway folders under
 # build/ui-test; one generated test tone is put in ~/Music/Lindale and removed afterwards.
+# LINDALE_ENGINE=mpv tools/ui-test/run.sh runs the same checks on the mpv engine (needs libmpv2).
 set -e
 cd "$(dirname "$0")/../.."
 W="$PWD/build/ui-test"
