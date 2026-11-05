@@ -68,6 +68,19 @@ fun initDesktopPlatform() {
     StartupTrace.mark("platform_init_start")
 
     StartupTrace.span("init:WindowsDpapi") { WindowsDpapi.install() }
+    // DESKTOP: Linux has no DPAPI, so at least keep settings and tokens readable only by this user.
+    // shortcut: no keyring (libsecret/KWallet) encryption yet; add it if Linux gets real users.
+    if (!AppDirs.isWindows) {
+        listOf(AppDirs.roaming, AppDirs.local).forEach { dir ->
+            runCatching {
+                dir.mkdirs()
+                java.nio.file.Files.setPosixFilePermissions(
+                    dir.toPath(),
+                    java.nio.file.attribute.PosixFilePermissions.fromString("rwx------"),
+                )
+            }
+        }
+    }
     StartupTrace.span("init:ImageLoaderSetup") { ImageLoaderSetup.install() }
     MemoryMonitor.start() // DESKTOP: its thread sleeps 15 s before the first sample
     StartupTrace.span("init:DiscordDesktopOAuth") { com.metrolist.music.discord.DiscordDesktopOAuth.install() }
