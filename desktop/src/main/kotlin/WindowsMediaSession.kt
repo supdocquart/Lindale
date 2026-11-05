@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * Registers Lindale with Windows' media session (SMTC): the volume/lock-screen media overlay
- * shows the song, and keyboard media keys (play/pause, next, previous) control the player.
+ * Registers Lindale with the system media session (SMTC on Windows, MPRIS on Linux): the media
+ * overlay / panel shows the song, and keyboard media keys (play/pause, next, previous) control the player.
  */
 class WindowsMediaSession(private val connection: PlayerConnection) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -22,14 +22,22 @@ class WindowsMediaSession(private val connection: PlayerConnection) {
     fun start() {
         val ok = runCatching {
             if (!MediaControlService.isAvailable()) {
-                Timber.w("media session: native bridge not loaded, Windows media controls disabled")
+                Timber.w("media session: native bridge not loaded, system media controls disabled")
                 return@runCatching false
             }
-            // No arguments: on Windows the identity is the app's AppUserModelID, which the library
-            // derives itself; a made-up id is not tied to any Start menu entry and the overlay ignores it.
-            MediaControlService.configure()
+            if (com.metrolist.music.platform.AppDirs.isWindows) {
+                // No arguments: on Windows the identity is the app's AppUserModelID, which the library
+                // derives itself; a made-up id is not tied to any Start menu entry and the overlay ignores it.
+                MediaControlService.configure()
+            } else {
+                // Linux (MPRIS): the full D-Bus name is used as given; shown as "Lindalë" in media widgets.
+                MediaControlService.configure(
+                    "org.mpris.MediaPlayer2.lindale",
+                    com.metrolist.music.platform.AppBrand.DISPLAY_NAME,
+                )
+            }
             MediaControlService.attach(::onEvent)
-            Timber.i("media session: Windows media controls ready")
+            Timber.i("media session: system media controls ready")
             true
         }.onFailure { Timber.w(it, "media session: unavailable") }.getOrDefault(false)
         if (!ok) return

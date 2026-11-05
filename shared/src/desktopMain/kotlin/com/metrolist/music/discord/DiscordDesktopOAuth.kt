@@ -71,11 +71,11 @@ object DiscordDesktopOAuth {
             ?.takeIf { it.isNotEmpty() }
 
     private fun registerProtocol(port: Int) {
-        if (!System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)) {
-            Timber.tag(TAG).w("oauthCallback: %s:// registration is only implemented on Windows", SCHEME)
+        if (!com.metrolist.music.platform.AppDirs.isWindows) {
+            registerProtocolLinux(port)
             return
         }
-        val dir = File(System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home"), com.metrolist.music.platform.AppBrand.NAME).apply { mkdirs() }
+        val dir = com.metrolist.music.platform.AppDirs.local.apply { mkdirs() }
 
         val script = File(dir, "discord-callback.ps1")
         script.writeText(
@@ -118,5 +118,34 @@ object DiscordDesktopOAuth {
             if (finished) process.exitValue() else "timeout",
             output,
         )
+    }
+
+    /**
+     * Linux: a hidden .desktop entry handles lindalediscord:// links and forwards them to the local
+     * callback server, the same job the PowerShell script does on Windows.
+     */
+    private fun registerProtocolLinux(port: Int) {
+        val home = System.getProperty("user.home")
+        val apps = File(System.getenv("XDG_DATA_HOME")?.takeIf { it.isNotBlank() } ?: "$home/.local/share", "applications")
+            .apply { mkdirs() }
+        val script = File(com.metrolist.music.platform.AppDirs.local.apply { mkdirs() }, "discord-callback.sh")
+        script.writeText(
+            "#!/bin/sh\n" +
+                "u=\$(printf '%s' \"\$1\" | od -An -tx1 | tr -d ' \\n' | sed 's/../%&/g')\n" +
+                "url=\"http://127.0.0.1:$port/discord?u=\$u\"\n" +
+                "curl -s --noproxy '*' \"\$url\" >/dev/null 2>&1 || wget -q -O /dev/null --no-proxy \"\$url\"\n",
+        )
+        script.setExecutable(true)
+        val desktop = File(apps, "lindale-discord.desktop")
+        desktop.writeText(
+            "[Desktop Entry]\nType=Application\nName=Lindale Discord sign-in\nNoDisplay=true\n" +
+                "Exec=${script.absolutePath} %u\nMimeType=x-scheme-handler/$SCHEME;\n",
+        )
+        val result = runCatching {
+            val process = ProcessBuilder("xdg-mime", "default", desktop.name, "x-scheme-handler/$SCHEME")
+                .redirectErrorStream(true).start()
+            if (process.waitFor(15, TimeUnit.SECONDS)) process.exitValue().toString() else "timeout"
+        }.getOrElse { "xdg-mime unavailable: ${it.message}" }
+        Timber.tag(TAG).i("oauthCallback: registered %s:// via %s (%s)", SCHEME, desktop.name, result)
     }
 }

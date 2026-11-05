@@ -50,7 +50,7 @@
     <string name="appearance_lyrics_scroll_desc">Şarkı çalarken o anki satır hep görünür kalır.</string>
     <string name="appearance_library_playlist_desc">Kitaplık > Çalma listeleri\'nin en üstünde gösterilir.</string>
     <string name="onboarding_welcome_title">Lindalë\'ye hoş geldin</string>
-    <string name="onboarding_welcome_body">Windows için reklamsız bir YouTube Music oynatıcısı. Şarkı ara, çal, indir ve kitaplığını eşitle. Bu adımlar bir dakika sürer, istediğini atlayabilirsin.</string>
+    <string name="onboarding_welcome_body">Bilgisayarın için reklamsız bir YouTube Music oynatıcısı. Şarkı ara, çal, indir ve kitaplığını eşitle. Bu adımlar bir dakika sürer, istediğini atlayabilirsin.</string>
     <string name="onboarding_signin_title">Giriş yap (isteğe bağlı)</string>
     <string name="onboarding_signin_body">YouTube Music kitaplığın, beğendiğin şarkılar, çalma listelerin ve geçmişin için Google hesabınla giriş yap. Lindale hesapsız da çalışır.</string>
     <string name="onboarding_signin_button">Google ile giriş yap</string>
@@ -69,7 +69,7 @@ Ctrl+↑ / ↓: ses
 Shift+← / →: 5 saniye ileri / geri
 Ctrl+S: karıştır · Ctrl+R: tekrarla · Ctrl+M: sessiz
 
-Klavyendeki medya tuşları ve Windows medya paneli (ses ayarının yanında) de Lindale\'yi kontrol eder.</string>
+Klavyendeki medya tuşları ve sistemin medya kontrolleri (Windows medya paneli ya da Linux masaüstündeki medya oynatıcı bileşeni) de Lindale\'yi kontrol eder.</string>
     <string name="onboarding_next">İleri</string>
     <string name="onboarding_back">Geri</string>
     <string name="onboarding_skip">Atla</string>

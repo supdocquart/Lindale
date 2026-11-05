@@ -3,17 +3,48 @@ package com.metrolist.music.discord
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
+import java.io.File
 import java.io.RandomAccessFile
+import java.net.StandardProtocolFamily
+import java.net.UnixDomainSocketAddress
 import java.nio.ByteBuffer
+import java.nio.channels.SocketChannel
 import java.nio.ByteOrder
 import java.util.UUID
 
+/** One connection to the Discord app: a named pipe on Windows, a unix socket elsewhere. */
+private interface IpcPipe {
+    fun write(bytes: ByteArray)
+    fun readFully(bytes: ByteArray)
+    fun close()
+}
+
+private class WindowsPipe(private val file: RandomAccessFile) : IpcPipe {
+    override fun write(bytes: ByteArray) = file.write(bytes)
+    override fun readFully(bytes: ByteArray) = file.readFully(bytes)
+    override fun close() = file.close()
+}
+
+private class UnixPipe(private val channel: SocketChannel) : IpcPipe {
+    override fun write(bytes: ByteArray) {
+        val buf = ByteBuffer.wrap(bytes)
+        while (buf.hasRemaining()) channel.write(buf)
+    }
+
+    override fun readFully(bytes: ByteArray) {
+        val buf = ByteBuffer.wrap(bytes)
+        while (buf.hasRemaining()) if (channel.read(buf) < 0) throw java.io.EOFException()
+    }
+
+    override fun close() = channel.close()
+}
+
 /**
- * Rich Presence through the locally running Discord app (named pipe discord-ipc-N).
- * Needs no login or network access of its own.
+ * Rich Presence through the locally running Discord app (discord-ipc-N: a named pipe on Windows,
+ * a unix socket on Linux). Needs no login or network access of its own.
  */
 internal class DiscordIpcClient(private val clientId: String) {
-    private var pipe: RandomAccessFile? = null
+    private var pipe: IpcPipe? = null
     private var lastAttemptAtMs = 0L
     private var shownSongId: String? = null
     private var shownPlaying: Boolean? = null
@@ -28,7 +59,7 @@ internal class DiscordIpcClient(private val clientId: String) {
         if (now - lastAttemptAtMs < RETRY_MS) return false
         lastAttemptAtMs = now
         for (i in 0..9) {
-            val candidate = runCatching { RandomAccessFile("\\\\.\\pipe\\discord-ipc-$i", "rw") }.getOrNull() ?: continue
+            val candidate = open(i) ?: continue
             try {
                 write(candidate, OP_HANDSHAKE, JSONObject().put("v", 1).put("client_id", clientId))
                 val (op, payload) = read(candidate)
@@ -117,13 +148,29 @@ internal class DiscordIpcClient(private val clientId: String) {
         if (buttons.length() > 0) put("buttons", buttons)
     }
 
-    private fun write(p: RandomAccessFile, op: Int, payload: JSONObject) {
+    private fun open(i: Int): IpcPipe? {
+        if (com.metrolist.music.platform.AppDirs.isWindows) {
+            return runCatching { WindowsPipe(RandomAccessFile("\\\\.\\pipe\\discord-ipc-$i", "rw")) }.getOrNull()
+        }
+        // Discord puts the socket in the runtime dir; Flatpak and Snap builds use a subfolder of it.
+        val roots = listOfNotNull(System.getenv("XDG_RUNTIME_DIR"), System.getenv("TMPDIR"), "/tmp").distinct()
+        val socket = roots.flatMap { root ->
+            listOf("", "app/com.discordapp.Discord/", "snap.discord/").map { File(root, "${it}discord-ipc-$i") }
+        }.firstOrNull { it.exists() } ?: return null
+        return runCatching {
+            val channel = SocketChannel.open(StandardProtocolFamily.UNIX)
+            channel.connect(UnixDomainSocketAddress.of(socket.toPath()))
+            UnixPipe(channel)
+        }.getOrNull()
+    }
+
+    private fun write(p: IpcPipe, op: Int, payload: JSONObject) {
         val body = payload.toString().toByteArray(Charsets.UTF_8)
         val header = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(op).putInt(body.size).array()
         p.write(header + body)
     }
 
-    private fun read(p: RandomAccessFile): Pair<Int, JSONObject> {
+    private fun read(p: IpcPipe): Pair<Int, JSONObject> {
         val header = ByteArray(8)
         p.readFully(header)
         val buf = ByteBuffer.wrap(header).order(ByteOrder.LITTLE_ENDIAN)

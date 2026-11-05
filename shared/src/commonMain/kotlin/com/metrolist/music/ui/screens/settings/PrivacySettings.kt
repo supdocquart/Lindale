@@ -215,6 +215,8 @@ fun PrivacySettings(
             )
         )
 
+        // DESKTOP: hiding the window from capture is a Windows feature (SetWindowDisplayAffinity).
+        if (com.metrolist.music.platform.AppDirs.isWindows) {
         Spacer(modifier = Modifier.height(27.dp))
 
         Material3SettingsGroup(
@@ -242,6 +244,7 @@ fun PrivacySettings(
                 )
             )
         )
+        }
         Spacer(modifier = Modifier.height(16.dp))
     }
 

@@ -220,7 +220,7 @@ class MpvEngine private constructor(
                 add(File(dir, "desktop/appResources/windows/mpv"))
                 add(File(dir, "appResources/windows/mpv"))
             }
-            System.getenv("LOCALAPPDATA")?.let { add(File(it, "${com.metrolist.music.platform.AppBrand.NAME}/mpv")) }
+            add(File(com.metrolist.music.platform.AppDirs.local, "mpv"))
         }
 
         /** Null when libmpv is missing or fails to start; the caller then falls back to libVLC. */

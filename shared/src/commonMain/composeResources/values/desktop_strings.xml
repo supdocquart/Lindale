@@ -40,7 +40,7 @@
     <string name="appearance_lyrics_scroll_desc">Keeps the current line in view while the song plays.</string>
     <string name="appearance_library_playlist_desc">Shown at the top of Library > Playlists.</string>
     <string name="onboarding_welcome_title">Welcome to Lindalë</string>
-    <string name="onboarding_welcome_body">An ad-free YouTube Music player for Windows. Search, play, download songs and keep your library in sync. These steps take a minute and you can skip any of them.</string>
+    <string name="onboarding_welcome_body">An ad-free YouTube Music player for your computer. Search, play, download songs and keep your library in sync. These steps take a minute and you can skip any of them.</string>
     <string name="onboarding_signin_title">Sign in (optional)</string>
     <string name="onboarding_signin_body">Sign in with your Google account to get your YouTube Music library, liked songs, playlists and history. Lindale also works without an account.</string>
     <string name="onboarding_signin_button">Sign in with Google</string>
@@ -59,7 +59,7 @@ Ctrl+↑ / ↓: volume
 Shift+← / →: seek 5 seconds
 Ctrl+S: shuffle · Ctrl+R: repeat · Ctrl+M: mute
 
-Your keyboard\'s media keys and the Windows media panel (next to the volume popup) also control Lindale.</string>
+Your keyboard\'s media keys and your system\'s media controls (the Windows media panel, or your Linux desktop\'s media player widget) also control Lindale.</string>
     <string name="onboarding_next">Next</string>
     <string name="onboarding_back">Back</string>
     <string name="onboarding_skip">Skip</string>

@@ -29,12 +29,12 @@ object DesktopFiles {
 
     /** Roaming app data (settings, database, tokens). */
     val dataDir: File
-        get() = (dataRootOverride ?: File(System.getenv("APPDATA") ?: home, AppBrand.NAME)).apply { mkdirs() }
+        get() = (dataRootOverride ?: AppDirs.roaming).apply { mkdirs() }
 
     /** Local, disposable cache (images, shared files, downloads cache). */
     val cacheDir: File
         get() = (dataRootOverride?.let { File(it, "cache") }
-            ?: File(System.getenv("LOCALAPPDATA") ?: home, "${AppBrand.NAME}/cache")).apply { mkdirs() }
+            ?: File(AppDirs.local, "cache")).apply { mkdirs() }
 
     private fun ownerFrame(): Frame? {
         val focused = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow

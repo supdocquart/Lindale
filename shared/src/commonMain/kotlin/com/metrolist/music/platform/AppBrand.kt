@@ -44,3 +44,26 @@ object AppBrand {
         }
     }
 }
+
+/**
+ * DESKTOP: where Lindale keeps its files. Windows: %APPDATA%\Lindale (settings, database) and
+ * %LOCALAPPDATA%\Lindale (cache, logs). Linux: the XDG folders, ~/.local/share/lindale and
+ * ~/.cache/lindale, unless XDG_DATA_HOME / XDG_CACHE_HOME say otherwise.
+ */
+object AppDirs {
+    val isWindows: Boolean = System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)
+
+    private val home: String get() = System.getProperty("user.home")
+
+    private fun xdg(variable: String, fallback: String): File =
+        File(System.getenv(variable)?.takeIf { it.isNotBlank() } ?: "$home/$fallback", AppBrand.NAME.lowercase())
+
+    /** Settings, database, tokens. */
+    val roaming: File
+        get() = if (isWindows) File(System.getenv("APPDATA") ?: home, AppBrand.NAME) else xdg("XDG_DATA_HOME", ".local/share")
+
+    /** Disposable or machine-local files: caches, logs, native libraries. */
+    val local: File
+        get() = if (isWindows) File(System.getenv("LOCALAPPDATA") ?: home, AppBrand.NAME) else xdg("XDG_CACHE_HOME", ".cache")
+}
+

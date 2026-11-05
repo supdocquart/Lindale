@@ -101,8 +101,9 @@ class VlcEngine private constructor(
         }.toTypedArray()
 
         fun create(listener: AudioEngine.Listener, speed: Float, pitch: Float): VlcEngine? = runCatching {
-            val localAppData = System.getenv("LOCALAPPDATA") ?: System.getProperty("user.home")
-            val vlcBase = File(localAppData, "${com.metrolist.music.platform.AppBrand.NAME}/vlc")
+            // Windows: a VLC copied next to the app or into the local app folder. Linux: none of these
+            // exist and vlcj finds the system libvlc (the vlc package) by itself.
+            val vlcBase = File(com.metrolist.music.platform.AppDirs.local, "vlc")
             val candidateDirs = buildList {
                 // Packaged builds ship VLC next to the app (see paketle.bat).
                 System.getProperty("compose.application.resources.dir")?.let { add(File(it, "vlc")) }
