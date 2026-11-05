@@ -50,7 +50,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -71,6 +73,9 @@ import kotlin.math.roundToInt
 
 // DESKTOP: stop auto-skipping after this many consecutive failures to avoid spinning through a broken queue.
 private const val MAX_CONSECUTIVE_PLAYBACK_ERRORS = 5
+
+// DESKTOP: more new likes than this at once are a library sync, not something to download automatically.
+private const val MAX_AUTO_DOWNLOADS_PER_LIKE = 3
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DesktopPlayerConnection(
@@ -289,6 +294,29 @@ class DesktopPlayerConnection(
                     autoRadioQueueCached = it
                     // DESKTOP: mirrors the auto radio queue preference Android reads when building queues.
                     Timber.d("Auto radio queue preference: %s", it)
+                }
+        }
+
+        // DESKTOP: Player settings > "Download on like". Likes come from many menus and screens, so watch
+        // the liked songs instead of each like button. The first list after start-up is the baseline.
+        ioScope.launch {
+            var known: Set<String>? = null
+            AppContext.Default.dataStore.data
+                .map { it[com.metrolist.music.constants.AutoDownloadOnLikeKey] ?: false }
+                .distinctUntilChanged()
+                .combine(database.likedSongsByRowIdAsc()) { enabled, songs -> enabled to songs }
+                .collect { (enabled, songs) ->
+                    val ids = songs.mapTo(HashSet()) { it.id }
+                    val previous = known
+                    known = ids
+                    if (!enabled || previous == null) return@collect
+                    val fresh = songs.filter { it.id !in previous }
+                    // shortcut: a big batch is an account sync, not a click; download those by hand.
+                    if (fresh.size > MAX_AUTO_DOWNLOADS_PER_LIKE) return@collect
+                    fresh.forEach {
+                        Timber.i("Download on like: %s", it.id)
+                        com.metrolist.music.ui.component.DownloadCenter.enqueue(it.toMediaMetadata())
+                    }
                 }
         }
 
@@ -1179,8 +1207,16 @@ class DesktopPlayerConnection(
         service.playerVolume.value = state.volume.coerceIn(0f, 1f)
         // DESKTOP: upstream keeps repeat/shuffle in DataStore and skips them here; the desktop port
         // has no such startup source, so the persisted values are restored instead.
-        player.setRepeatMode(state.repeatMode)
-        player.shuffleModeEnabled = state.shuffleModeEnabled
+        // Player settings > "Remember shuffle and repeat" (on by default).
+        val rememberModes = runCatching {
+            kotlinx.coroutines.runBlocking {
+                AppContext.Default.dataStore.data.first()[com.metrolist.music.constants.RememberShuffleAndRepeatKey]
+            }
+        }.getOrNull() ?: true
+        if (rememberModes) {
+            player.setRepeatMode(state.repeatMode)
+            player.shuffleModeEnabled = state.shuffleModeEnabled
+        }
         if (state.currentMediaItemIndex == queueIndex) {
             player.internalPosition = state.currentPosition.coerceAtLeast(0L)
         }
