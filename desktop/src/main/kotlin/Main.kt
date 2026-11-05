@@ -85,10 +85,20 @@ private fun runApp() = application {
         exitApplication()
     }
     val nowPlaying by playerConnection.mediaMetadata.collectAsState()
+    val miniPlayer by com.metrolist.music.platform.MiniPlayerState.visible.collectAsState()
+    if (miniPlayer) {
+        com.metrolist.music.platform.MiniPlayerWindow(playerConnection) {
+            com.metrolist.music.platform.MiniPlayerState.visible.value = false
+            windowShown = true
+        }
+    }
     LindaleTray(
         player = playerConnection,
         nowPlaying = nowPlaying?.let { m -> listOf(m.title, m.artists.joinToString { it.name }).filter { it.isNotBlank() }.joinToString(" · ") },
-        onShow = { windowShown = true },
+        onShow = {
+            com.metrolist.music.platform.MiniPlayerState.visible.value = false
+            windowShown = true
+        },
         onQuit = quit,
     )
 
@@ -104,7 +114,7 @@ private fun runApp() = application {
             )
         },
         state = windowState,
-        visible = windowReady && windowShown,
+        visible = windowReady && windowShown && !miniPlayer,
         onKeyEvent = { event ->
             when {
                 event.type != KeyEventType.KeyDown -> false

@@ -58,6 +58,7 @@ import metrolist.shared.generated.resources.Res
 import metrolist.shared.generated.resources.favorite
 import metrolist.shared.generated.resources.favorite_border
 import metrolist.shared.generated.resources.fullscreen
+import metrolist.shared.generated.resources.picture_in_picture_alt
 import metrolist.shared.generated.resources.pause
 import metrolist.shared.generated.resources.play
 import metrolist.shared.generated.resources.repeat
@@ -212,6 +213,8 @@ fun DesktopPlayerBar(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.weight(0.3f),
             ) {
+                // DESKTOP: small always-on-top player window.
+                BarIcon(Res.drawable.picture_in_picture_alt, onClick = { com.metrolist.music.platform.MiniPlayerState.visible.value = true })
                 BarIcon(Res.drawable.fullscreen, onClick = onExpand)
                 Spacer(Modifier.width(4.dp))
                 BarIcon(
