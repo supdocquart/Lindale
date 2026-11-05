@@ -1,0 +1,32 @@
+# Builds the Linux .deb on GitHub's Ubuntu runner and keeps it as a workflow artifact (no release).
+# Start it by hand from the Actions tab ("Linux build").
+name: Linux build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deb:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Packaging tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fakeroot
+
+      - name: Build .deb
+        run: ./gradlew :desktop:packageDeb --no-configuration-cache --console=plain
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lindale-linux-deb
+          path: desktop/build/compose/binaries/main/deb/*.deb
+          retention-days: 14

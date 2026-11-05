@@ -40,6 +40,18 @@
 
 Requirements: Windows 10 or 11, 64-bit.
 
+### Linux (preview)
+
+Lindale also runs on Linux. There is no ready-made download yet; on Debian/Ubuntu-based systems build and install it with:
+
+```sh
+git clone https://github.com/supdocquart/Lindale.git
+cd Lindale
+./kur.sh
+```
+
+It plays through the system VLC (`libvlc5`), shows up in your desktop's media controls (MPRIS), and Discord Rich Presence works with the regular, Flatpak and Snap Discord apps. Settings live in `~/.local/share/lindale`, cache and logs in `~/.cache/lindale`.
+
 ## Build from source
 
 You need Git and a 64-bit **VLC 3.0** install (the app uses libVLC for playback; release builds bundle it).

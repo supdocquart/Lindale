@@ -70,7 +70,12 @@ compose.desktop {
             "-XX:SharedArchiveFile=${'$'}APPDIR/metrolist.jsa",
         )
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe)
+            targetFormats(
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe,
+                // Linux: build with `./gradlew :desktop:packageDeb` on a Linux machine; needs the system VLC (libvlc5).
+                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
+            )
             packageName = "Lindale"
             // Windows installers need a numeric version; the "-beta" label lives in BuildConfig.VERSION_NAME.
             packageVersion = "0.2.0"
@@ -87,6 +92,14 @@ compose.desktop {
                 upgradeUuid = "1ca9abb7-22db-403d-a97f-d99f01612e32"
                 perUserInstall = true
                 dirChooser = true
+            }
+            linux {
+                iconFile.set(project.file("icon.png"))
+                packageName = "lindale"
+                appCategory = "AudioVideo"
+                menuGroup = "AudioVideo;Audio;Player"
+                debMaintainer = "supdocquart@users.noreply.github.com"
+                shortcut = true
             }
         }
     }
