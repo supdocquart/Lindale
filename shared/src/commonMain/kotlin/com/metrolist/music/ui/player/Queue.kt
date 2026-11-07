@@ -708,7 +708,9 @@ fun Queue(
                     val safeFrom = (from - headerItems).coerceIn(0, queueWindows.lastIndex)
                     val safeTo = (to - headerItems).coerceIn(0, queueWindows.lastIndex)
 
-                    if (!playerConnection.player.shuffleModeEnabled) {
+                    // DESKTOP: shuffle reorders the real queue on desktop, so a drag is always a plain move
+                    // (the shuffle-order branch below was a no-op and the dragged song jumped back).
+                    if (true) {
                         playerConnection.player.moveMediaItem(safeFrom, safeTo)
                     } else {
                         playerConnection.player.setShuffleOrder(

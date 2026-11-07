@@ -16,9 +16,14 @@ import com.metrolist.music.constants.AutoplayKey
 import com.metrolist.music.constants.DisableLoadMoreWhenRepeatAllKey
 import com.metrolist.music.constants.HideExplicitKey
 import com.metrolist.music.constants.HideVideoSongsKey
+import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.LoudnessLevel
 import com.metrolist.music.constants.LoudnessLevelKey
+import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.PersistentQueueKey
+import com.metrolist.music.constants.PersistentShuffleAcrossQueuesKey
+import com.metrolist.music.constants.PreventDuplicateTracksInQueueKey
+import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -114,6 +119,19 @@ class DesktopPlayerConnection(
 
     @Volatile
     private var autoRadioQueueCached: Boolean = true
+
+    // DESKTOP: Player settings that used to do nothing on desktop (see where each one is read).
+    @Volatile
+    private var preventDuplicatesCached: Boolean = false
+
+    @Volatile
+    private var pauseOnMuteCached: Boolean = false
+
+    @Volatile
+    private var similarContentCached: Boolean = true
+
+    @Volatile
+    private var historyThresholdMs: Long = 30_000L
 
     // DESKTOP: mirrors upstream's cachedPersistentQueue so the queue can be saved and restored across restarts.
     @Volatile
@@ -212,7 +230,20 @@ class DesktopPlayerConnection(
 
         // Volume synchronization
         scope.launch {
-            service.playerVolume.collect { applyVolume() }
+            service.playerVolume.collect {
+                applyVolume()
+                onMuteStateChanged(it <= 0f || isMuted.value)
+            }
+        }
+        scope.launch {
+            AppContext.Default.dataStore.data
+                .map { prefs ->
+                    preventDuplicatesCached = prefs[PreventDuplicateTracksInQueueKey] ?: false
+                    pauseOnMuteCached = prefs[PauseOnMute] ?: false
+                    similarContentCached = prefs[SimilarContent] ?: true
+                    historyThresholdMs = ((prefs[HistoryDuration] ?: 30f) * 1000f).toLong().coerceAtLeast(0L)
+                }
+                .collect {}
         }
 
         // DESKTOP: cache audio quality; Android reads the same key in MusicService.
@@ -349,8 +380,12 @@ class DesktopPlayerConnection(
 
         // Position & duration polling loop while active
         scope.launch {
+            var lastTick = System.nanoTime()
             while (isActive) {
                 val mp = engine
+                val nowTick = System.nanoTime()
+                if (isPlaying.value) listenedMs += (nowTick - lastTick) / 1_000_000L
+                lastTick = nowTick
                 if (mp != null && isPlaying.value) {
                     val time = mp.timeMs
                     if (time >= 0L) {
@@ -495,19 +530,7 @@ class DesktopPlayerConnection(
     // DESKTOP: suspend so autoplay can fetch the radio queue when the queue ends.
     private suspend fun onTrackEndedNaturally() {
         val currentMeta = mediaMetadata.value
-        val dur = player.duration.takeIf { it > 0 } ?: ((currentMeta?.duration ?: 0) * 1000L)
-        if (currentMeta != null && dur > 0) {
-            database.query {
-                incrementTotalPlayTime(currentMeta.id, dur)
-                insert(
-                    Event(
-                        songId = currentMeta.id,
-                        timestamp = nowLocalDateTime(),
-                        playTime = dur,
-                    )
-                )
-            }
-        }
+        recordListen(endedNaturally = true)
 
         if (service.sleepTimer.isActive && service.sleepTimer.pauseWhenSongEnd) {
             service.sleepTimer.clear()
@@ -530,7 +553,7 @@ class DesktopPlayerConnection(
                 val next = currentMediaItemIndex.value + 1
                 if (next < player.mediaItemCount) {
                     playIndex(next, 0L)
-                } else if (autoplayCached) {
+                } else if (autoplayCached && similarContentCached) {
                     // DESKTOP: the queue ended; continue with the last song's radio instead of stopping.
                     if (loadRadioIntoQueue()) {
                         playIndex(currentMediaItemIndex.value + 1, 0L)
@@ -607,6 +630,95 @@ class DesktopPlayerConnection(
         return true
     }
 
+    /**
+     * DESKTOP: history used to be written only when a song played to its very end, so songs skipped
+     * after minutes never showed up. Like upstream, a song now counts once it has been listened to for
+     * Player settings > "History duration" (a song that ends sooner counts when it ends).
+     */
+    @Volatile
+    private var listenedMs = 0L
+
+    private fun recordListen(endedNaturally: Boolean) {
+        val meta = mediaMetadata.value
+        val played = listenedMs
+        listenedMs = 0L
+        if (meta == null || played <= 0L) return
+        if (played < historyThresholdMs && !endedNaturally) return
+        database.query {
+            incrementTotalPlayTime(meta.id, played)
+            insert(Event(songId = meta.id, timestamp = nowLocalDateTime(), playTime = played))
+        }
+    }
+
+    /** DESKTOP: Player settings > "Pause music when media is muted"; resumes when unmuted. */
+    @Volatile
+    private var pausedByMute = false
+
+    private fun onMuteStateChanged(muted: Boolean) {
+        if (muted) {
+            if (pauseOnMuteCached && isPlaying.value) {
+                pausedByMute = true
+                pause()
+            }
+        } else if (pausedByMute) {
+            pausedByMute = false
+            play()
+        }
+    }
+
+    /**
+     * DESKTOP: Player settings > "Prevent duplicate tracks in queue": a song that is already queued is
+     * moved instead of added twice (the song that is playing right now is left where it is).
+     */
+    private fun withoutQueuedDuplicates(items: List<MediaItem>): List<MediaItem> {
+        if (!preventDuplicatesCached) return items
+        val playing = player.itemsList.getOrNull(currentMediaItemIndex.value)?.mediaId
+        val ids = items.map { it.mediaId }.toSet()
+        for (i in player.itemsList.indices.reversed()) {
+            val id = player.itemsList[i].mediaId
+            if (id in ids && i != currentMediaItemIndex.value) player.removeMediaItem(i)
+        }
+        return items.filter { it.mediaId != playing }
+    }
+
+    /**
+     * DESKTOP: shuffle used to only flip a flag, so next, previous and the end of a song still went
+     * down the list in order. Turning it on now reorders the real queue: the current song stays and
+     * everything else is shuffled, so playback and the queue screen agree. Turning it off puts the
+     * songs back in the order they had (songs added meanwhile go to the end).
+     */
+    private var unshuffledOrder: List<MediaItem>? = null
+
+    private fun applyShuffle(enabled: Boolean) {
+        if (shuffleModeEnabled.value == enabled) return
+        shuffleModeEnabled.value = enabled
+        val items = player.itemsList
+        if (items.isEmpty()) {
+            unshuffledOrder = null
+            return
+        }
+        val current = items[currentMediaItemIndex.value.coerceIn(items.indices)]
+        if (enabled) {
+            unshuffledOrder = items.toList()
+            player.setItemsInternal(shuffledAround(items, current), 0)
+        } else {
+            val original = unshuffledOrder
+            unshuffledOrder = null
+            if (original == null) return
+            val remaining = items.toMutableList()
+            val restored = original.mapNotNull { o ->
+                val i = remaining.indexOfFirst { it === o }
+                if (i >= 0) remaining.removeAt(i) else null
+            } + remaining
+            player.setItemsInternal(restored, restored.indexOfFirst { it === current }.coerceAtLeast(0))
+        }
+        Timber.d("Shuffle %s: %d items", if (enabled) "on" else "off", items.size)
+    }
+
+    /** [current] first, then every other item in random order. */
+    private fun shuffledAround(items: List<MediaItem>, current: MediaItem): List<MediaItem> =
+        listOf(current) + items.filterNot { it === current }.shuffled()
+
     override fun playQueue(queue: Queue) {
         activeQueue = queue
         // DESKTOP: a new queue starts with a clean auto load more state.
@@ -629,8 +741,22 @@ class DesktopPlayerConnection(
                     return@launch
                 }
 
-                val startIndex = status.mediaItemIndex.coerceIn(0, items.lastIndex)
-                player.setItemsInternal(items, startIndex)
+                var startIndex = status.mediaItemIndex.coerceIn(0, items.lastIndex)
+                unshuffledOrder = null
+                if (shuffleModeEnabled.value) {
+                    // DESKTOP: like upstream, a new queue turns shuffle off unless
+                    // Player settings > "Persistent shuffle" keeps it on (then the new queue is shuffled).
+                    if (AppContext.Default.dataStore.get(PersistentShuffleAcrossQueuesKey, false)) {
+                        unshuffledOrder = items
+                        player.setItemsInternal(shuffledAround(items, items[startIndex]), 0)
+                        startIndex = 0
+                    } else {
+                        shuffleModeEnabled.value = false
+                        player.setItemsInternal(items, startIndex)
+                    }
+                } else {
+                    player.setItemsInternal(items, startIndex)
+                }
                 playIndex(startIndex, status.position)
             } catch (e: Exception) {
                 Timber.e(e, "Failed to load queue")
@@ -653,6 +779,7 @@ class DesktopPlayerConnection(
     private fun playIndex(index: Int, startPositionMs: Long = 0L) {
         val items = player.itemsList
         if (index !in items.indices) return
+        recordListen(endedNaturally = false)
 
         player.updateCurrentIndexInternal(index)
         val item = items[index]
@@ -990,6 +1117,8 @@ class DesktopPlayerConnection(
     override fun addToQueue(item: MediaItem) = addToQueue(listOf(item))
 
     override fun addToQueue(items: List<MediaItem>) {
+        @Suppress("NAME_SHADOWING")
+        val items = withoutQueuedDuplicates(items)
         if (items.isEmpty()) return
         val wasEmpty = player.mediaItemCount == 0
         player.addMediaItems(items)
@@ -1003,6 +1132,8 @@ class DesktopPlayerConnection(
     override fun playNext(item: MediaItem) = playNext(listOf(item))
 
     override fun playNext(items: List<MediaItem>) {
+        @Suppress("NAME_SHADOWING")
+        val items = withoutQueuedDuplicates(items)
         if (items.isEmpty()) return
         val wasEmpty = player.mediaItemCount == 0
         val insertIdx = if (wasEmpty) 0 else (currentMediaItemIndex.value + 1).coerceAtMost(player.mediaItemCount)
@@ -1039,6 +1170,7 @@ class DesktopPlayerConnection(
     override fun setMuted(muted: Boolean) {
         isMuted.value = muted
         applyVolume()
+        onMuteStateChanged(muted || service.playerVolume.value <= 0f)
     }
 
     override fun toggleRepeatMode() {
@@ -1215,7 +1347,8 @@ class DesktopPlayerConnection(
         }.getOrNull() ?: true
         if (rememberModes) {
             player.setRepeatMode(state.repeatMode)
-            player.shuffleModeEnabled = state.shuffleModeEnabled
+            // The saved queue is already in shuffled order; only the flag comes back.
+            shuffleModeEnabled.value = state.shuffleModeEnabled
         }
         if (state.currentMediaItemIndex == queueIndex) {
             player.internalPosition = state.currentPosition.coerceAtLeast(0L)
@@ -1277,6 +1410,7 @@ class DesktopPlayerConnection(
 
     fun release() {
         // DESKTOP: runs on app close, so the last queue and position are written synchronously.
+        recordListen(endedNaturally = false)
         saveQueueToDisk()
         playJob?.cancel()
         engine?.release()
@@ -1322,7 +1456,7 @@ class DesktopPlayerConnection(
         override var shuffleModeEnabled: Boolean
             get() = this@DesktopPlayerConnection.shuffleModeEnabled.value
             set(value) {
-                this@DesktopPlayerConnection.shuffleModeEnabled.value = value
+                applyShuffle(value)
             }
 
         override val currentMediaItem: MediaItem?
