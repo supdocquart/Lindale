@@ -85,6 +85,7 @@ fun QueueMenu(
     playerBottomSheetState: BottomSheetState,
     onShowDetailsDialog: () -> Unit,
     onDismiss: () -> Unit,
+    onRemoveFromQueue: (() -> Unit)? = null
 ) {
     mediaMetadata ?: return
     val navController = LocalNavController.current
@@ -326,7 +327,7 @@ fun QueueMenu(
         // Play next / Add to queue
         item {
             Material3MenuGroup(
-                items = listOf(
+                items = listOfNotNull(
                     Material3MenuItemData(
                         title = { Text(text = stringResource(Res.string.play_next)) },
                         description = { Text(text = stringResource(Res.string.play_next_desc)) },
@@ -362,7 +363,22 @@ fun QueueMenu(
                                 playerConnection.addToQueue(mediaMetadata.toMediaItem())
                             }
                         }
-                    )
+                    ),
+                    if (onRemoveFromQueue != null) {
+                        Material3MenuItemData(
+                            title = { Text(text = stringResource(Res.string.remove_from_queue)) },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.delete), // Uses trashcan icon
+                                    contentDescription = null,
+                                )
+                            },
+                            onClick = {
+                                onDismiss()
+                                onRemoveFromQueue.invoke()
+                            }
+                        )
+                    } else null
                 )
             )
         }

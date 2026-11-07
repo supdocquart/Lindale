@@ -52,6 +52,12 @@ kotlin {
                 implementation(libs.tinypinyin)
             }
         }
+        // DESKTOP: upstream unit tests that run on the plain JVM (no Robolectric), plus desktop ones.
+        val desktopTest by getting {
+            dependencies {
+                implementation("junit:junit:4.13.2")
+            }
+        }
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)

@@ -33,21 +33,30 @@ interface Queue {
         // DESKTOP: also run when only "hide clean duplicates" is on.
         fun filterExplicit(enabled: Boolean = true) =
             if (enabled || com.metrolist.innertube.models.CleanDuplicates.enabled) {
-                copy(
-                    items = items.filterExplicit(enabled),
-                )
+                filterItems { it.filterExplicit(enabled) }
             } else {
                 this
             }
 
         fun filterVideoSongs(disableVideos: Boolean = false) =
-            if (disableVideos) {
-                copy(
-                    items = items.filterVideoSongs(true),
-                )
-            } else {
-                this
-            }
+            if (disableVideos) filterItems { it.filterVideoSongs(true) } else this
+
+        // Keeps mediaItemIndex on the same song; if that song is removed, starts at the next kept one.
+        // DESKTOP: takes a list filter instead of a per-item test so "hide clean duplicates", which
+        // compares songs with each other, keeps working.
+        private fun filterItems(filter: (List<MediaItem>) -> List<MediaItem>): Status {
+            val filtered = filter(items)
+            if (filtered.size == items.size) return this
+            val kept = java.util.Collections.newSetFromMap(java.util.IdentityHashMap<MediaItem, Boolean>())
+            kept.addAll(filtered)
+            val start = items.getOrNull(mediaItemIndex)
+            val keptBefore = items.take(mediaItemIndex.coerceAtLeast(0)).count { it in kept }
+            return copy(
+                items = filtered,
+                mediaItemIndex = keptBefore.coerceAtMost((filtered.size - 1).coerceAtLeast(0)),
+                position = if (start != null && start in kept) position else 0L,
+            )
+        }
     }
 }
 
