@@ -336,7 +336,7 @@ data class HomePage(
                         EpisodeItem(
                             id = videoId,
                             title = titleText,
-                            author = PageHelper.extractArtists(renderer.subtitle?.runs).firstOrNull(),
+                            author = PodcastPage.extractPodcastByline(renderer.subtitle?.runs).firstOrNull(),
                             podcast = podcastAlbum,
                             duration =
                                 subtitleRuns

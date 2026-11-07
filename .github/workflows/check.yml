@@ -1,7 +1,8 @@
 # Runs on every push to main / ozellikler (and by hand from the Actions tab):
-# - Windows: builds the app with the bundled VLC, starts it, checks the start-up log and takes a
-#   screenshot, and keeps the built app as a downloadable test build (no installer, no release).
-# - Linux: the end-to-end UI test (tools/ui-test/run.sh).
+# - Windows: builds the app with the bundled VLC, starts it, searches and plays a song
+#   (tools/ci/windows-check.ps1, screenshots of each step), and keeps the built app as a
+#   downloadable test build (no installer, no release).
+# - Linux: innertube unit tests and the end-to-end UI test (tools/ui-test/run.sh).
 name: Check
 
 on:
@@ -87,6 +88,9 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq xvfb pulseaudio dbus dbus-x11 libvlc5 vlc-plugin-base ffmpeg stalonetray python3-xlib
+
+      - name: Unit tests (innertube parsers, playback registration)
+        run: ./gradlew :innertube:desktopTest --console=plain
 
       - name: UI test
         run: sh tools/ui-test/run.sh

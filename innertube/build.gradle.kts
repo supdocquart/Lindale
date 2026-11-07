@@ -27,5 +27,13 @@ kotlin {
                 implementation(libs.ktor.client.encoding)
             }
         }
+        // DESKTOP: upstream's JUnit tests live in src/test/kotlin (Android layout); run them on the JVM target.
+        val desktopTest by getting {
+            kotlin.srcDir("src/test/kotlin")
+            dependencies {
+                implementation("junit:junit:4.13.2")
+                implementation(libs.ktor.client.mock)
+            }
+        }
     }
 }
