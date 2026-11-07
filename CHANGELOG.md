@@ -6,11 +6,18 @@
 - **System tray**: play/pause, next, previous, show and quit; optional "keep playing in the tray when closed"
 - **Mini player**: small always-on-top window with cover, title, controls and progress
 - **Update check**: finds new (pre-)releases, shows "new version available" with formatted release notes and opens the download page
+- **Up to date with Metrolist** (main of 2026-11-03): library sync keeps local likes and songs and no longer brings back songs deleted on YouTube; songs hidden by the explicit/video filters no longer shift which song a list starts with; artist, owner and byline parsing fixes; "Remove from queue" in the queue menu; translated search section titles; playlist sort by artist then album; translation updates
+- **Playback**: InnerTubeX 0.11.6 (sturdier stream resolution, faster first play)
+- **YouTube Music history**: songs played in Lindale show up in your YouTube Music history and recommendations (signed in, after the history duration)
+- **Shuffle** really reorders the queue (next/previous follow it) and turning it off restores the order, also after a restart; "Persistent shuffle" and "Shuffle playlist or album first" work
+- Player settings that did nothing on desktop now work: history duration, pause listen history, pause on mute, prevent duplicate tracks in queue, similar content, automatic sleep timer, image cache size
+- Mouse-wheel scrolling no longer leaves the pull-to-refresh indicator stuck on Home and library pages
 - "Download on like" and "Remember shuffle and repeat" now work on desktop
 - Welcome guide, import, tray and other new texts translated into all 52 languages
 - Experimental mpv engine (`tools\mpv-dene.bat`), VLC stays the default
 - Removed ~1,250 lines of unused phone player code
-- Linux end-to-end UI test (`tools/ui-test/run.sh`)
+- Linux end-to-end UI test (`tools/ui-test/run.sh`); every push is now checked on GitHub: Windows build that starts, searches and plays a song (with a downloadable test build), Linux UI test, and upstream's unit tests (82)
+- `tools/upstream_sync.py` for bringing over Metrolist updates
 
 ## 0.2.0-beta
 
