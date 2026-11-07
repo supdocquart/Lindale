@@ -82,8 +82,8 @@ interface DatabaseDao {
     @Query("SELECT * FROM song WHERE id = :songId LIMIT 1")
     suspend fun songEntity(songId: String): SongEntity?
 
-    @Query("SELECT * FROM song WHERE liked ORDER BY title")
-    suspend fun likedSongEntitiesByNameAsc(): List<SongEntity>
+    @Query("SELECT id FROM song WHERE liked")
+    suspend fun likedSongIds(): List<String>
 
     @Query("SELECT * FROM song WHERE inLibrary IS NOT NULL ORDER BY title")
     suspend fun librarySongEntitiesByNameAsc(): List<SongEntity>
@@ -1876,9 +1876,6 @@ interface DatabaseDao {
                 explicit = albumPage.album.explicit || albumPage.songs.any { it.explicit },
             ),
         )
-        if (artists?.size != albumPage.album.artists?.size) {
-            artists?.forEach(::delete)
-        }
         albumPage.songs
             .map(SongItem::toMediaMetadata)
             .onEach(::insert)

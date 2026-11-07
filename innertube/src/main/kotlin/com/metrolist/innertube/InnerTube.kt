@@ -7,6 +7,7 @@ import com.metrolist.innertube.models.YouTubeLocale
 import com.metrolist.innertube.models.response.NextResponse
 import com.metrolist.innertubex.InnerTube as InnerTubeX
 import com.metrolist.innertubex.InnerTubeHttpException
+import com.metrolist.innertubex.models.response.PlayerResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -20,6 +21,7 @@ import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.ContentType
+import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
@@ -40,10 +42,12 @@ import java.util.concurrent.TimeUnit
  * Compatibility facade that keeps Metrolist's parsed response models while InnerTubeX owns
  * YouTube request construction, session handling, retries, and authenticated mutations.
  */
-class InnerTube {
+class InnerTube(
+    client: HttpClient? = null,
+) {
     private var configuredProxy: Proxy? = null
     private var configuredProxyAuth: String? = null
-    private var httpClient = createClient()
+    private var httpClient = client ?: createClient()
     private var innerTubeX = InnerTubeX(httpClient)
     private var transportGeneration = 0L
 
@@ -194,7 +198,8 @@ class InnerTube {
         query: String? = null,
         params: String? = null,
         continuation: String? = null,
-    ) = innerTubeX.search(client, query, params, continuation)
+        setLogin: Boolean = false,
+    ) = innerTubeX.search(client, query, params, continuation, setLogin = setLogin)
 
     suspend fun player(
         client: YouTubeClient,
@@ -205,11 +210,37 @@ class InnerTube {
     ) = innerTubeX.player(client, videoId, playlistId, signatureTimestamp, poToken)
 
     suspend fun registerPlayback(
-        url: String,
+        videoId: String,
         cpn: String,
-        playlistId: String?,
-        client: YouTubeClient = YouTubeClient.WEB_REMIX,
-    ) = innerTubeX.registerPlayback(client, url, cpn, playlistId).requireSuccess("registerPlayback")
+        isHistoryEnabled: () -> Boolean = { true },
+    ): Boolean {
+        val transport = innerTubeX
+        val session = transport.sessionSnapshot()
+        if (session.cookie.isNullOrBlank() || !isHistoryEnabled()) return false
+        // Streaming clients and cached downloads may not carry account-bound tracking URLs.
+        val response = transport.playerWithSessionBound(
+            client = YouTubeClient.WEB_REMIX,
+            videoId = videoId,
+            playlistId = null,
+            signatureTimestamp = null,
+            poToken = null,
+            requestVisitorData = null,
+            requestSession = session,
+        ).requireSuccess("playbackTracking").body<PlayerResponse>()
+        val trackingUrl = requireNotNull(response.playbackTracking?.videostatsPlaybackUrl?.baseUrl) {
+            "No playback tracking URL returned"
+        }
+        require(Url(trackingUrl).encodedPath == "/api/stats/playback") { "Invalid playback tracking URL" }
+        if (transport !== innerTubeX || transport.sessionSnapshot() != session || !isHistoryEnabled()) return false
+        transport.registerPlaybackWithSession(
+            client = YouTubeClient.WEB_REMIX,
+            url = trackingUrl,
+            cpn = cpn,
+            playlistId = null,
+            requestSession = session,
+        ).requireSuccess("registerPlayback")
+        return true
+    }
 
     suspend fun browse(
         client: YouTubeClient,
@@ -237,7 +268,7 @@ class InnerTube {
     suspend fun getSearchSuggestions(
         client: YouTubeClient,
         input: String,
-    ) = innerTubeX.getSearchSuggestions(client, input)
+    ) = innerTubeX.getSearchSuggestions(client, input, setLogin = false)
 
     suspend fun getQueue(
         client: YouTubeClient,
