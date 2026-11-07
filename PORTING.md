@@ -4,10 +4,10 @@ How Lindale differs from Android Metrolist, and how upstream updates are brought
 
 ## Base
 
-- Upstream: [MetrolistGroup/Metrolist](https://github.com/MetrolistGroup/Metrolist) v13.7.0
-  (versionCode 153, commit `7c5ba3ad22cb562d337897f82163a2b7fce665f3`).
+- Upstream: [MetrolistGroup/Metrolist](https://github.com/MetrolistGroup/Metrolist) `main` at commit
+  `e6fea3b36c68841bad21daa6252e1d69ecd3afbe` (2026-11-03, after v13.7.0), InnerTubeX v0.11.6.
 - A clean copy of those upstream sources lives on the **`upstream` branch** (reference only: not
-  built, not edited by hand). It is the merge base for upstream updates.
+  built, not edited by hand); its `VERSION.txt` names the commit. It is the base for the next sync.
 - There is no shared git history with upstream (the port started from a source snapshot).
 
 Guidelines:
@@ -82,10 +82,24 @@ status bar hiding, Android permission requests, and the floating shuffle button 
 Cadence: once a month. Exceptions, taken right away: YouTube changes that break playback,
 search or sign-in, and security fixes.
 
-1. Update the `upstream` branch to the new upstream release (same file set) and its `VERSION.txt`.
-2. `git diff` the `upstream` branch against its previous commit to see what changed.
-3. Apply the changes under `shared/` using the path mapping above (`git apply --3way`), resolving
-   conflicts with the API mapping (e.g. `Context` → `AppContext`).
-4. Port Android service / ExoPlayer changes to `DesktopPlayerConnection` by hand.
-5. Build (`gradlew.bat :desktop:compileKotlin`), run `gradlew.bat :desktop:smokeTest`, test the
-   app, and update the base version at the top of this file.
+1. Clone upstream next to this repo and run the merge tool from the repo root:
+   `python3 tools/upstream_sync.py ../metrolist <commit in VERSION.txt> <new commit>`.
+   It 3-way merges every changed Kotlin source, innertube test and string resource (base = the
+   upstream revision closest to our file), keeps line endings, and removes duplicate string names.
+2. Review `git diff`: resolve conflict markers with the API mapping above (e.g. `R.string` →
+   `Res.string`, `Context` → `AppContext`) and revert changes that only concern the phone UI or
+   Android APIs (see "Left out on purpose" below).
+3. Port Android service / ExoPlayer changes (`MusicService`, `DownloadUtil`, ...) to
+   `DesktopPlayerConnection` and `DownloadCenter` by hand; the tool lists those files as SKIP.
+4. Build and test: `gradlew :desktop:compileKotlin :innertube:desktopTest :shared:desktopTest`,
+   then push; the "Check" workflow builds, starts and plays a song on Windows and runs the Linux
+   UI test.
+5. Move the `upstream` branch to the new commit (same file set, `VERSION.txt` updated) and update
+   the base at the top of this file.
+
+### Left out on purpose (sync of 2026-11-08)
+
+- `ui/player/Player.kt`: phone player layout (not used on desktop).
+- `ui/component/PlayerSlider.kt`, `VolumeSlider.kt`: need a newer Material 3 `SliderState` API.
+- `extensions/MediaItemExt.kt`: Android Auto extras. `api/OpenRouterService.kt`: AI translation is
+  hidden on desktop. Widgets, Android Auto, Cast and task-clear fixes in `MusicService`.
