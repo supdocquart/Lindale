@@ -6,6 +6,7 @@ import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertubex.extraction.ContentHints
+import com.metrolist.innertubex.extraction.generateClientPlaybackNonce
 import com.metrolist.music.constants.AudioNormalizationKey
 import com.metrolist.music.constants.AudioQuality
 import com.metrolist.music.constants.AudioQualityKey
@@ -19,11 +20,20 @@ import com.metrolist.music.constants.HideVideoSongsKey
 import com.metrolist.music.constants.HistoryDuration
 import com.metrolist.music.constants.LoudnessLevel
 import com.metrolist.music.constants.LoudnessLevelKey
+import com.metrolist.music.constants.PauseListenHistoryKey
 import com.metrolist.music.constants.PauseOnMute
 import com.metrolist.music.constants.PersistentQueueKey
 import com.metrolist.music.constants.PersistentShuffleAcrossQueuesKey
 import com.metrolist.music.constants.PreventDuplicateTracksInQueueKey
+import com.metrolist.music.constants.ShufflePlaylistFirstKey
 import com.metrolist.music.constants.SimilarContent
+import com.metrolist.music.constants.SleepTimerCustomDaysKey
+import com.metrolist.music.constants.SleepTimerDayTimesKey
+import com.metrolist.music.constants.SleepTimerDefaultKey
+import com.metrolist.music.constants.SleepTimerEnabledKey
+import com.metrolist.music.constants.SleepTimerEndTimeKey
+import com.metrolist.music.constants.SleepTimerRepeatKey
+import com.metrolist.music.constants.SleepTimerStartTimeKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -48,6 +58,7 @@ import com.metrolist.music.utils.get
 import com.metrolist.music.utils.normalizationGainMb
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -132,6 +143,12 @@ class DesktopPlayerConnection(
 
     @Volatile
     private var historyThresholdMs: Long = 30_000L
+
+    @Volatile
+    private var pauseListenHistoryCached: Boolean = false
+
+    @Volatile
+    private var shufflePlaylistFirstCached: Boolean = false
 
     // DESKTOP: mirrors upstream's cachedPersistentQueue so the queue can be saved and restored across restarts.
     @Volatile
@@ -242,6 +259,8 @@ class DesktopPlayerConnection(
                     pauseOnMuteCached = prefs[PauseOnMute] ?: false
                     similarContentCached = prefs[SimilarContent] ?: true
                     historyThresholdMs = ((prefs[HistoryDuration] ?: 30f) * 1000f).toLong().coerceAtLeast(0L)
+                    pauseListenHistoryCached = prefs[PauseListenHistoryKey] ?: false
+                    shufflePlaylistFirstCached = prefs[ShufflePlaylistFirstKey] ?: false
                 }
                 .collect {}
         }
@@ -384,7 +403,10 @@ class DesktopPlayerConnection(
             while (isActive) {
                 val mp = engine
                 val nowTick = System.nanoTime()
-                if (isPlaying.value) listenedMs += (nowTick - lastTick) / 1_000_000L
+                if (isPlaying.value) {
+                    listenedMs += (nowTick - lastTick) / 1_000_000L
+                    remoteListen?.let { if (listenedMs >= historyThresholdMs) reportRemoteListen(it, final = false) }
+                }
                 lastTick = nowTick
                 if (mp != null && isPlaying.value) {
                     val time = mp.timeMs
@@ -469,6 +491,8 @@ class DesktopPlayerConnection(
         override fun onPlaying() {
             // DESKTOP: a successful start breaks the auto-skip error streak.
             consecutivePlaybackErrors = 0
+            // Paused -> playing (not a track change or the end of buffering), like upstream's trigger.
+            if (!player.playWhenReady) startAutomaticSleepTimerIfDue()
             playbackState.value = Player.STATE_READY
             isPlaying.value = true
             player.playWhenReady = true
@@ -642,12 +666,105 @@ class DesktopPlayerConnection(
         val meta = mediaMetadata.value
         val played = listenedMs
         listenedMs = 0L
+        remoteListen?.let { if (played >= historyThresholdMs) reportRemoteListen(it, final = true) }
+        remoteListen = null
+        // Privacy > "Pause listen history" (upstream skips the event and the play time as well).
+        if (pauseListenHistoryCached) return
         if (meta == null || played <= 0L) return
         if (played < historyThresholdMs && !endedNaturally) return
         database.query {
             incrementTotalPlayTime(meta.id, played)
             insert(Event(songId = meta.id, timestamp = nowLocalDateTime(), playTime = played))
         }
+    }
+
+    /**
+     * DESKTOP: YouTube Music history, like upstream's YouTubeHistoryReporter. Once a song has been
+     * listened to for the history duration, YouTube is told about it through a fresh, account-bound
+     * tracking request (so downloaded songs count too); the account's history and recommendations
+     * then include what was played here. Needs a signed-in account; off while listen history is
+     * paused. A failed report gets one more try when the song ends, with the same playback nonce.
+     */
+    private class RemoteListen(val videoId: String, val nonce: String) {
+        @Volatile var attempts = 0
+        @Volatile var inFlight = false
+        @Volatile var sent = false
+    }
+
+    @Volatile
+    private var remoteListen: RemoteListen? = null
+
+    private fun reportRemoteListen(listen: RemoteListen, final: Boolean) {
+        if (pauseListenHistoryCached || YouTube.cookie.isNullOrBlank()) return
+        val allowed = if (final) 2 else 1
+        if (listen.sent || listen.inFlight || listen.attempts >= allowed) return
+        listen.attempts = allowed
+        listen.inFlight = true
+        ioScope.launch {
+            try {
+                listen.sent = YouTube.registerPlayback(listen.videoId, listen.nonce) { !pauseListenHistoryCached }
+                    .onFailure { Timber.w("YouTube history: report failed (%s)", it::class.simpleName) }
+                    .getOrDefault(false)
+                if (listen.sent) Timber.d("YouTube history: reported %s", listen.videoId)
+            } finally {
+                listen.inFlight = false
+            }
+        }
+    }
+
+    /**
+     * DESKTOP: Player settings > automatic sleep timer, ported from upstream PlayerConnection: when
+     * music starts inside the configured days and time window, the sleep timer starts with the
+     * default length. Windows may run past midnight (22:00-06:00).
+     */
+    private fun startAutomaticSleepTimerIfDue() {
+        scope.launch {
+            val minutes = withContext(Dispatchers.IO) { runCatching { automaticSleepTimerMinutes() }.getOrNull() }
+            if (minutes != null && minutes > 0 && !service.sleepTimer.isActive) {
+                Timber.i("Automatic sleep timer started: %d minutes", minutes)
+                service.sleepTimer.start(minutes)
+            }
+        }
+    }
+
+    private fun automaticSleepTimerMinutes(): Int? {
+        val store = AppContext.Default.dataStore
+        if (!store.get(SleepTimerEnabledKey, false) || service.sleepTimer.isActive) return null
+        val repeat = store.get(SleepTimerRepeatKey, "daily")
+        val start = store.get(SleepTimerStartTimeKey, "09:00")
+        val end = store.get(SleepTimerEndTimeKey, "23:00")
+        val minutes = store.get(SleepTimerDefaultKey, 30f).roundToInt()
+        val customDays = store.get(SleepTimerCustomDaysKey, "0,1,2,3,4")
+        val dayTimes = store.get(SleepTimerDayTimesKey, "")
+
+        val now = java.time.LocalTime.now()
+        // 0 = Monday ... 6 = Sunday, as in upstream.
+        val day = java.time.LocalDate.now().dayOfWeek.value - 1
+        val dayAllowed = when (repeat) {
+            "daily", "weekdays_weekends" -> true
+            "weekdays" -> day in 0..4
+            "weekends" -> day in 5..6
+            "custom" -> day in customDays.split(",").mapNotNull { it.trim().toIntOrNull() }
+            else -> false
+        }
+        if (!dayAllowed) return null
+
+        // "daily" uses the single window; the other modes keep a window per day ("day=HH:mm-HH:mm;...").
+        val perDay = dayTimes.split(";").mapNotNull { entry ->
+            val (d, range) = entry.split("=").takeIf { it.size == 2 } ?: return@mapNotNull null
+            val times = range.split("-").takeIf { it.size == 2 } ?: return@mapNotNull null
+            d.toIntOrNull()?.let { it to (times[0] to times[1]) }
+        }.toMap()
+        val (from, to) = if (repeat != "daily") perDay[day] ?: (start to end) else start to end
+        val format = java.time.format.DateTimeFormatter.ofPattern("HH:mm")
+        val startTime = java.time.LocalTime.parse(from, format)
+        val endTime = java.time.LocalTime.parse(to, format)
+        val inWindow = if (endTime.isAfter(startTime)) {
+            now.isAfter(startTime) && now.isBefore(endTime)
+        } else {
+            now.isAfter(startTime) || now.isBefore(endTime)
+        }
+        return minutes.takeIf { inWindow }
     }
 
     /** DESKTOP: Player settings > "Pause music when media is muted"; resumes when unmuted. */
@@ -716,8 +833,21 @@ class DesktopPlayerConnection(
     }
 
     /** [current] first, then every other item in random order. */
-    private fun shuffledAround(items: List<MediaItem>, current: MediaItem): List<MediaItem> =
-        listOf(current) + items.filterNot { it === current }.shuffled()
+    private fun shuffledAround(items: List<MediaItem>, current: MediaItem): List<MediaItem> {
+        val rest = items.filterNot { it === current }
+        val original = originalQueueItems
+        // Player settings > "Shuffle playlist or album first": songs added after the queue started
+        // (autoplay radio, "add to queue") are shuffled after the playlist's own songs, as upstream does.
+        if (!shufflePlaylistFirstCached || original.isEmpty()) return listOf(current) + rest.shuffled()
+        val (fromList, added) = rest.partition { it in original }
+        return listOf(current) + fromList.shuffled() + added.shuffled()
+    }
+
+    /** The items the current queue started with (by identity), for "shuffle playlist first". */
+    private var originalQueueItems: Set<MediaItem> = emptySet()
+
+    private fun identitySetOf(items: List<MediaItem>): Set<MediaItem> =
+        java.util.Collections.newSetFromMap(java.util.IdentityHashMap<MediaItem, Boolean>()).apply { addAll(items) }
 
     override fun playQueue(queue: Queue) {
         activeQueue = queue
@@ -743,6 +873,7 @@ class DesktopPlayerConnection(
 
                 var startIndex = status.mediaItemIndex.coerceIn(0, items.lastIndex)
                 unshuffledOrder = null
+                originalQueueItems = identitySetOf(items)
                 if (shuffleModeEnabled.value) {
                     // DESKTOP: like upstream, a new queue turns shuffle off unless
                     // Player settings > "Persistent shuffle" keeps it on (then the new queue is shuffled).
@@ -780,6 +911,7 @@ class DesktopPlayerConnection(
         val items = player.itemsList
         if (index !in items.indices) return
         recordListen(endedNaturally = false)
+        remoteListen = RemoteListen(items[index].mediaId, generateClientPlaybackNonce())
 
         player.updateCurrentIndexInternal(index)
         val item = items[index]
@@ -1237,11 +1369,17 @@ class DesktopPlayerConnection(
                 }
 
                 val index = currentMediaItemIndex.value.coerceIn(0, metadata.lastIndex)
+                // DESKTOP: with shuffle on, also keep the order to go back to, as indexes into items.
+                val unshuffled = unshuffledOrder?.takeIf { metadata.size == items.size }?.let { order ->
+                    val positions = java.util.IdentityHashMap<MediaItem, Int>().apply { items.forEachIndexed { i, item -> put(item, i) } }
+                    order.mapNotNull { positions[it] }
+                }
                 val persistQueue = PersistedQueueSnapshot(
                     title = queueTitle.value,
                     items = metadata.map { it.toPersistedMetadata() },
                     mediaItemIndex = index,
                     position = player.currentPosition.coerceAtLeast(0L),
+                    unshuffledOrder = unshuffled,
                 )
                 val persistPlayerState = PersistPlayerState(
                     playWhenReady = player.playWhenReady,
@@ -1297,6 +1435,11 @@ class DesktopPlayerConnection(
         val index = persistQueue.mediaItemIndex.coerceIn(0, items.lastIndex)
         val position = persistQueue.position.coerceAtLeast(0L)
         player.setItemsInternal(items, index)
+        // DESKTOP: a shuffled queue can still be put back in order after a restart. Queues saved by
+        // older versions have no order (null).
+        unshuffledOrder = persistQueue.unshuffledOrder
+            ?.takeIf { order -> order.all { it in items.indices } && order.toSet().size == order.size }
+            ?.map { items[it] }
         activeQueue = ListQueue(
             title = persistQueue.title,
             items = items,

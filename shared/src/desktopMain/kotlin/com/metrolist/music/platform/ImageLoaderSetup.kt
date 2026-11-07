@@ -4,6 +4,10 @@ import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
+import coil3.request.CachePolicy
+import com.metrolist.music.constants.MaxImageCacheSizeKey
+import com.metrolist.music.utils.dataStore
+import com.metrolist.music.utils.get
 import coil3.memory.MemoryCache
 import okio.Path.Companion.toOkioPath
 import java.io.File
@@ -14,17 +18,26 @@ import java.io.File
  */
 internal object ImageLoaderSetup {
     private const val MEMORY_CACHE_BYTES = 64L * 1024 * 1024
-    private const val DISK_CACHE_BYTES = 512L * 1024 * 1024
+    private const val DEFAULT_DISK_CACHE_MB = 512
 
     fun install() {
         SingletonImageLoader.setSafe { context ->
             ImageLoader.Builder(context)
                 .memoryCache { MemoryCache.Builder().maxSizeBytes(MEMORY_CACHE_BYTES).strongReferencesEnabled(true).build() }
-                .diskCache {
-                    DiskCache.Builder()
-                        .directory(File(DesktopFiles.cacheDir, "images").toOkioPath())
-                        .maxSizeBytes(DISK_CACHE_BYTES)
-                        .build()
+                .apply {
+                    // Storage > image cache size (MB, read at start-up like upstream; 0 turns the cache off).
+                    val sizeMb = runCatching { AppContext.Default.dataStore.get(MaxImageCacheSizeKey, DEFAULT_DISK_CACHE_MB) }
+                        .getOrDefault(DEFAULT_DISK_CACHE_MB)
+                    if (sizeMb <= 0) {
+                        diskCachePolicy(CachePolicy.DISABLED)
+                    } else {
+                        diskCache {
+                            DiskCache.Builder()
+                                .directory(File(DesktopFiles.cacheDir, "images").toOkioPath())
+                                .maxSizeBytes(sizeMb * 1024L * 1024L)
+                                .build()
+                        }
+                    }
                 }
                 .build()
         }

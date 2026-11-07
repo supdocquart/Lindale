@@ -18,6 +18,9 @@ internal data class PersistedQueueSnapshot(
     val items: List<PersistedMetadata>,
     val mediaItemIndex: Int,
     val position: Long,
+    // Shuffled queues: the order to restore when shuffle is turned off (indexes into items). Java
+    // serialization leaves it null for files written before it existed, and older versions skip it.
+    val unshuffledOrder: List<Int>? = null,
 ) : Serializable {
     // Pinned to the value these classes had before they moved to this file, so saved queues still load.
     companion object { private const val serialVersionUID: Long = -4297184183311310262L }
