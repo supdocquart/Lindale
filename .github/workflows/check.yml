@@ -1,0 +1,101 @@
+# Runs on every push to main / ozellikler (and by hand from the Actions tab):
+# - Windows: builds the app with the bundled VLC, starts it, checks the start-up log and takes a
+#   screenshot, and keeps the built app as a downloadable test build (no installer, no release).
+# - Linux: the end-to-end UI test (tools/ui-test/run.sh).
+name: Check
+
+on:
+  push:
+    branches: [main, ozellikler]
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VLC_VERSION: "3.0.24"
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache VLC ${{ env.VLC_VERSION }}
+        id: vlc-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/vlc.zip
+          key: vlc-${{ env.VLC_VERSION }}-win64
+
+      - name: Bundle VLC ${{ env.VLC_VERSION }}
+        shell: pwsh
+        run: |
+          $zip = "$env:RUNNER_TEMP\vlc.zip"
+          if (-not (Test-Path $zip)) {
+            Invoke-WebRequest "https://download.videolan.org/pub/videolan/vlc/$env:VLC_VERSION/win64/vlc-$env:VLC_VERSION-win64.zip" -OutFile $zip
+          }
+          Expand-Archive $zip -DestinationPath "$env:RUNNER_TEMP\vlc"
+          New-Item -ItemType Directory -Force desktop/appResources/windows | Out-Null
+          Move-Item "$env:RUNNER_TEMP\vlc\vlc-$env:VLC_VERSION" desktop/appResources/windows/vlc
+          if (-not (Test-Path desktop/appResources/windows/vlc/libvlc.dll)) { throw "libvlc.dll missing" }
+
+      - name: Build the app
+        shell: pwsh
+        run: ./gradlew.bat :desktop:createDistributable --no-configuration-cache --console=plain
+
+      - name: Start the app and check it
+        shell: pwsh
+        run: tools/ci/windows-check.ps1 -App desktop/build/compose/binaries/main/app/Lindale/Lindale.exe -Out windows-check
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-check
+          path: windows-check/
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lindale-windows-test-build
+          path: desktop/build/compose/binaries/main/app/Lindale/
+          retention-days: 14
+
+  linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Test tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb pulseaudio dbus dbus-x11 libvlc5 vlc-plugin-base ffmpeg stalonetray python3-xlib
+
+      - name: UI test
+        run: sh tools/ui-test/run.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-test-logs
+          path: |
+            logs/latest.log
+            build/ui-test/app.log
+          retention-days: 7
