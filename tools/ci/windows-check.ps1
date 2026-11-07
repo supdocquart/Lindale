@@ -158,7 +158,8 @@ if (-not $proc.HasExited -and $null -ne $r) {
     # Play the first result.
     $mark = (LogText).Length
     $r = MainRect
-    [Win]::Click($r.Left + 272, $r.Top + 196)
+    # First row under "Top result" (the window rect includes the 8 px invisible resize border).
+    [Win]::Click($r.Left + 272, $r.Top + 252)
     Check "a search result starts" (WaitLog "\[UI:NOW_PLAYING\] id=" 20 $mark)
     # The queue is saved every 15 s with the position; a position past 3 s means audio is playing.
     $played = WaitLog "Persisted queue: \d+ items, index=\d+, position=([3-9]\d{3}|\d{5,}) ms" 60 $mark
