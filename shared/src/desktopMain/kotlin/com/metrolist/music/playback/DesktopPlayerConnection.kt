@@ -185,6 +185,30 @@ class DesktopPlayerConnection(
     private var playJob: Job? = null
 
     override val playbackState = MutableStateFlow(Player.STATE_IDLE)
+
+    // DESKTOP: see PlaybackStateMachine.kt.
+    private val generations = PlayGenerations()
+    private val mutePause = MutePause()
+
+    /** The only place that changes playbackState / isPlaying / playWhenReady / error. */
+    @Synchronized
+    private fun moveTo(phase: PlaybackPhase) {
+        val flags = phase.flags()
+        flags.state?.let {
+            if (playbackState.value != it) {
+                playbackState.value = it
+                player.notifyPlaybackState(it)
+            }
+        }
+        flags.isPlaying?.let {
+            if (isPlaying.value != it) {
+                isPlaying.value = it
+                player.notifyIsPlaying(it)
+            }
+        }
+        flags.playWhenReady?.let { player.playWhenReady = it }
+        if (!flags.keepsError) error.value = flags.error
+    }
     override val isPlaying = MutableStateFlow(false)
     override val isEffectivelyPlaying: StateFlow<Boolean> get() = isPlaying
     override val mediaMetadata = MutableStateFlow<MediaMetadata?>(null)
@@ -482,10 +506,7 @@ class DesktopPlayerConnection(
     // properties declared below it are initialised.
     private inner class EngineListener : AudioEngine.Listener {
         override fun onBuffering() {
-            if (!isPlaying.value) {
-                playbackState.value = Player.STATE_BUFFERING
-                player.notifyPlaybackState(Player.STATE_BUFFERING)
-            }
+            if (!isPlaying.value) moveTo(PlaybackPhase.Buffering)
         }
 
         override fun onPlaying() {
@@ -493,39 +514,37 @@ class DesktopPlayerConnection(
             consecutivePlaybackErrors = 0
             // Paused -> playing (not a track change or the end of buffering), like upstream's trigger.
             if (!player.playWhenReady) startAutomaticSleepTimerIfDue()
-            playbackState.value = Player.STATE_READY
-            isPlaying.value = true
-            player.playWhenReady = true
-            player.notifyPlaybackState(Player.STATE_READY)
-            player.notifyIsPlaying(true)
+            moveTo(PlaybackPhase.Playing)
         }
 
-        override fun onPaused() {
-            isPlaying.value = false
-            player.playWhenReady = false
-            player.notifyIsPlaying(false)
-        }
+        override fun onPaused() = moveTo(PlaybackPhase.Paused)
 
-        override fun onStopped() {
-            isPlaying.value = false
-            player.notifyIsPlaying(false)
-        }
+        override fun onStopped() = moveTo(PlaybackPhase.Stopped)
 
         override fun onLength(ms: Long) {
             if (ms > 0L) player.internalDuration = ms
         }
 
         override fun onEnded() {
-            ioScope.launch { onTrackEndedNaturally() }
+            // The end of a song the user already skipped away from must not move the queue again.
+            if (!generations.loadedIsCurrent()) {
+                Timber.d("Ignoring the end of a replaced song")
+                return
+            }
+            val generation = generations.current
+            ioScope.launch { if (generations.isCurrent(generation)) onTrackEndedNaturally() }
         }
 
         override fun onError(message: String) {
+            if (!generations.loadedIsCurrent()) {
+                Timber.d("Ignoring an error of a replaced song: %s", message)
+                return
+            }
             Timber.e("%s for %s", message, mediaMetadata.value?.id)
-            isPlaying.value = false
-            playbackState.value = Player.STATE_IDLE
-            error.value = PlaybackException(
-                PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
-                "Playback error",
+            moveTo(
+                PlaybackPhase.Failed(
+                    PlaybackException(PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, "Playback error"),
+                ),
             )
 
             // DESKTOP: mirror upstream AutoSkipNextOnErrorKey without looping forever on a broken queue.
@@ -594,10 +613,7 @@ class DesktopPlayerConnection(
 
     // DESKTOP: playback only ends when autoplay is off or the radio could not be loaded.
     private fun endPlayback() {
-        playbackState.value = Player.STATE_ENDED
-        isPlaying.value = false
-        player.notifyPlaybackState(Player.STATE_ENDED)
-        player.notifyIsPlaying(false)
+        moveTo(PlaybackPhase.Ended)
     }
 
     /**
@@ -767,18 +783,12 @@ class DesktopPlayerConnection(
         return minutes.takeIf { inWindow }
     }
 
-    /** DESKTOP: Player settings > "Pause music when media is muted"; resumes when unmuted. */
-    @Volatile
-    private var pausedByMute = false
-
+    /** DESKTOP: Player settings > "Pause music when media is muted"; resumes when unmuted (see [MutePause]). */
     private fun onMuteStateChanged(muted: Boolean) {
         if (muted) {
-            if (pauseOnMuteCached && isPlaying.value) {
-                pausedByMute = true
-                pause()
-            }
-        } else if (pausedByMute) {
-            pausedByMute = false
+            // Straight to the engine: pause() is a user action and would forget the mute-pause.
+            if (mutePause.onMute(pauseOnMuteCached, isPlaying.value)) engine?.pause()
+        } else if (mutePause.onUnmute()) {
             play()
         }
     }
@@ -856,8 +866,7 @@ class DesktopPlayerConnection(
         playJob?.cancel()
         playJob = ioScope.launch {
             try {
-                error.value = null
-                playbackState.value = Player.STATE_BUFFERING
+                moveTo(PlaybackPhase.Buffering)
                 queue.preloadItem?.let { preload ->
                     mediaMetadata.value = preload
                     player.internalDuration = (preload.duration.takeIf { it > 0 } ?: 0) * 1000L
@@ -867,7 +876,7 @@ class DesktopPlayerConnection(
                 queueTitle.value = status.title
                 val items = status.items
                 if (items.isEmpty()) {
-                    playbackState.value = Player.STATE_IDLE
+                    moveTo(PlaybackPhase.Idle)
                     return@launch
                 }
 
@@ -890,12 +899,12 @@ class DesktopPlayerConnection(
                 }
                 playIndex(startIndex, status.position)
             } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
                 Timber.e(e, "Failed to load queue")
-                playbackState.value = Player.STATE_IDLE
-                error.value = PlaybackException(
-                    PlaybackException.ERROR_CODE_REMOTE_ERROR,
-                    e.message ?: "Failed to load queue",
-                    e,
+                moveTo(
+                    PlaybackPhase.Failed(
+                        PlaybackException(PlaybackException.ERROR_CODE_REMOTE_ERROR, e.message ?: "Failed to load queue", e),
+                    ),
                 )
             }
         }
@@ -912,19 +921,21 @@ class DesktopPlayerConnection(
         if (index !in items.indices) return
         recordListen(endedNaturally = false)
         remoteListen = RemoteListen(items[index].mediaId, generateClientPlaybackNonce())
+        val generation = generations.next()
+        // A new song is the user's (or the queue's) choice: unmuting must not resume a mute-pause.
+        mutePause.onUserAction()
 
         player.updateCurrentIndexInternal(index)
         val item = items[index]
         val meta = item.metadata
         mediaMetadata.value = meta
-        error.value = null
         // DESKTOP: reset normalization until the new stream's loudness metadata is known.
         lastLoudnessDb = null
         lastPerceptualLoudnessDb = null
         updateNormalizationFactor()
         player.internalPosition = startPositionMs
         player.internalDuration = ((meta?.duration?.takeIf { it > 0 } ?: 0) * 1000L)
-        playbackState.value = Player.STATE_BUFFERING
+        moveTo(PlaybackPhase.Buffering)
         player.notifyMediaItemTransition(item, 2) // MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED / SEEK
 
         // DESKTOP: upstream saves the queue on every media item transition.
@@ -978,6 +989,7 @@ class DesktopPlayerConnection(
             if (localFile != null) {
                 val mp = engine
                 if (mp != null) {
+                    if (!generations.load(generation)) return@launch
                     Timber.i("Playing downloaded file for %s", videoId)
                     applyVolume()
                     mp.load(localFile.absolutePath, startPositionMs)
@@ -986,6 +998,12 @@ class DesktopPlayerConnection(
             }
 
             val streamResult = resolveStream(videoId, meta)
+            // The user may have moved on while the stream was being resolved: keep the cache, drop the rest.
+            if (!generations.isCurrent(generation)) {
+                streamResult.onSuccess { resolvedStreams[videoId] = it }
+                Timber.d("Dropping the stream of a replaced song (%s)", videoId)
+                return@launch
+            }
             streamResult.onSuccess { resolved ->
                 resolvedStreams[videoId] = resolved
                 currentStreamClient.value = resolved.clientName
@@ -1000,18 +1018,16 @@ class DesktopPlayerConnection(
 
                 val proxyUrl = streamProxy.getStreamUrl(videoId)
                 val mp = engine
-                if (mp != null) {
+                if (mp != null && generations.load(generation)) {
                     applyVolume()
                     mp.load(proxyUrl, startPositionMs)
                 }
             }.onFailure { err ->
                 Timber.e(err, "Failed to resolve stream for $videoId")
-                playbackState.value = Player.STATE_IDLE
-                isPlaying.value = false
-                error.value = PlaybackException(
-                    PlaybackException.ERROR_CODE_REMOTE_ERROR,
-                    err.message ?: "Failed to resolve stream",
-                    err,
+                moveTo(
+                    PlaybackPhase.Failed(
+                        PlaybackException(PlaybackException.ERROR_CODE_REMOTE_ERROR, err.message ?: "Failed to resolve stream", err),
+                    ),
                 )
             }
         }
@@ -1192,6 +1208,7 @@ class DesktopPlayerConnection(
     }
 
     override fun play() {
+        mutePause.onUserAction()
         // DESKTOP: play pressed while libVLC is still starting: playIndex waits for it.
         val mp = engine ?: run {
             if (player.mediaItemCount > 0) playIndex(currentMediaItemIndex.value, player.currentPosition)
@@ -1209,6 +1226,7 @@ class DesktopPlayerConnection(
     }
 
     override fun pause() {
+        mutePause.onUserAction()
         engine?.pause()
     }
 
@@ -1456,11 +1474,7 @@ class DesktopPlayerConnection(
         updateNormalizationFactor()
         player.internalPosition = position
         player.internalDuration = ((item.metadata?.duration?.takeIf { it > 0 } ?: 0) * 1000L)
-        playbackState.value = Player.STATE_READY
-        isPlaying.value = false
-        player.playWhenReady = false
-        player.notifyPlaybackState(Player.STATE_READY)
-        player.notifyIsPlaying(false)
+        moveTo(PlaybackPhase.Paused)
         Timber.d("Restored persisted queue: %d items, index=%d, position=%d ms", items.size, index, position)
 
         restorePlayerStateFromDisk(index)
@@ -1743,8 +1757,7 @@ class DesktopPlayerConnection(
 
         override fun stop() {
             runCatching { engine?.stop() }
-            this@DesktopPlayerConnection.isPlaying.value = false
-            this@DesktopPlayerConnection.playbackState.value = STATE_IDLE
+            moveTo(PlaybackPhase.Idle)
         }
 
         override fun addListener(listener: Any?) {
