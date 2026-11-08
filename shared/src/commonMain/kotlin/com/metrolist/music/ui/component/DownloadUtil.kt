@@ -11,6 +11,10 @@ import com.metrolist.music.utils.VideoId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,6 +78,57 @@ object DownloadCenter {
     private val pending = ConcurrentHashMap<String, MediaMetadata>()
     private val perId = ConcurrentHashMap<String, MutableStateFlow<Download?>>()
 
+    // DESKTOP: every state change of a song's download (queue, remove, finish) is a command handled
+    // one at a time by this loop, in the order it was asked for. Before, remove() deleted files and
+    // cleared the state in the background, so downloading the song again right after a remove could
+    // lose its new state or files. The download itself still runs in its own job (two at a time).
+    private sealed interface Command {
+        data class Enqueue(val meta: MediaMetadata) : Command
+        data class Remove(val id: String) : Command
+        data class Finished(val id: String, val job: Job) : Command
+    }
+
+    private val commands = Channel<Command>(Channel.UNLIMITED)
+
+    init {
+        scope.launch {
+            for (command in commands) {
+                runCatching { handle(command) }
+                    .onFailure { timber.log.Timber.e(it, "download: %s failed", command::class.simpleName) }
+            }
+        }
+    }
+
+    private suspend fun handle(command: Command) {
+        when (command) {
+            is Command.Enqueue -> {
+                val id = command.meta.id
+                if (_downloads.value[id]?.state == Download.STATE_COMPLETED && localFile(id) != null) return
+                if (jobs[id]?.isActive == true) return
+                pending[id] = command.meta
+                setState(id, Download(id, Download.STATE_QUEUED, 0f))
+                jobs[id] = scope.launch {
+                    try {
+                        permits.withPermit { runDownload(command.meta) }
+                    } finally {
+                        commands.trySend(Command.Finished(id, coroutineContext.job))
+                    }
+                }
+            }
+            is Command.Remove -> {
+                val id = command.id
+                // Wait until a running download has stopped and cleaned up before touching its files.
+                jobs.remove(id)?.cancelAndJoin()
+                pending.remove(id)
+                filesOf(id).forEach { it.delete() }
+                setState(id, null)
+                runCatching { engine?.markDownloaded(id, false) }
+                    .onFailure { timber.log.Timber.w(it, "download: could not clear db flag for %s", id) }
+            }
+            is Command.Finished -> if (jobs[command.id] === command.job) jobs.remove(command.id)
+        }
+    }
+
     // DESKTOP: downloads are ordinary files in the user's Music folder, so other players and Explorer see them.
     // shortcut: assumes Music is at %USERPROFILE%\Music; read the known-folder path if OneDrive-redirected users complain.
     val directory: File by lazy {
@@ -124,7 +179,8 @@ object DownloadCenter {
         perId.getOrPut(id) { MutableStateFlow(_downloads.value[id]) }.asStateFlow()
 
     private fun setState(id: String, download: Download?) {
-        _downloads.value = if (download == null) _downloads.value - id else _downloads.value + (id to download)
+        // Two downloads report progress at the same time: update the map atomically.
+        _downloads.update { if (download == null) it - id else it + (id to download) }
         perId.getOrPut(id) { MutableStateFlow(null) }.value = download
     }
 
@@ -135,14 +191,7 @@ object DownloadCenter {
             timber.log.Timber.w("download: refusing invalid id (length %d)", id.length)
             return
         }
-        if (_downloads.value[id]?.state == Download.STATE_COMPLETED && localFile(id) != null) return
-        if (jobs[id]?.isActive == true) return
-        pending[id] = meta
-        setState(id, Download(id, Download.STATE_QUEUED, 0f))
-        jobs[id] = scope.launch {
-            permits.withPermit { runDownload(meta) }
-            jobs.remove(id)
-        }
+        commands.trySend(Command.Enqueue(meta))
     }
 
     fun retry(id: String) {
@@ -150,15 +199,7 @@ object DownloadCenter {
     }
 
     fun remove(id: String) {
-        jobs.remove(id)?.cancel()
-        pending.remove(id)
-        scope.launch {
-            filesOf(id).forEach { it.delete() }
-            setState(id, null)
-            runCatching {
-                engine?.markDownloaded(id, false)
-            }.onFailure { timber.log.Timber.w(it, "download: could not clear db flag for %s", id) }
-        }
+        commands.trySend(Command.Remove(id))
     }
 
     private suspend fun runDownload(meta: MediaMetadata) {
