@@ -100,6 +100,35 @@ class VlcEngine private constructor(
             }
         }.toTypedArray()
 
+        /**
+         * DESKTOP: without plugins\plugins.dat, libVLC opens all ~350 plugin DLLs on every start to
+         * see what they do; with antivirus scanning each one that took 27-34 s on a fresh install,
+         * during which play did nothing. VLC's own installer writes this cache with vlc-cache-gen;
+         * the zip VLC we ship does not, so do it once here. A cache that no longer matches the
+         * plugins (VLC updated) is simply ignored by libVLC, so a stale one is regenerated too.
+         */
+        private fun ensurePluginCache(vlcDir: File) {
+            val plugins = File(vlcDir, "plugins")
+            val cache = File(plugins, "plugins.dat")
+            val generator = File(vlcDir, "vlc-cache-gen.exe")
+            if (!generator.exists() || !plugins.isDirectory) return
+            val newestPlugin = plugins.walkTopDown().filter { it.extension == "dll" }.maxOfOrNull { it.lastModified() } ?: return
+            if (cache.exists() && cache.lastModified() >= newestPlugin) return
+            runCatching {
+                val started = System.nanoTime()
+                val process = ProcessBuilder(generator.absolutePath, plugins.absolutePath)
+                    .redirectErrorStream(true)
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .start()
+                if (!process.waitFor(120, java.util.concurrent.TimeUnit.SECONDS)) process.destroyForcibly()
+                Timber.i(
+                    "VLC plugin cache %s in %d ms",
+                    if (cache.exists()) "written" else "NOT written (exit ${process.exitValue()})",
+                    (System.nanoTime() - started) / 1_000_000,
+                )
+            }.onFailure { Timber.w("VLC plugin cache: %s", it.message) }
+        }
+
         fun create(listener: AudioEngine.Listener, speed: Float, pitch: Float): VlcEngine? = runCatching {
             // Windows: a VLC copied next to the app or into the local app folder. Linux: none of these
             // exist and vlcj finds the system libvlc (the vlc package) by itself.
@@ -119,6 +148,7 @@ class VlcEngine private constructor(
                 NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path)
                 NativeLibrary.addSearchPath("libvlccore", path)
                 Timber.d("Loaded 64-bit libvlc from: $path")
+                ensurePluginCache(vlcDir)
             }
             val factory = MediaPlayerFactory(*args(speed, pitch))
             val mp = factory.mediaPlayers().newMediaPlayer()
