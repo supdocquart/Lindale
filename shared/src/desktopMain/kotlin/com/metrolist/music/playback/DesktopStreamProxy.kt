@@ -54,9 +54,35 @@ internal class DesktopStreamProxy(
 
     val port: Int get() = server.address.port
 
+    // DESKTOP: songs are downloaded ahead through StreamBuffer; keep the current and the previous
+    // one (for "previous" and quick back-and-forth), close older ones and their temp files.
+    private val buffers = LinkedHashMap<String, StreamBuffer>()
+    private val bufferDir = java.io.File(com.metrolist.music.platform.DesktopFiles.cacheDir, "stream").apply {
+        // Leftovers of a crash: nothing else reads these.
+        listFiles()?.forEach { it.delete() }
+    }
+
+    private fun bufferFor(videoId: String, info: ResolvedStreamInfo): StreamBuffer? = synchronized(buffers) {
+        buffers[videoId]?.let { buffers.remove(videoId); buffers[videoId] = it; return it }
+        val created = runCatching {
+            StreamBuffer(videoId, httpClient, info, refresh = {
+                resolvedStreams.remove(videoId)
+                runBlocking(Dispatchers.IO) { resolve(videoId) }?.also { resolvedStreams[videoId] = it }
+            }, cacheDir = bufferDir)
+        }.onFailure { Timber.w("Stream buffer: could not start %s (%s), streaming directly", videoId, it.javaClass.simpleName) }
+            .getOrNull() ?: return null
+        buffers[videoId] = created
+        while (buffers.size > 2) {
+            val oldest = buffers.keys.first()
+            buffers.remove(oldest)?.close()
+        }
+        created
+    }
+
     fun getStreamUrl(videoId: String): String = "http://127.0.0.1:$port/stream/$videoId"
 
     fun stop() {
+        synchronized(buffers) { buffers.values.forEach { it.close() }; buffers.clear() }
         runCatching { server.stop(0) }
     }
 
@@ -81,6 +107,10 @@ internal class DesktopStreamProxy(
             }
 
             val rangeHeader = exchange.requestHeaders.getFirst("Range")
+            bufferFor(videoId, info)?.let { buffer ->
+                serveFromBuffer(exchange, buffer, rangeHeader)
+                return
+            }
             val reqBuilder = Request.Builder()
                 .url(info.streamUrl)
                 .get()
@@ -137,11 +167,35 @@ internal class DesktopStreamProxy(
                 }
             }
         } catch (e: java.io.IOException) {
-            // Client disconnected (e.g. seek or track change)
+            // Client disconnected (e.g. seek or track change), or the buffer gave up (logged there).
         } catch (e: Exception) {
             Timber.w(e, "Stream proxy failed")
         } finally {
             runCatching { exchange.close() }
         }
+    }
+
+    private fun serveFromBuffer(exchange: HttpExchange, buffer: StreamBuffer, rangeHeader: String?) {
+        val total = buffer.length
+        val range = rangeHeader?.removePrefix("bytes=")?.split(",")?.firstOrNull()?.split("-")
+        val from = range?.getOrNull(0)?.trim()?.toLongOrNull() ?: 0L
+        val to = range?.getOrNull(1)?.trim()?.toLongOrNull()?.coerceAtMost(total - 1) ?: (total - 1)
+        exchange.responseHeaders.set("Content-Type", buffer.contentType)
+        exchange.responseHeaders.set("Accept-Ranges", "bytes")
+        if (from >= total || from > to) {
+            exchange.responseHeaders.set("Content-Range", "bytes */$total")
+            exchange.sendResponseHeaders(416, -1)
+            return
+        }
+        val partial = rangeHeader != null
+        if (partial) exchange.responseHeaders.set("Content-Range", "bytes $from-$to/$total")
+        val status = if (partial) 206 else 200
+        if (exchange.requestMethod.equals("HEAD", ignoreCase = true)) {
+            exchange.responseHeaders.set("Content-Length", (to - from + 1).toString())
+            exchange.sendResponseHeaders(status, -1)
+            return
+        }
+        exchange.sendResponseHeaders(status, to - from + 1)
+        exchange.responseBody.use { buffer.copyTo(it, from, to) }
     }
 }
